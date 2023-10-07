@@ -22,6 +22,10 @@ export default class Player {
 
         this.sprite.setBounce(0.1)
 
+        this.addMovementAnimations()        
+    }
+
+    private addMovementAnimations () {
         this.scene.anims.create({
             key: 'left',
             frames: this.scene.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),

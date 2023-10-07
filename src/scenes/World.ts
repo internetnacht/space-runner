@@ -2,8 +2,8 @@ import Phaser from 'phaser'
 import Player from "../components/Player.ts";
 
 export default class World extends Phaser.Scene {
-    // @ts-ignore
-    private player: Player
+    private player?: Player
+    private camera?: Phaser.Cameras.Scene2D.Camera
     public readonly mapKey: string
     public readonly sceneKey: string
 
@@ -30,36 +30,31 @@ export default class World extends Phaser.Scene {
             throw 'failed to create tileset object'
         }
 
+        this.player = this.createPlayer(map)
+
+        this.setupCamera(map)
+        this.addLayers(map, tileset)
+        this.addBackgroundImage()
+        this.addPauseMenuCallbacks()
+    }
+
+    private createPlayer (map: Phaser.Tilemaps.Tilemap): Player {
         const spawnPoint = map.findObject("Spawn", () => true);
 
         if (spawnPoint === null || spawnPoint.x === undefined || spawnPoint.y === undefined) {
-            this.player = new Player(this)
+            return new Player(this)
         } else {
-            this.player = new Player(this, {x: spawnPoint.x, y: spawnPoint.y})
+            return new Player(this, {x: spawnPoint.x, y: spawnPoint.y})
         }
+    }
 
-        const camera = this.cameras.main
-        camera.setBounds(0,0, map.widthInPixels, map.heightInPixels)
-        this.player.attachToCamera(camera)
-        this.addLayers(map, tileset)
-
-        const backgroundImage = this.add.image(0, 0, `${this.sceneKey}-backgroundImageKey`)
-        backgroundImage.setOrigin(0,0)
-        backgroundImage.setDepth(-1);
-
-        camera.on('followupdate', function (camera: Phaser.Cameras.Scene2D.BaseCamera) {
-            backgroundImage.x = camera.scrollX;
-            backgroundImage.y = camera.scrollY;
-        });
-
-        const keyboard = this.input.keyboard
-        if (keyboard === null) {
-            throw 'keyboard input plugin is null'
+    private setupCamera (map: Phaser.Tilemaps.Tilemap) {
+        this.camera = this.cameras.main
+        this.camera.setBounds(0,0, map.widthInPixels, map.heightInPixels)
+        if (this.player === undefined) {
+            throw 'player is unexpectedly undefined'
         }
-        keyboard.on('keydown-ESC', () => {
-            this.scene.launch("PauseMenu", {callingScene: this.sceneKey});
-            this.scene.pause();
-        });
+        this.player.attachToCamera(this.camera)
     }
 
     private addLayers (map: Phaser.Tilemaps.Tilemap, tileset: Phaser.Tilemaps.Tileset) {
@@ -78,6 +73,9 @@ export default class World extends Phaser.Scene {
 
             if (this.layerGetBoolProperty(layer, 'collide')) {
                 layer.setCollisionByExclusion([-1])
+                if (this.player === undefined) {
+                    throw 'player is unexpectedly undefined'
+                }
                 this.player.setCollideWithLayer(layer)
             }
         }
@@ -90,7 +88,35 @@ export default class World extends Phaser.Scene {
         }) !== -1;
     }
 
+    private addBackgroundImage () {
+        const backgroundImage = this.add.image(0, 0, `${this.sceneKey}-backgroundImageKey`)
+        backgroundImage.setOrigin(0,0)
+        backgroundImage.setDepth(-1);
+
+        if (this.camera === undefined) {
+            throw 'camera is unexpectedly undefined'
+        }
+        this.camera.on('followupdate', function (camera: Phaser.Cameras.Scene2D.BaseCamera) {
+            backgroundImage.x = camera.scrollX;
+            backgroundImage.y = camera.scrollY;
+        });
+    }
+
+    private addPauseMenuCallbacks () {
+        const keyboard = this.input.keyboard
+        if (keyboard === null) {
+            throw 'keyboard input plugin is null'
+        }
+        keyboard.on('keydown-ESC', () => {
+            this.scene.launch("PauseMenu", {callingScene: this.sceneKey});
+            this.scene.pause();
+        });
+    }
+
     public update () {
+        if (this.player === undefined) {
+            throw 'player is unexpectedly undefined'
+        }
         this.player.update()
     }
 }
