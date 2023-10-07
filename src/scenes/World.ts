@@ -30,7 +30,14 @@ export default class World extends Phaser.Scene {
             throw 'failed to create tileset object'
         }
 
-        this.player = new Player(this)
+        const spawnPoint = map.findObject("Spawn", () => true);
+
+        if (spawnPoint === null || spawnPoint.x === undefined || spawnPoint.y === undefined) {
+            this.player = new Player(this)
+        } else {
+            this.player = new Player(this, {x: spawnPoint.x, y: spawnPoint.y})
+        }
+
         const camera = this.cameras.main
         camera.setBounds(0,0, map.widthInPixels, map.heightInPixels)
         this.player.attachToCamera(camera)
@@ -45,13 +52,23 @@ export default class World extends Phaser.Scene {
             backgroundImage.y = camera.scrollY;
         });
 
+        const keyboard = this.input.keyboard
+        if (keyboard === null) {
+            throw 'keyboard input plugin is null'
+        }
+        keyboard.on('keydown-ESC', () => {
+            this.scene.launch("PauseMenu", {callingScene: this.sceneKey});
+            this.scene.pause();
+        });
     }
 
     private addLayers (map: Phaser.Tilemaps.Tilemap, tileset: Phaser.Tilemaps.Tileset) {
         const mapJSON = this.cache.json.get(`${this.sceneKey}-mapjson`)
-        const layerNames: string[] = mapJSON.layers.map(function (layer: any) {
-            return layer.name
-        })
+        const layerNames: string[] = mapJSON.layers
+            .filter((layer: any) => layer.type === 'tilelayer')    
+            .map(function (layer: any) {
+                return layer.name
+            })
 
         for (const layerName of layerNames) {
             const layer = map.createLayer(layerName, [tileset])

@@ -11,10 +11,14 @@ export default class Player {
         )
     }
 
-    public constructor (scene: Phaser.Scene) {
+    public constructor (scene: Phaser.Scene, spawnPosition?: {x: number, y: number}) {
         this.scene = scene
 
-        this.sprite = scene.physics.add.sprite(0, 0, 'dude')
+        if (spawnPosition === undefined) {
+            this.sprite = scene.physics.add.sprite(0, 0, 'dude')
+        } else {
+            this.sprite = scene.physics.add.sprite(spawnPosition.x, spawnPosition.y, 'dude')
+        }
 
         this.sprite.setBounce(0.1)
 
