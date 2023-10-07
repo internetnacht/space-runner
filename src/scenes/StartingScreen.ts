@@ -12,11 +12,6 @@ class StartingScreen extends Phaser.Scene {
 
     preload () {
         Player.loadAssets(this)
-
-        this.load.image('sky', 'sprites/sky.png')
-        this.load.image('ground', 'sprites/platform.png')
-        this.load.image('star', 'sprites/star.png')
-        this.load.image('bomb', 'sprites/bomb.png')
     }
 
     create () {
