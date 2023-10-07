@@ -25,6 +25,10 @@ export default class ButtonFactory {
         this.callback = cb
     }
 
+    public setY (newY: number) {
+        this.y = newY
+    }
+
     public build (scene: Phaser.Scene): Button {
         const scrollFactor = this.fixed ? 0 : 1
 

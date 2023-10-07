@@ -1,13 +1,13 @@
 import Phaser from 'phaser'
-import Player from "../../components/Player.ts";
+import Player from "../components/Player.ts";
 
-export default abstract class World extends Phaser.Scene {
+export default class World extends Phaser.Scene {
     // @ts-ignore
     private player: Player
-    private readonly mapKey: string
-    private readonly sceneKey: string
+    public readonly mapKey: string
+    public readonly sceneKey: string
 
-    protected constructor (sceneKey: string, mapKey: string) {
+    public constructor (sceneKey: string, mapKey: string) {
         super({
             key: sceneKey
         });

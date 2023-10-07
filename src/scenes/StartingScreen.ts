@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import Player from "../components/Player.ts";
+import {worlds} from "../constants.ts";
 
 class StartingScreen extends Phaser.Scene {
     constructor () {
@@ -19,6 +20,10 @@ class StartingScreen extends Phaser.Scene {
     }
 
     create () {
+        for (const world of worlds) {
+            this.scene.add(world.sceneKey, world)
+        }
+
         this.scene.start('WorldSelectionMenu')
     }
 }

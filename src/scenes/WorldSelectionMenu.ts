@@ -1,5 +1,9 @@
 import Phaser from 'phaser'
 import ButtonFactory from "../components/ButtonFactory.ts";
+import {worlds} from "../constants.ts";
+import Button from "../components/Button.ts";
+
+const BUTTON_MARGIN = 10
 
 export default class WorldSelectionMenu extends Phaser.Scene {
 
@@ -9,27 +13,27 @@ export default class WorldSelectionMenu extends Phaser.Scene {
         })
     }
     public create () {
-        const levels = ['Map', 'Map5']
-        const buttons = []
-        const margin = 10
-        let x_offset = margin
-        let y_offset = margin
+        const buttonFactories = worlds
+            .map(world => world.sceneKey)
+            .map(worldKey => {
+                const buttonFactory = new ButtonFactory(BUTTON_MARGIN, 0)
+                buttonFactory.setCallback(() => {
+                    this.scene.start(worldKey)
+                })
 
-        for (const level of levels) {
-            const buttonFactory = new ButtonFactory(x_offset, y_offset)
-            buttonFactory.setCallback(() => {
-                this.scene.start(level)
+                buttonFactory.setLabel(worldKey)
+
+                return buttonFactory
             })
-            buttonFactory.setLabel(level)
+
+        //no idea how to do this in functional style
+        let y_offset = BUTTON_MARGIN
+        const buttons: Button[] = []
+        for (const buttonFactory of buttonFactories) {
+            buttonFactory.setY(y_offset)
             const button = buttonFactory.build(this)
-
-            y_offset += button.getHeight() + margin
-
+            y_offset += button.getHeight() + BUTTON_MARGIN
             buttons.push(button)
         }
-    }
-
-    private addRectangle (x: number, y: number, width: number, height: number, fillColor: number): Phaser.GameObjects.Rectangle {
-        return this.add.rectangle(x, y, width, height, fillColor)
     }
 }

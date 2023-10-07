@@ -66,7 +66,7 @@ export default class Player {
             this.sprite.anims.play('turn')
         }
 
-        if (cursors.up.isDown && this.sprite.body.onFloor())
+        if (cursors.up.isDown /*&& this.sprite.body.onFloor()*/)
         {
             this.sprite.setVelocityY(-300)
         }
