@@ -17,10 +17,10 @@ export default class World extends Phaser.Scene {
     }
 
     public preload () {
-        this.load.image(`${this.sceneKey}-tiles`, 'assets/sprites/spritesheet.png')
-        this.load.image(`${this.sceneKey}-backgroundImageKey`, 'assets/images/background.png')
-        this.load.tilemapTiledJSON(`${this.sceneKey}-map`, `assets/tilemaps/${this.mapKey}.json`)
-        this.load.json(`${this.sceneKey}-mapjson`, `assets/tilemaps/${this.mapKey}.json`)
+        this.load.image(`${this.sceneKey}-tiles`, 'sprites/spritesheet.png')
+        this.load.image(`${this.sceneKey}-backgroundImageKey`, 'images/background.png')
+        this.load.tilemapTiledJSON(`${this.sceneKey}-map`, `tilemaps/${this.mapKey}.json`)
+        this.load.json(`${this.sceneKey}-mapjson`, `tilemaps/${this.mapKey}.json`)
     }
 
     public create () {

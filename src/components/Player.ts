@@ -6,7 +6,7 @@ export default class Player {
 
     public static loadAssets (scene: Phaser.Scene) {
         scene.load.spritesheet('dude',
-            'assets/sprites/dude.png',
+            'sprites/dude.png',
             {frameWidth: 32, frameHeight: 48}
         )
     }
