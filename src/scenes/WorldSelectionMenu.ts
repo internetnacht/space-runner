@@ -19,7 +19,6 @@ export default class WorldSelectionMenu extends Phaser.Scene {
                 const buttonFactory = new ButtonFactory(BUTTON_MARGIN, 0)
                 buttonFactory.setCallback(() => {
                     this.scene.start(worldKey)
-                    this.scene.stop()
                 })
 
                 buttonFactory.setLabel(worldKey)
