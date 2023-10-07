@@ -7,8 +7,8 @@ export default class Button {
         this.text = text
     }
 
-    public getHeight (): number {
-        return this.text.height
+    public getBottom (): number {
+        return this.text.y + this.text.height
     }
 
     public destruct () {

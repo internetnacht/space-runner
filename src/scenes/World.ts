@@ -42,9 +42,9 @@ export default class World extends Phaser.Scene {
         const spawnPoint = map.findObject("Spawn", () => true);
 
         if (spawnPoint === null || spawnPoint.x === undefined || spawnPoint.y === undefined) {
-            return new Player(this)
+            return new Player(this, this.sceneKey)
         } else {
-            return new Player(this, {x: spawnPoint.x, y: spawnPoint.y})
+            return new Player(this, this.sceneKey, {x: spawnPoint.x, y: spawnPoint.y})
         }
     }
 
@@ -90,15 +90,15 @@ export default class World extends Phaser.Scene {
 
     private addBackgroundImage () {
         const backgroundImage = this.add.image(0, 0, `${this.sceneKey}-backgroundImageKey`)
-        backgroundImage.setOrigin(0,0)
-        backgroundImage.setDepth(-1);
+            .setOrigin(0,0)
+            .setDepth(-1)
 
         if (this.camera === undefined) {
             throw 'camera is unexpectedly undefined'
         }
         this.camera.on('followupdate', function (camera: Phaser.Cameras.Scene2D.BaseCamera) {
-            backgroundImage.x = camera.scrollX;
-            backgroundImage.y = camera.scrollY;
+            backgroundImage.x = camera.scrollX
+            backgroundImage.y = camera.scrollY
         });
     }
 
@@ -108,8 +108,8 @@ export default class World extends Phaser.Scene {
             throw 'keyboard input plugin is null'
         }
         keyboard.on('keydown-ESC', () => {
-            this.scene.launch("PauseMenu", {callingScene: this.sceneKey});
-            this.scene.pause();
+            this.scene.launch("PauseMenu", {callingScene: this.sceneKey})
+            this.scene.pause()
         });
     }
 

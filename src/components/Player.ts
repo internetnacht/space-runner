@@ -1,7 +1,8 @@
 import Phaser from 'phaser'
 
 export default class Player {
-    private readonly scene: Phaser.Scene;
+    private readonly scene: Phaser.Scene
+    private readonly sceneKey: string
     private readonly sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
 
     public static loadAssets (scene: Phaser.Scene) {
@@ -11,8 +12,9 @@ export default class Player {
         )
     }
 
-    public constructor (scene: Phaser.Scene, spawnPosition?: {x: number, y: number}) {
+    public constructor (scene: Phaser.Scene, sceneKey: string, spawnPosition?: {x: number, y: number}) {
         this.scene = scene
+        this.sceneKey = sceneKey
 
         if (spawnPosition === undefined) {
             this.sprite = scene.physics.add.sprite(0, 0, 'dude')
@@ -27,20 +29,20 @@ export default class Player {
 
     private addMovementAnimations () {
         this.scene.anims.create({
-            key: 'left',
+            key: `${this.sceneKey}-player-left`,
             frames: this.scene.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
             frameRate: 10,
             repeat: -1
         })
 
         this.scene.anims.create({
-            key: 'turn',
+            key: `${this.sceneKey}-player-turn`,
             frames: [ { key: 'dude', frame: 4 } ],
             frameRate: 20
         })
 
         this.scene.anims.create({
-            key: 'right',
+            key: `${this.sceneKey}-player-right`,
             frames: this.scene.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
             frameRate: 10,
             repeat: -1
@@ -61,17 +63,17 @@ export default class Player {
         if (cursors.left.isDown)
         {
             this.sprite.setVelocityX(-160)
-            this.sprite.anims.play('left', true)
+            this.sprite.anims.play(`${this.sceneKey}-player-left`, true)
         }
         else if (cursors.right.isDown)
         {
             this.sprite.setVelocityX(160)
-            this.sprite.anims.play('right', true)
+            this.sprite.anims.play(`${this.sceneKey}-player-right`, true)
         }
         else
         {
             this.sprite.setVelocityX(0)
-            this.sprite.anims.play('turn')
+            this.sprite.anims.play(`${this.sceneKey}-player-turn`)
         }
 
         if (cursors.up.isDown /*&& this.sprite.body.onFloor()*/)

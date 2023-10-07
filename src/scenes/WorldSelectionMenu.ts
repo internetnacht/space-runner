@@ -27,13 +27,15 @@ export default class WorldSelectionMenu extends Phaser.Scene {
             })
 
         //no idea how to do this in functional style
-        let y_offset = BUTTON_MARGIN
         const buttons: Button[] = []
         for (const buttonFactory of buttonFactories) {
-            buttonFactory.setY(y_offset)
-            const button = buttonFactory.build(this)
-            y_offset += button.getHeight() + BUTTON_MARGIN
-            buttons.push(button)
+            const previous = buttons[buttons.length - 1]
+            if (previous === undefined) {
+                buttonFactory.setY(BUTTON_MARGIN)
+            } else {
+                buttonFactory.setY(previous.getBottom() + BUTTON_MARGIN)
+            }
+            buttons.push(buttonFactory.build(this))
         }
     }
 }

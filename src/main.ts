@@ -3,6 +3,7 @@ import { windowHeight, windowWidth} from "./constants.ts";
 import StartingScreen from "./scenes/StartingScreen.ts";
 import WorldSelectionMenu from "./scenes/WorldSelectionMenu.ts";
 import World from "./scenes/World.ts";
+import PauseMenu from './scenes/PauseMenu.ts';
 
 const config = {
     type: Phaser.AUTO,
@@ -25,7 +26,8 @@ const config = {
     scene: [
         StartingScreen,
         WorldSelectionMenu,
-        World
+        World,
+        PauseMenu
     ],
     audio: {
         disableWebAudio: true
