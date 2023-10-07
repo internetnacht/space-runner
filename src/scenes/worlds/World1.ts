@@ -13,8 +13,9 @@ class World1 extends Phaser.Scene {
 
     preload () {
         this.load.image('tiles', 'assets/sprites/spritesheet.png')
-        this.load.tilemapTiledJSON('map', 'assets/tilemaps/map2.json')
-        this.load.json('mapjson', 'assets/tilemaps/map2.json')
+        this.load.image('backgroundImageKey', 'assets/images/background.png')
+        this.load.tilemapTiledJSON('map', 'assets/tilemaps/map4.json')
+        this.load.json('mapjson', 'assets/tilemaps/map4.json')
     }
 
     create () {
@@ -29,6 +30,16 @@ class World1 extends Phaser.Scene {
         camera.setBounds(0,0, map.widthInPixels, map.heightInPixels)
         this.player.attachToCamera(camera)
         this.addLayers(map, tileset)
+
+        const backgroundImage = this.add.image(0, 0, 'backgroundImageKey')
+        backgroundImage.setOrigin(0,0)
+        backgroundImage.setDepth(-1);
+
+        camera.on('followupdate', function (camera: Phaser.Cameras.Scene2D.BaseCamera) {
+            backgroundImage.x = camera.scrollX;
+            backgroundImage.y = camera.scrollY;
+        });
+
     }
 
     private addLayers (map: Phaser.Tilemaps.Tilemap, tileset: Phaser.Tilemaps.Tileset) {

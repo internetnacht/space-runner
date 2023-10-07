@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-import {windowHeight} from "../constants.ts";
 
 export default class Player {
     private readonly scene: Phaser.Scene;
@@ -15,9 +14,9 @@ export default class Player {
     public constructor (scene: Phaser.Scene) {
         this.scene = scene
 
-        this.sprite = scene.physics.add.sprite(0, windowHeight/2, 'dude')
+        this.sprite = scene.physics.add.sprite(0, 0, 'dude')
 
-        this.sprite.setBounce(0.2)
+        this.sprite.setBounce(0.1)
 
         this.scene.anims.create({
             key: 'left',
@@ -67,9 +66,9 @@ export default class Player {
             this.sprite.anims.play('turn')
         }
 
-        if (cursors.up.isDown /*&& this.sprite.body.touching.down*/)
+        if (cursors.up.isDown && this.sprite.body.onFloor())
         {
-            this.sprite.setVelocityY(-200)
+            this.sprite.setVelocityY(-300)
         }
     }
 

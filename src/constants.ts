@@ -1,5 +1,5 @@
 const windowWidth = 800
-const windowHeight = 240
+const windowHeight = 600
 
 export {
     windowWidth,
