@@ -6,12 +6,12 @@ import Button from "../components/Button.ts";
 const BUTTON_MARGIN = 10
 
 export default class WorldSelectionMenu extends Phaser.Scene {
-
     public constructor () {
         super({
             key: 'WorldSelectionMenu'
         })
     }
+
     public create () {
         const buttonFactories = worlds
             .map(world => world.sceneKey)
@@ -19,6 +19,7 @@ export default class WorldSelectionMenu extends Phaser.Scene {
                 const buttonFactory = new ButtonFactory(BUTTON_MARGIN, 0)
                 buttonFactory.setCallback(() => {
                     this.scene.start(worldKey)
+                    this.scene.stop()
                 })
 
                 buttonFactory.setLabel(worldKey)
