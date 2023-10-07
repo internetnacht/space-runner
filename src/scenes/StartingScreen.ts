@@ -19,7 +19,7 @@ class StartingScreen extends Phaser.Scene {
     }
 
     create () {
-        this.scene.start('Map')
+        this.scene.start('WorldSelectionMenu')
     }
 }
 

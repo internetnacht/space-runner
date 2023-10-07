@@ -7,6 +7,10 @@ export default class Button {
         this.text = text
     }
 
+    public getHeight (): number {
+        return this.text.height
+    }
+
     public destruct () {
         this.text.destroy()
     }
