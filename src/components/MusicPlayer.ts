@@ -1,9 +1,9 @@
 export default class MusicPlayer {
-    private player: MusicPlayer = new MusicPlayer()
+	private player: MusicPlayer = new MusicPlayer()
 
-    private constructor() {}
+	private constructor() {}
 
-    public getPlayer (): MusicPlayer {
-        return this.player
-    }
+	public getPlayer(): MusicPlayer {
+		return this.player
+	}
 }

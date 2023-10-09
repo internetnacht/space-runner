@@ -1,4 +1,5 @@
 # Internetnacht Game 2023
+
 > Jump 'n' run Phaser 3 game with modern frontend tooling using Vite.
 
 ## Prerequisites

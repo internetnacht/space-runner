@@ -1,41 +1,41 @@
 import Phaser from 'phaser'
-import ButtonFactory from "../components/ButtonFactory.ts";
-import {worlds} from "../constants.ts";
-import Button from "../components/Button.ts";
+import ButtonFactory from '../components/ButtonFactory.ts'
+import { worlds } from '../constants.ts'
+import Button from '../components/Button.ts'
+import { List } from 'immutable'
 
 const BUTTON_MARGIN = 10
 
 export default class WorldSelectionMenu extends Phaser.Scene {
-    public constructor () {
-        super({
-            key: 'WorldSelectionMenu'
-        })
-    }
+	public constructor() {
+		super({
+			key: 'WorldSelectionMenu',
+		})
+	}
 
-    public create () {
-        const buttonFactories = worlds
-            .map(world => world.sceneKey)
-            .map(worldKey => {
-                const buttonFactory = new ButtonFactory(BUTTON_MARGIN, 0)
-                buttonFactory.setCallback(() => {
-                    this.scene.start(worldKey)
-                })
+	public create() {
+		const buttons = worlds
+			.map((world) => world.sceneKey)
+			.map(this.prepareButtonFactory.bind(this))
+			.reduce(this.setButtonYReducer.bind(this), List<Button>())
+	}
 
-                buttonFactory.setLabel(worldKey)
+	private prepareButtonFactory(worldKey: string): ButtonFactory {
+		const buttonFactory = new ButtonFactory(BUTTON_MARGIN, 0)
+		buttonFactory.setCallback(() => {
+			this.scene.start(worldKey)
+		})
 
-                return buttonFactory
-            })
+		buttonFactory.setLabel(worldKey)
 
-        //no idea how to do this in functional style
-        const buttons: Button[] = []
-        for (const buttonFactory of buttonFactories) {
-            const previous = buttons[buttons.length - 1]
-            if (previous === undefined) {
-                buttonFactory.setY(BUTTON_MARGIN)
-            } else {
-                buttonFactory.setY(previous.getBottom() + BUTTON_MARGIN)
-            }
-            buttons.push(buttonFactory.build(this))
-        }
-    }
+		return buttonFactory
+	}
+
+	private setButtonYReducer(prevButtons: List<Button>, buttonFactory: ButtonFactory): List<Button> {
+		const previous = prevButtons.last()
+		const offset = previous?.getBottom() ?? 0
+		const y = offset + BUTTON_MARGIN
+		buttonFactory.setY(y)
+		return prevButtons.push(buttonFactory.build(this))
+	}
 }
