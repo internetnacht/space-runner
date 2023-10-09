@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import { filePaths } from '../constants'
 
 export default class Player {
 	private readonly scene: Phaser.Scene
@@ -6,7 +7,7 @@ export default class Player {
 	private readonly sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
 
 	public static loadAssets(scene: Phaser.Scene) {
-		scene.load.spritesheet('dude', 'sprites/dude.png', { frameWidth: 32, frameHeight: 48 })
+		scene.load.spritesheet('dude', filePaths.sprites.dude, { frameWidth: 32, frameHeight: 48 })
 	}
 
 	public constructor(scene: Phaser.Scene, sceneKey: string, spawnPosition?: { x: number; y: number }) {

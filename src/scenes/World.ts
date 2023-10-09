@@ -1,5 +1,7 @@
 import Phaser from 'phaser'
 import Player from '../components/Player.ts'
+import { List } from "immutable"
+import { filePaths } from '../constants.ts'
 
 export default class World extends Phaser.Scene {
 	private player?: Player
@@ -17,10 +19,10 @@ export default class World extends Phaser.Scene {
 	}
 
 	public preload() {
-		this.load.image(`${this.sceneKey}-tiles`, 'sprites/spritesheet.png')
-		this.load.image(`${this.sceneKey}-backgroundImageKey`, 'images/background.png')
-		this.load.tilemapTiledJSON(`${this.sceneKey}-map`, `tilemaps/${this.mapKey}.json`)
-		this.load.json(`${this.sceneKey}-mapjson`, `tilemaps/${this.mapKey}.json`)
+		this.load.image(`${this.sceneKey}-tiles`, filePaths.sprites.sheet)
+		this.load.image(`${this.sceneKey}-backgroundImageKey`, filePaths.images.background)
+		this.load.tilemapTiledJSON(`${this.sceneKey}-map`, filePaths.maps.tilemap(this.mapKey))
+		this.load.json(`${this.sceneKey}-mapjson`, filePaths.maps.tilemap(this.mapKey))
 	}
 
 	public create() {
@@ -59,10 +61,10 @@ export default class World extends Phaser.Scene {
 
 	private addLayers(map: Phaser.Tilemaps.Tilemap, tileset: Phaser.Tilemaps.Tileset) {
 		const mapJSON = this.cache.json.get(`${this.sceneKey}-mapjson`)
-		const layerNames: string[] = mapJSON.layers
+		const layerNames = List(mapJSON.layers)
 			.filter((layer: any) => layer.type === 'tilelayer')
 			.map(function (layer: any) {
-				return layer.name
+				return String(layer.name)
 			})
 
 		for (const layerName of layerNames) {
