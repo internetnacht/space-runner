@@ -33,6 +33,18 @@ export default class Player {
 		})
 
 		this.scene.anims.create({
+			key: `${this.sceneKey}-player-jumping-left`,
+			frames: [{key: 'dude', frame: 1}],
+			frameRate: 20
+		})
+
+		this.scene.anims.create({
+			key: `${this.sceneKey}-player-jumping-right`,
+			frames: [{key: 'dude', frame: 6}],
+			frameRate: 20
+		})
+
+		this.scene.anims.create({
 			key: `${this.sceneKey}-player-turn`,
 			frames: [{ key: 'dude', frame: 4 }],
 			frameRate: 20,
@@ -58,18 +70,31 @@ export default class Player {
 		const cursors = keyboard.createCursorKeys()
 
 		if (cursors.left.isDown) {
-			this.sprite.setVelocityX(-160)
-			this.sprite.anims.play(`${this.sceneKey}-player-left`, true)
+			this.moveSideWays(-160, 'left')
 		} else if (cursors.right.isDown) {
-			this.sprite.setVelocityX(160)
-			this.sprite.anims.play(`${this.sceneKey}-player-right`, true)
+			this.moveSideWays(160, 'right')
 		} else {
-			this.sprite.setVelocityX(0)
-			this.sprite.anims.play(`${this.sceneKey}-player-turn`)
+			this.moveSideWays(0, 'turn')
 		}
 
-		if (cursors.up.isDown /*&& this.sprite.body.onFloor()*/) {
-			this.sprite.setVelocityY(-300)
+		if (cursors.up.isDown) {
+			if (this.sprite.body.onFloor()) {
+				this.sprite.setVelocityY(-350)
+			} else {
+				const currentVelocity = this.sprite.body.velocity.y
+				if (currentVelocity < 0) {
+					this.sprite.setVelocityY(currentVelocity - 6)
+				}
+			}
+		}
+	}
+
+	private moveSideWays (velocity: number, direction: string) {
+		this.sprite.setVelocityX(velocity)
+		if (this.sprite.body.onFloor()) {
+			this.sprite.anims.play(`${this.sceneKey}-player-${direction}`, true)
+		} else if (['left', 'right'].includes(direction)) {
+			this.sprite.anims.play(`${this.sceneKey}-player-jumping-${direction}`)
 		}
 	}
 
