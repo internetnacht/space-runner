@@ -1,6 +1,38 @@
-# Internetnacht Game 2023
+# Internetnacht Game 2024
 
 > Jump 'n' run Phaser 3 game with modern frontend tooling using Vite.
+
+## roadmap
+ * various button styles (click, toggle, bar)
+ * map chunk loading
+ * tiled custom options
+  * setting Theme
+  * Player position
+ * fancier world select menu
+ * music on/off in world select
+ * moving plattforms in map
+ * dying mechanic
+  * checkpoints
+  * lifes per map
+ * objects that kill you
+ * maybe: be able to hold on to edges and jump over them
+ * maybe: be able to hold on to some walls and jump from them
+ * maybe: enemies
+ * todo
+
+## Tiled custom settings
+todo: setting Theme, maybe camera movement speed
+
+### Tiled special layers
+#### Spawn
+Type: Object layer
+
+Contains the players spawn. The first object of the layer is selected and used as the spawn position.
+
+#### Player
+Type: any
+
+Contains nothing. The layer depth at which the player will be displayed. Layers above will be displayed above the player and layers underneath will be displayed behind the player.
 
 ## Prerequisites
 
