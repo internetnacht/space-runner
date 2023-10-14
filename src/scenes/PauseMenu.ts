@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
-import ButtonFactory from '../components/ButtonFactory.js'
-import Button from '../components/Button.js'
+import ClickButtonFactory from '../components/buttons/ClickButtonFactory.js'
+import ClickButton from '../components/buttons/ClickButton.js'
 import { List } from 'immutable'
 import UserSettings from '../components/UserSettings.js'
 
@@ -60,9 +60,9 @@ export default class PauseMenu extends Phaser.Scene {
 
 		const buttons = buttonsConfig
 			.map(config => {
-				const bf = new ButtonFactory(this.cameras.main.width/2, 0)
+				const bf = new ClickButtonFactory(this.cameras.main.width/2, 0)
 				bf.setLabel(config.label)
-				bf.setFixed()
+				bf.setFixed(true)
 				bf.setCallback(config.cb)
 				return bf
 			})
@@ -70,7 +70,9 @@ export default class PauseMenu extends Phaser.Scene {
 				const yOffset = buttons.last()?.getBottom() ?? this.cameras.main.height/2
 				bf.setY(yOffset + 10)
 				return buttons.push(bf.build(this))
-			}, List<Button>())
+			}, List<ClickButton>())
+		
+		buttons.forEach(button => button.display())
 
 		const keyboard = this.input.keyboard
 		if (keyboard === null) {

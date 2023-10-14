@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
-import ButtonFactory from '../components/ButtonFactory.ts'
+import ClickButtonFactory from '../components/buttons/ClickButtonFactory.ts'
 import { worlds } from '../constants.ts'
-import Button from '../components/Button.ts'
+import ClickButton from '../components/buttons/ClickButton.ts'
 import { List } from 'immutable'
 
 const BUTTON_MARGIN = 10
@@ -17,11 +17,13 @@ export default class WorldSelectionMenu extends Phaser.Scene {
 		const buttons = worlds
 			.map((world) => world.sceneKey)
 			.map(this.prepareButtonFactory.bind(this))
-			.reduce(this.setButtonYReducer.bind(this), List<Button>())
+			.reduce(this.setButtonYReducer.bind(this), List<ClickButton>())
+		
+		buttons.forEach(button => button.display())
 	}
 
-	private prepareButtonFactory(worldKey: string): ButtonFactory {
-		const buttonFactory = new ButtonFactory(BUTTON_MARGIN, 0)
+	private prepareButtonFactory(worldKey: string): ClickButtonFactory {
+		const buttonFactory = new ClickButtonFactory(BUTTON_MARGIN, 0)
 		buttonFactory.setCallback(() => {
 			this.scene.start(worldKey)
 		})
@@ -31,7 +33,7 @@ export default class WorldSelectionMenu extends Phaser.Scene {
 		return buttonFactory
 	}
 
-	private setButtonYReducer(prevButtons: List<Button>, buttonFactory: ButtonFactory): List<Button> {
+	private setButtonYReducer(prevButtons: List<ClickButton>, buttonFactory: ClickButtonFactory): List<ClickButton> {
 		const previous = prevButtons.last()
 		const offset = previous?.getBottom() ?? 0
 		const y = offset + BUTTON_MARGIN

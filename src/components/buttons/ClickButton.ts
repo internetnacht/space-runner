@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
+import Button from './Button'
 
-export default class Button {
+export default class ClickButton implements Button {
 	private readonly text: Phaser.GameObjects.Text
 
 	public constructor(text: Phaser.GameObjects.Text) {
@@ -13,5 +14,9 @@ export default class Button {
 
 	public destruct() {
 		this.text.destroy()
+	}
+
+	public display () {
+		this.text.addToDisplayList()
 	}
 }
