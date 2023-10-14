@@ -22,39 +22,45 @@ export default class PauseMenu extends Phaser.Scene {
 	public create() {
 		this.scene.bringToTop()
 
-		const buttons: Button[] = []
-
-		const bf1 = new ButtonFactory(this.cameras.main.width / 2, this.cameras.main.height / 2)
-		bf1.setLabel('Fortfahren')
-		bf1.setCallback(this.resumeCallingScene.bind(this))
-		bf1.setFixed()
-		const b1 = bf1.build(this)
-		buttons.push(b1)
-
-		const bf2 = new ButtonFactory(this.cameras.main.width / 2, b1.getBottom() + 10)
-		bf2.setLabel('Welt neustarten')
-		bf2.setCallback(() => {
-			if (this.callingScene === null) {
-				throw 'calling scene key is null'
+		const buttonsConfig = List([
+			{
+				label: 'Fortfahren',
+				cb: this.resumeCallingScene.bind(this)
+			},
+			{
+				label: 'Welt neustarten',
+				cb: () => {
+					if (this.callingScene === null) {
+						throw 'calling scene key is null'
+					}
+					this.scene.start(this.callingScene)
+				}
+			},
+			{
+				label: 'Zurück zur Levelauswahl',
+				cb: () => {
+					this.scene.start('WorldSelectionMenu')
+					if (this.callingScene === null) {
+						throw 'calling scene key is null'
+					}
+					this.scene.stop(this.callingScene)
+				}
 			}
-			this.scene.start(this.callingScene)
-		})
-		bf2.setFixed()
-		const b2 = bf2.build(this)
-		buttons.push(b2)
+		])
 
-		const bf3 = new ButtonFactory(this.cameras.main.width / 2, b2.getBottom() + 10)
-		bf3.setLabel('Zurück zur Levelauswahl')
-		bf3.setCallback(() => {
-			this.scene.start('WorldSelectionMenu')
-			if (this.callingScene === null) {
-				throw 'calling scene key is null'
-			}
-			this.scene.stop(this.callingScene)
-		})
-		bf3.setFixed()
-		const b3 = bf3.build(this)
-		buttons.push(b3)
+		const buttons = buttonsConfig
+			.map(config => {
+				const bf = new ButtonFactory(this.cameras.main.width/2, 0)
+				bf.setLabel(config.label)
+				bf.setFixed()
+				bf.setCallback(config.cb)
+				return bf
+			})
+			.reduce((buttons, bf) => {
+				const yOffset = buttons.last()?.getBottom() ?? this.cameras.main.height/2
+				bf.setY(yOffset + 10)
+				return buttons.push(bf.build(this))
+			}, List<Button>())
 
 		const keyboard = this.input.keyboard
 		if (keyboard === null) {
