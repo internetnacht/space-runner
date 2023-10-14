@@ -14,6 +14,9 @@ export const filePaths = Object.freeze({
 	},
 	maps: {
 		tilemap: (mapKey: string) => `tilemaps/${mapKey}.json`
+	},
+	audio: {
+		"audio-background": 'audio/A+Drop+In+the+Desert.mp3'
 	}
 })
 

@@ -106,4 +106,6 @@ export default class Player {
 	public attachToCamera(camera: Phaser.Cameras.Scene2D.Camera) {
 		camera.startFollow(this.sprite)
 	}
+
+	public shutdown () {}
 }

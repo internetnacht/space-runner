@@ -2,10 +2,12 @@ import Phaser from 'phaser'
 import Player from '../components/Player.ts'
 import { List } from "immutable"
 import { filePaths } from '../constants.ts'
+import MusicPlayer from '../components/MusicPlayer.ts'
 
 export default class World extends Phaser.Scene {
 	private player?: Player
 	private camera?: Phaser.Cameras.Scene2D.Camera
+	private musicplayer?: MusicPlayer
 	public readonly mapKey: string
 	public readonly sceneKey: string
 
@@ -33,11 +35,18 @@ export default class World extends Phaser.Scene {
 		}
 
 		this.player = this.createPlayer(map)
+		this.musicplayer = new MusicPlayer(this)
+		this.musicplayer.play('audio-background')
 
 		this.setupCamera(map)
 		this.addLayers(map, tileset)
 		this.addBackgroundImage()
 		this.addPauseMenuCallbacks()
+
+		this.events.on('shutdown', () => {
+			this.player?.shutdown()
+			this.musicplayer?.shutdown()
+		})
 	}
 
 	private createPlayer(map: Phaser.Tilemaps.Tilemap): Player {
