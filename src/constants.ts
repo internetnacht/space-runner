@@ -13,7 +13,7 @@ export const filePaths = Object.freeze({
 		background: 'images/background.png'
 	},
 	maps: {
-		tilemap: (mapKey: string) => `tilemaps/${mapKey}.json`
+		tilemap: (worldId: number) => `tilemaps/map${worldId}.json`
 	},
 	audio: {
 		"audio-background": 'audio/A+Drop+In+the+Desert.mp3'
@@ -21,5 +21,6 @@ export const filePaths = Object.freeze({
 })
 
 const worldIds = List([1, 2, 3, 4, 5, 6])
+export const worlds = worldIds.map((id) => new World(id))
 
-export const worlds = worldIds.map((id) => new World(`World${id}`, `map${id}`))
+export const LIST_BUTTON_MARGIN = 10

@@ -1,4 +1,3 @@
-import Phaser from 'phaser'
 import Button from './Button'
 
 export default class ClickButton implements Button {

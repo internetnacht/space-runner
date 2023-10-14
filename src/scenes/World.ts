@@ -1,43 +1,45 @@
-import Phaser from 'phaser'
 import Player from '../components/Player.ts'
 import { List } from "immutable"
 import { filePaths } from '../constants.ts'
 import MusicPlayer from '../components/MusicPlayer.ts'
 import UserSettings from '../components/UserSettings.ts'
+import { layerGetBoolProperty } from '../utils.ts'
 
 export default class World extends Phaser.Scene {
 	private player?: Player
 	private camera?: Phaser.Cameras.Scene2D.Camera
 	private musicplayer?: MusicPlayer
-	public readonly mapKey: string
-	public readonly sceneKey: string
+	private readonly worldId: number
 	private userSettings?: UserSettings
 
-	public constructor(sceneKey: string, mapKey: string) {
-		super({
-			key: sceneKey,
-		})
-
-		this.sceneKey = sceneKey
-		this.mapKey = mapKey
+	public static buildSceneKey (id: number): string {
+		return `World${id}`
 	}
 
-	public init (data: any) {
-		if (data.userSettings !== undefined) {
+	public constructor(worldId: number) {
+		super({
+			key: World.buildSceneKey(worldId),
+		})
+
+		this.worldId = worldId
+	}
+
+	public init (data: Record<string, unknown>) {
+		if (data.userSettings instanceof UserSettings) {
 			this.userSettings = data.userSettings
 		}
 	}
 
 	public preload() {
-		this.load.image(`${this.sceneKey}-tiles`, filePaths.sprites.sheet)
-		this.load.image(`${this.sceneKey}-backgroundImageKey`, filePaths.images.background)
-		this.load.tilemapTiledJSON(`${this.sceneKey}-map`, filePaths.maps.tilemap(this.mapKey))
-		this.load.json(`${this.sceneKey}-mapjson`, filePaths.maps.tilemap(this.mapKey))
+		this.load.image(`${this.getSceneKey()}-tiles`, filePaths.sprites.sheet)
+		this.load.image(`${this.getSceneKey()}-backgroundImageKey`, filePaths.images.background)
+		this.load.tilemapTiledJSON(`${this.getSceneKey()}-map`, filePaths.maps.tilemap(this.worldId))
+		this.load.json(`${this.getSceneKey()}-mapjson`, filePaths.maps.tilemap(this.worldId))
 	}
 
 	public create() {
-		const map = this.make.tilemap({ key: `${this.sceneKey}-map` })
-		const tileset = map.addTilesetImage('spritesheet', `${this.sceneKey}-tiles`)
+		const map = this.make.tilemap({ key: `${this.getSceneKey()}-map` })
+		const tileset = map.addTilesetImage('spritesheet', `${this.getSceneKey()}-tiles`)
 		if (tileset === null) {
 			throw 'failed to create tileset object'
 		}
@@ -57,13 +59,24 @@ export default class World extends Phaser.Scene {
 		})
 	}
 
+	public update() {
+		if (this.player === undefined) {
+			throw 'player is unexpectedly undefined'
+		}
+		this.player.update(this)
+	}
+
+	public getSceneKey (): string {
+		return World.buildSceneKey(this.worldId)
+	}
+
 	private createPlayer(map: Phaser.Tilemaps.Tilemap): Player {
 		const spawnPoint = map.findObject('Spawn', () => true)
 
 		if (spawnPoint === null || spawnPoint.x === undefined || spawnPoint.y === undefined) {
-			return new Player(this, this.sceneKey)
+			return new Player(this, this.getSceneKey())
 		} else {
-			return new Player(this, this.sceneKey, { x: spawnPoint.x, y: spawnPoint.y })
+			return new Player(this, this.getSceneKey(), { x: spawnPoint.x, y: spawnPoint.y })
 		}
 	}
 
@@ -77,40 +90,31 @@ export default class World extends Phaser.Scene {
 	}
 
 	private addLayers(map: Phaser.Tilemaps.Tilemap, tileset: Phaser.Tilemaps.Tileset) {
-		const mapJSON = this.cache.json.get(`${this.sceneKey}-mapjson`)
-		const layerNames = List(mapJSON.layers)
+		const mapJSON = this.cache.json.get(`${this.getSceneKey()}-mapjson`)
+		const tileLayerNames = List(mapJSON.layers)
 			.filter((layer: any) => layer.type === 'tilelayer')
 			.map(function (layer: any) {
 				return String(layer.name)
 			})
 
-		for (const layerName of layerNames) {
+		for (const layerName of tileLayerNames) {
 			const layer = map.createLayer(layerName, [tileset])
 			if (layer === null) {
 				throw "map couldn't create layer " + layerName
 			}
 
-			if (this.layerGetBoolProperty(layer, 'collide')) {
+			if (layerGetBoolProperty(layer, 'collide')) {
 				layer.setCollisionByExclusion([-1])
 				if (this.player === undefined) {
 					throw 'player is unexpectedly undefined'
 				}
-				this.player.setCollideWithLayer(layer)
+				this.physics.add.collider(this.player.getCollider(), layer)
 			}
 		}
 	}
 
-	private layerGetBoolProperty(layer: Phaser.Tilemaps.TilemapLayer, propName: string) {
-		const properties = layer.layer.properties
-		return (
-			properties.findIndex(function (prop: any) {
-				return prop.name === propName && prop.value === true
-			}) !== -1
-		)
-	}
-
 	private addBackgroundImage() {
-		const backgroundImage = this.add.image(0, 0, `${this.sceneKey}-backgroundImageKey`).setOrigin(0, 0).setDepth(-1)
+		const backgroundImage = this.add.image(0, 0, `${this.getSceneKey()}-backgroundImageKey`).setOrigin(0, 0).setDepth(-1)
 
 		if (this.camera === undefined) {
 			throw 'camera is unexpectedly undefined'
@@ -128,17 +132,10 @@ export default class World extends Phaser.Scene {
 		}
 		keyboard.on('keydown-ESC', () => {
 			this.scene.launch('PauseMenu', { 
-				callingScene: this.sceneKey,
+				callingScene: this.getSceneKey(),
 				userSettings: this.userSettings
 			})
 			this.scene.pause()
 		})
-	}
-
-	public update() {
-		if (this.player === undefined) {
-			throw 'player is unexpectedly undefined'
-		}
-		this.player.update()
 	}
 }

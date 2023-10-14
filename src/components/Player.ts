@@ -1,8 +1,6 @@
-import Phaser from 'phaser'
 import { filePaths } from '../constants'
 
 export default class Player {
-	private readonly scene: Phaser.Scene
 	private readonly sceneKey: string
 	private readonly sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
 
@@ -11,7 +9,6 @@ export default class Player {
 	}
 
 	public constructor(scene: Phaser.Scene, sceneKey: string, spawnPosition?: { x: number; y: number }) {
-		this.scene = scene
 		this.sceneKey = sceneKey
 
 		if (spawnPosition === undefined) {
@@ -22,49 +19,49 @@ export default class Player {
 
 		this.sprite.setBounce(0.1)
 
-		this.addMovementAnimations()
+		this.addMovementAnimations(scene)
 	}
 
-	private addMovementAnimations() {
-		this.scene.anims.create({
+	private addMovementAnimations(scene: Phaser.Scene) {
+		scene.anims.create({
 			key: `${this.sceneKey}-player-left`,
-			frames: this.scene.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+			frames: scene.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
 			frameRate: 10,
 			repeat: -1,
 		})
 
-		this.scene.anims.create({
+		scene.anims.create({
 			key: `${this.sceneKey}-player-jumping-left`,
 			frames: [{key: 'dude', frame: 1}],
 			frameRate: 20
 		})
 
-		this.scene.anims.create({
+		scene.anims.create({
 			key: `${this.sceneKey}-player-jumping-right`,
 			frames: [{key: 'dude', frame: 6}],
 			frameRate: 20
 		})
 
-		this.scene.anims.create({
+		scene.anims.create({
 			key: `${this.sceneKey}-player-turn`,
 			frames: [{ key: 'dude', frame: 4 }],
 			frameRate: 20,
 		})
 
-		this.scene.anims.create({
+		scene.anims.create({
 			key: `${this.sceneKey}-player-right`,
-			frames: this.scene.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+			frames: scene.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
 			frameRate: 10,
 			repeat: -1,
 		})
 	}
 
-	public update() {
-		this.move()
+	public update(scene: Phaser.Scene) {
+		this.move(scene)
 	}
 
-	private move() {
-		const keyboard = this.scene.input.keyboard
+	private move(scene: Phaser.Scene) {
+		const keyboard = scene.input.keyboard
 		if (keyboard === null) {
 			throw 'keyboard plugin is null'
 		}
@@ -99,8 +96,8 @@ export default class Player {
 		}
 	}
 
-	public setCollideWithLayer(layer: Phaser.Types.Physics.Arcade.ArcadeColliderType) {
-		this.scene.physics.add.collider(this.sprite, layer)
+	public getCollider (): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
+		return this.sprite
 	}
 
 	public attachToCamera(camera: Phaser.Cameras.Scene2D.Camera) {

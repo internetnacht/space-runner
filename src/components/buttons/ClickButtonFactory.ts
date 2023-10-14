@@ -1,5 +1,6 @@
 import ClickButton from './ClickButton.js'
 import ButtonFactory from './ButtonFactory.js'
+import { List } from 'immutable'
 
 export default class ClickButtonFactory extends ButtonFactory {
 	private label = ''
@@ -31,5 +32,27 @@ export default class ClickButtonFactory extends ButtonFactory {
 			.on('pointerout', () => text.setStyle({ fill: '#111' }))
 
 		return new ClickButton(text)
+	}
+
+	public static createListFromConfig (listConfig: {
+		scene: Phaser.Scene,
+		x: number,
+		initialY: number,
+		margin: number
+		buttons: List<{ label: string, cb: () => void }>
+	}): List<ClickButton> {
+		return listConfig.buttons
+			.map(config => {
+				const bf = new ClickButtonFactory(listConfig.x, 0)
+				bf.setLabel(config.label)
+				bf.setFixed(true)
+				bf.setCallback(config.cb)
+				return bf
+			})
+			.reduce((buttons, bf) => {
+				const yOffset = buttons.last()?.getBottom() ?? listConfig.initialY
+				bf.setY(yOffset + listConfig.margin)
+				return buttons.push(bf.build(listConfig.scene))
+			}, List<ClickButton>())
 	}
 }

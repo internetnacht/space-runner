@@ -1,4 +1,3 @@
-import Phaser from 'phaser'
 import Player from '../components/Player.ts'
 import { worlds } from '../constants.ts'
 import MusicPlayer from '../components/MusicPlayer.ts'
@@ -17,7 +16,7 @@ class StartingScreen extends Phaser.Scene {
 	}
 
 	create() {
-		worlds.forEach((world) => this.scene.add(world.sceneKey, world))
+		worlds.forEach((world) => this.scene.add(world.getSceneKey(), world))
 
 		this.scene.start('WorldSelectionMenu')
 	}

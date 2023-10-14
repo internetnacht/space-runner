@@ -1,4 +1,3 @@
-import Phaser from 'phaser'
 import { filePaths } from '../constants';
 
 type AudioKey = keyof typeof filePaths.audio

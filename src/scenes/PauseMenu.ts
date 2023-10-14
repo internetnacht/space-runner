@@ -1,11 +1,10 @@
-import Phaser from 'phaser'
 import ClickButtonFactory from '../components/buttons/ClickButtonFactory.js'
-import ClickButton from '../components/buttons/ClickButton.js'
 import { List } from 'immutable'
 import UserSettings from '../components/UserSettings.js'
+import { LIST_BUTTON_MARGIN } from '../constants.js'
 
 export default class PauseMenu extends Phaser.Scene {
-	private callingScene: string | null = null
+	private callingScene?: string
 	private userSettings?: UserSettings
 
 	public constructor() {
@@ -14,13 +13,13 @@ export default class PauseMenu extends Phaser.Scene {
 		})
 	}
 
-	public init(data: any) {
-		if (data.callingScene === undefined || typeof data.callingScene !== 'string') {
+	public init(data: Record<string, unknown>) {
+		if (typeof data.callingScene !== 'string') {
 			throw 'no caller key given to PauseMenu'
 		}
 		this.callingScene = data.callingScene
 
-		if (data.userSettings !== undefined) {
+		if (data.userSettings instanceof UserSettings) {
 			this.userSettings = data.userSettings
 		}
 	}
@@ -35,42 +34,21 @@ export default class PauseMenu extends Phaser.Scene {
 			},
 			{
 				label: 'Welt neustarten',
-				cb: () => {
-					if (this.callingScene === null) {
-						throw 'calling scene key is null'
-					}
-					this.scene.start(this.callingScene, {
-						userSettings: this.userSettings
-					})
-				}
+				cb: this.restartCallingScene.bind(this)
 			},
 			{
 				label: 'Zurück zur Levelauswahl',
-				cb: () => {
-					this.scene.start('WorldSelectionMenu', {
-						userSettings: this.userSettings
-					})
-					if (this.callingScene === null) {
-						throw 'calling scene key is null'
-					}
-					this.scene.stop(this.callingScene)
-				}
+				cb: this.backToWorldSelection.bind(this)
 			}
 		])
 
-		const buttons = buttonsConfig
-			.map(config => {
-				const bf = new ClickButtonFactory(this.cameras.main.width/2, 0)
-				bf.setLabel(config.label)
-				bf.setFixed(true)
-				bf.setCallback(config.cb)
-				return bf
-			})
-			.reduce((buttons, bf) => {
-				const yOffset = buttons.last()?.getBottom() ?? this.cameras.main.height/2
-				bf.setY(yOffset + 10)
-				return buttons.push(bf.build(this))
-			}, List<ClickButton>())
+		const buttons = ClickButtonFactory.createListFromConfig({
+			scene: this,
+			x: this.cameras.main.width/2,
+			initialY: this.cameras.main.height/2,
+			margin: LIST_BUTTON_MARGIN,
+			buttons: buttonsConfig
+		})
 		
 		buttons.forEach(button => button.display())
 
@@ -82,7 +60,7 @@ export default class PauseMenu extends Phaser.Scene {
 	}
 
 	private resumeCallingScene() {
-		if (this.callingScene === null) {
+		if (this.callingScene === undefined) {
 			throw 'pause menu has no calling scene set'
 		}
 
@@ -90,5 +68,24 @@ export default class PauseMenu extends Phaser.Scene {
 			userSettings: this.userSettings
 		})
 		this.scene.stop()
+	}
+
+	private restartCallingScene () {
+		if (this.callingScene === undefined) {
+			throw 'calling scene key is undefined'
+		}
+		this.scene.start(this.callingScene, {
+			userSettings: this.userSettings
+		})
+	}
+
+	private backToWorldSelection () {
+		this.scene.start('WorldSelectionMenu', {
+			userSettings: this.userSettings
+		})
+		if (this.callingScene === undefined) {
+			throw 'calling scene key is undefined'
+		}
+		this.scene.stop(this.callingScene)
 	}
 }
