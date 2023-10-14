@@ -2,9 +2,11 @@ import Phaser from 'phaser'
 import ButtonFactory from '../components/ButtonFactory.js'
 import Button from '../components/Button.js'
 import { List } from 'immutable'
+import UserSettings from '../components/UserSettings.js'
 
 export default class PauseMenu extends Phaser.Scene {
 	private callingScene: string | null = null
+	private userSettings?: UserSettings
 
 	public constructor() {
 		super({
@@ -17,6 +19,10 @@ export default class PauseMenu extends Phaser.Scene {
 			throw 'no caller key given to PauseMenu'
 		}
 		this.callingScene = data.callingScene
+
+		if (data.userSettings !== undefined) {
+			this.userSettings = data.userSettings
+		}
 	}
 
 	public create() {
@@ -33,13 +39,17 @@ export default class PauseMenu extends Phaser.Scene {
 					if (this.callingScene === null) {
 						throw 'calling scene key is null'
 					}
-					this.scene.start(this.callingScene)
+					this.scene.start(this.callingScene, {
+						userSettings: this.userSettings
+					})
 				}
 			},
 			{
 				label: 'Zurück zur Levelauswahl',
 				cb: () => {
-					this.scene.start('WorldSelectionMenu')
+					this.scene.start('WorldSelectionMenu', {
+						userSettings: this.userSettings
+					})
 					if (this.callingScene === null) {
 						throw 'calling scene key is null'
 					}
@@ -74,7 +84,9 @@ export default class PauseMenu extends Phaser.Scene {
 			throw 'pause menu has no calling scene set'
 		}
 
-		this.scene.resume(this.callingScene)
+		this.scene.resume(this.callingScene, {
+			userSettings: this.userSettings
+		})
 		this.scene.stop()
 	}
 }

@@ -3,6 +3,7 @@ import Player from '../components/Player.ts'
 import { List } from "immutable"
 import { filePaths } from '../constants.ts'
 import MusicPlayer from '../components/MusicPlayer.ts'
+import UserSettings from '../components/UserSettings.ts'
 
 export default class World extends Phaser.Scene {
 	private player?: Player
@@ -10,6 +11,7 @@ export default class World extends Phaser.Scene {
 	private musicplayer?: MusicPlayer
 	public readonly mapKey: string
 	public readonly sceneKey: string
+	private userSettings?: UserSettings
 
 	public constructor(sceneKey: string, mapKey: string) {
 		super({
@@ -18,6 +20,12 @@ export default class World extends Phaser.Scene {
 
 		this.sceneKey = sceneKey
 		this.mapKey = mapKey
+	}
+
+	public init (data: any) {
+		if (data.userSettings !== undefined) {
+			this.userSettings = data.userSettings
+		}
 	}
 
 	public preload() {
@@ -119,7 +127,10 @@ export default class World extends Phaser.Scene {
 			throw 'keyboard input plugin is null'
 		}
 		keyboard.on('keydown-ESC', () => {
-			this.scene.launch('PauseMenu', { callingScene: this.sceneKey })
+			this.scene.launch('PauseMenu', { 
+				callingScene: this.sceneKey,
+				userSettings: this.userSettings
+			})
 			this.scene.pause()
 		})
 	}
