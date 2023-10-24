@@ -22,6 +22,8 @@ export default class PauseMenu extends Phaser.Scene {
 
 		if (data.userSettings instanceof UserSettings) {
 			this.userSettings = data.userSettings
+		} else {
+			throw 'expected userSettings but got undefined'
 		}
 	}
 
@@ -63,6 +65,8 @@ export default class PauseMenu extends Phaser.Scene {
 		toggleButtonFactory.setCallback(toggleState => {
 			if (this.userSettings !== undefined) {
 				this.userSettings.musicIsOn = toggleState
+			} else {
+				throw 'tried to set userSettings.musicIsOn but userSettings were undefined'
 			}
 		})
 		const toggleButton = toggleButtonFactory.build(this)

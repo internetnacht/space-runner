@@ -20,6 +20,9 @@
  * maybe: enemies
  * todo
 
+### code todo
+ * make user settings system cleaner
+
 ## Tiled custom settings
 todo: setting Theme, maybe camera movement speed
 

@@ -2,6 +2,7 @@ import Player from '../components/Player.ts'
 import { worlds } from '../constants.ts'
 import MusicPlayer from '../components/MusicPlayer.ts'
 import ToggleButtonFactory from '../components/buttons/ToggleButtonFactory.ts'
+import UserSettings from '../components/UserSettings.ts'
 
 class StartingScreen extends Phaser.Scene {
 	constructor() {
@@ -20,7 +21,9 @@ class StartingScreen extends Phaser.Scene {
 	create() {
 		worlds.forEach((world) => this.scene.add(world.getSceneKey(), world))
 
-		this.scene.start('WorldSelectionMenu')
+		this.scene.start('WorldSelectionMenu', {
+			userSettings: UserSettings.default()
+		})
 	}
 }
 
