@@ -2,6 +2,7 @@ import ClickButtonFactory from '../components/buttons/ClickButtonFactory.js'
 import { List } from 'immutable'
 import UserSettings from '../components/UserSettings.js'
 import { LIST_BUTTON_MARGIN } from '../constants.js'
+import ToggleButtonFactory from '../components/buttons/ToggleButtonFactory.js'
 
 export default class PauseMenu extends Phaser.Scene {
 	private callingScene?: string
@@ -51,6 +52,21 @@ export default class PauseMenu extends Phaser.Scene {
 		})
 		
 		buttons.forEach(button => button.display())
+
+		const toggleButtonFactory = new ToggleButtonFactory(
+			this.cameras.main.width/2,
+			buttons.last()?.getBottom() ?? this.cameras.main.height/2
+		)
+		toggleButtonFactory.setFixed(true)
+		toggleButtonFactory.setInitialState(this.userSettings?.musicIsOn ?? false)
+		toggleButtonFactory.setLabel('Musik')
+		toggleButtonFactory.setCallback(toggleState => {
+			if (this.userSettings !== undefined) {
+				this.userSettings.musicIsOn = toggleState
+			}
+		})
+		const toggleButton = toggleButtonFactory.build(this)
+		toggleButton.display()
 
 		const keyboard = this.input.keyboard
 		if (keyboard === null) {

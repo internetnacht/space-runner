@@ -1,5 +1,5 @@
-import ClickButton from './ClickButton.js'
-import ButtonFactory from './ButtonFactory.js'
+import ClickButton from './ClickButton'
+import ButtonFactory from './ButtonFactory'
 import { List } from 'immutable'
 
 export default class ClickButtonFactory extends ButtonFactory {
@@ -19,14 +19,12 @@ export default class ClickButtonFactory extends ButtonFactory {
 	}
 
 	public build(scene: Phaser.Scene): ClickButton {
-		const scrollFactor = this.fixed ? 0 : 1
-
 		const text = new Phaser.GameObjects.Text(scene, this.x, this.y, this.label, {})
 			.setOrigin(0)
 			.setPadding(8, 5)
 			.setStyle({ backgroundColor: '#EEE', fill: '#111' })
 			.setInteractive({ useHandCursor: true })
-			.setScrollFactor(scrollFactor, scrollFactor)
+			.setScrollFactor(this.scrollFactor, this.scrollFactor)
 			.on('pointerdown', this.clickCallback)
 			.on('pointerover', () => text.setStyle({ fill: '#f39c12' }))
 			.on('pointerout', () => text.setStyle({ fill: '#111' }))

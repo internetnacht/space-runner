@@ -1,6 +1,7 @@
 import Player from '../components/Player.ts'
 import { worlds } from '../constants.ts'
 import MusicPlayer from '../components/MusicPlayer.ts'
+import ToggleButtonFactory from '../components/buttons/ToggleButtonFactory.ts'
 
 class StartingScreen extends Phaser.Scene {
 	constructor() {
@@ -13,6 +14,7 @@ class StartingScreen extends Phaser.Scene {
 	preload() {
 		Player.loadAssets(this)
 		MusicPlayer.loadAssets(this)
+		ToggleButtonFactory.loadAssets(this)
 	}
 
 	create() {

@@ -5,6 +5,10 @@ export default abstract class ButtonFactory {
 	protected y: number
 	protected fixed = false
 
+	protected get scrollFactor (): number {
+		return this.fixed ? 0 : 1
+	}
+
 	protected constructor (x: number, y: number) {
 		this.x = x
 		this.y = y
