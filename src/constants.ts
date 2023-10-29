@@ -1,9 +1,19 @@
 import World from './scenes/World.ts'
 import { List } from 'immutable'
 
-export const windowWidth = 800
-export const windowHeight = 600
-export const LIST_BUTTON_MARGIN = 10
+export const MEASURES = Object.freeze({
+	window: {
+		width: 800,
+		height: 600
+	},
+	buttons: {
+		click: {
+			margin: {
+				list: 10
+			}
+		}
+	}
+})
 
 export const filePaths = Object.freeze({
 	sprites: {

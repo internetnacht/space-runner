@@ -1,7 +1,7 @@
 import MusicPlayer from '../components/MusicPlayer.ts'
 import GameSettings from '../components/UserSettings.ts'
 import ClickButtonFactory from '../components/buttons/ClickButtonFactory.ts'
-import { LIST_BUTTON_MARGIN, worlds } from '../constants.ts'
+import { MEASURES, worlds } from '../constants.ts'
 
 export default class WorldSelectionMenu extends Phaser.Scene {
 	private userSettings?: GameSettings
@@ -27,9 +27,9 @@ export default class WorldSelectionMenu extends Phaser.Scene {
 
 		const buttons = ClickButtonFactory.createListFromConfig({
 			scene: this,
-			x: LIST_BUTTON_MARGIN,
+			x: MEASURES.buttons.click.margin.list,
 			initialY: 0,
-			margin: LIST_BUTTON_MARGIN,
+			margin: MEASURES.buttons.click.margin.list,
 			buttons: worlds
 				.map(world => world.getSceneKey())
 				.map(worldKey => {

@@ -1,7 +1,7 @@
 import ClickButtonFactory from '../components/buttons/ClickButtonFactory.js'
 import { List } from 'immutable'
 import GameSettings from '../components/UserSettings.js'
-import { LIST_BUTTON_MARGIN } from '../constants.js'
+import { MEASURES } from '../constants.js'
 import ToggleButtonFactory from '../components/buttons/ToggleButtonFactory.js'
 
 export default class PauseMenu extends Phaser.Scene {
@@ -49,7 +49,7 @@ export default class PauseMenu extends Phaser.Scene {
 			scene: this,
 			x: this.cameras.main.width/2,
 			initialY: this.cameras.main.height/2,
-			margin: LIST_BUTTON_MARGIN,
+			margin: MEASURES.buttons.click.margin.list,
 			buttons: buttonsConfig
 		})
 		

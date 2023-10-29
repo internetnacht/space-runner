@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { windowHeight, windowWidth } from './constants.ts'
+import { MEASURES } from './constants.ts'
 import StartingScreen from './scenes/StartingScreen.ts'
 import WorldSelectionMenu from './scenes/WorldSelectionMenu.ts'
 import World from './scenes/World.ts'
@@ -7,8 +7,8 @@ import PauseMenu from './scenes/PauseMenu.ts'
 
 const config = {
 	type: Phaser.AUTO,
-	width: windowWidth,
-	height: windowHeight,
+	width: MEASURES.window.width,
+	height: MEASURES.window.height,
 	scale: {
 		mode: Phaser.Scale.NONE,
 		autoCenter: Phaser.Scale.CENTER_BOTH,
