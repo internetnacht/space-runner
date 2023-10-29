@@ -1,4 +1,5 @@
 import { filePaths } from '../constants';
+import GameSettings from './UserSettings';
 
 type AudioKey = keyof typeof filePaths.audio
 
@@ -9,8 +10,24 @@ export default class MusicPlayer {
 		scene.load.audio('audio-background', filePaths.audio['audio-background']);
 	}
 
-	public constructor (scene: Phaser.Scene) {
+	public constructor (scene: Phaser.Scene, userSettings?: GameSettings) {
 		this.scene = scene
+
+		if (userSettings !== undefined) {
+			this.updateToSettings(userSettings)
+			userSettings.listen(this.updateToSettings.bind(this))
+		}
+	}
+
+	private updateToSettings (settings: Readonly<GameSettings>): void {
+		console.log(settings)
+		if (settings.musicIsOn) {
+			console.log('resuming')
+			this.scene.sound.setMute(false)
+		} else {
+			console.log('pausing')
+			this.scene.sound.setMute(true)
+		}
 	}
 
 	public play (audio: AudioKey) {

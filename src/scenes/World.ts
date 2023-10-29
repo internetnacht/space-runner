@@ -2,7 +2,7 @@ import Player from '../components/Player.ts'
 import { List } from "immutable"
 import { filePaths } from '../constants.ts'
 import MusicPlayer from '../components/MusicPlayer.ts'
-import UserSettings from '../components/UserSettings.ts'
+import GameSettings from '../components/UserSettings.ts'
 import { layerGetBoolProperty } from '../utils.ts'
 
 export default class World extends Phaser.Scene {
@@ -10,7 +10,7 @@ export default class World extends Phaser.Scene {
 	private camera?: Phaser.Cameras.Scene2D.Camera
 	private musicplayer?: MusicPlayer
 	private readonly worldId: number
-	private userSettings?: UserSettings
+	private userSettings?: GameSettings
 
 	public static buildSceneKey (id: number): string {
 		return `World${id}`
@@ -25,7 +25,7 @@ export default class World extends Phaser.Scene {
 	}
 
 	public init (data: Record<string, unknown>) {
-		if (data.userSettings instanceof UserSettings) {
+		if (data.userSettings instanceof GameSettings) {
 			this.userSettings = data.userSettings
 		}
 	}
@@ -45,7 +45,7 @@ export default class World extends Phaser.Scene {
 		}
 
 		this.player = this.createPlayer(map)
-		this.musicplayer = new MusicPlayer(this)
+		this.musicplayer = new MusicPlayer(this, this.userSettings)
 		this.musicplayer.play('audio-background')
 
 		this.setupCamera(map)

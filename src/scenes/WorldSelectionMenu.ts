@@ -1,9 +1,9 @@
-import UserSettings from '../components/UserSettings.ts'
+import GameSettings from '../components/UserSettings.ts'
 import ClickButtonFactory from '../components/buttons/ClickButtonFactory.ts'
 import { LIST_BUTTON_MARGIN, worlds } from '../constants.ts'
 
 export default class WorldSelectionMenu extends Phaser.Scene {
-	private userSettings?: UserSettings
+	private userSettings?: GameSettings
 	
 	public constructor() {
 		super({
@@ -12,7 +12,7 @@ export default class WorldSelectionMenu extends Phaser.Scene {
 	}
 
 	public init (data: Record<string, unknown>) {
-		if (data.userSettings instanceof UserSettings) {
+		if (data.userSettings instanceof GameSettings) {
 			this.userSettings = data.userSettings
 		} else {
 			throw 'expected usersettings but got ' + data.userSettings
@@ -32,7 +32,7 @@ export default class WorldSelectionMenu extends Phaser.Scene {
 						label: worldKey,
 						cb: () => {
 							this.scene.start(worldKey, {
-								userSettings: this.userSettings
+								userSettings: this.userSettings?.clone()
 							})
 						}
 					}

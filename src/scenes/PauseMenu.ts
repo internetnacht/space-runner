@@ -1,12 +1,12 @@
 import ClickButtonFactory from '../components/buttons/ClickButtonFactory.js'
 import { List } from 'immutable'
-import UserSettings from '../components/UserSettings.js'
+import GameSettings from '../components/UserSettings.js'
 import { LIST_BUTTON_MARGIN } from '../constants.js'
 import ToggleButtonFactory from '../components/buttons/ToggleButtonFactory.js'
 
 export default class PauseMenu extends Phaser.Scene {
 	private callingScene?: string
-	private userSettings?: UserSettings
+	private userSettings?: GameSettings
 
 	public constructor() {
 		super({
@@ -20,7 +20,7 @@ export default class PauseMenu extends Phaser.Scene {
 		}
 		this.callingScene = data.callingScene
 
-		if (data.userSettings instanceof UserSettings) {
+		if (data.userSettings instanceof GameSettings) {
 			this.userSettings = data.userSettings
 		} else {
 			throw 'expected userSettings but got undefined'
@@ -95,13 +95,13 @@ export default class PauseMenu extends Phaser.Scene {
 			throw 'calling scene key is undefined'
 		}
 		this.scene.start(this.callingScene, {
-			userSettings: this.userSettings
+			userSettings: this.userSettings?.clone()
 		})
 	}
 
 	private backToWorldSelection () {
 		this.scene.start('WorldSelectionMenu', {
-			userSettings: this.userSettings
+			userSettings: this.userSettings?.clone()
 		})
 		if (this.callingScene === undefined) {
 			throw 'calling scene key is undefined'
