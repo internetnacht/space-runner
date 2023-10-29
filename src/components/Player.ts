@@ -105,4 +105,8 @@ export default class Player {
 	}
 
 	public shutdown () {}
+
+	public setDisplayDepth (depth: number): void {
+		this.sprite.setDepth(depth)
+	}
 }

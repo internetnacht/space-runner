@@ -49,7 +49,8 @@ export default class World extends Phaser.Scene {
 		this.musicplayer.loop('audio-background')
 
 		this.setupCamera(map)
-		this.addLayers(map, tileset)
+		const layers = this.addLayers(map, tileset)
+		this.setDisplayDepths(layers, this.player)
 		this.addBackgroundImage()
 		this.addPauseMenuCallbacks()
 
@@ -89,7 +90,7 @@ export default class World extends Phaser.Scene {
 		this.player.attachToCamera(this.camera)
 	}
 
-	private addLayers(map: Phaser.Tilemaps.Tilemap, tileset: Phaser.Tilemaps.Tileset) {
+	private addLayers(map: Phaser.Tilemaps.Tilemap, tileset: Phaser.Tilemaps.Tileset): List<Phaser.Tilemaps.TilemapLayer> {
 		const mapJSON = this.cache.json.get(`${this.getSceneKey()}-mapjson`)
 		const tileLayerNames = List(mapJSON.layers)
 			.filter((layer: any) => layer.type === 'tilelayer')
@@ -97,7 +98,7 @@ export default class World extends Phaser.Scene {
 				return String(layer.name)
 			})
 
-		for (const layerName of tileLayerNames) {
+		const layers = tileLayerNames.map(layerName => {
 			const layer = map.createLayer(layerName, [tileset])
 			if (layer === null) {
 				throw "map couldn't create layer " + layerName
@@ -109,6 +110,23 @@ export default class World extends Phaser.Scene {
 					throw 'player is unexpectedly undefined'
 				}
 				this.physics.add.collider(this.player.getCollider(), layer)
+			}
+
+			return layer
+		})
+
+		return layers
+	}
+
+	private setDisplayDepths (layers: List<Phaser.Tilemaps.TilemapLayer>, player: Player) {
+		const depthOffset = 10
+
+		for (const [index, layer] of layers.entries()) {
+			const depth = depthOffset + index
+			if (layer.layer.name === 'Player') {
+				player.setDisplayDepth(depth)
+			} else {
+				layer.setDepth(depth)
 			}
 		}
 	}

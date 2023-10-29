@@ -3,11 +3,7 @@
 > Jump 'n' run Phaser 3 game with modern frontend tooling using Vite.
 
 ## roadmap
- * various button styles (click, toggle, bar)
  * map chunk loading
- * tiled custom options
-  * setting Theme
-  * Player position
  * fancier world select menu
  * music on/off in world select
  * moving plattforms in map
@@ -19,6 +15,8 @@
  * maybe: be able to hold on to some walls and jump from them
  * maybe: enemies
  * todo
+ * loading/waiting screen on level start to get into the mood
+ * Schiebeleistenbutton
 
 ### code todo
  * make user settings system cleaner
