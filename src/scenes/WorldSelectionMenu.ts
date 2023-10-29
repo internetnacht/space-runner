@@ -45,5 +45,9 @@ export default class WorldSelectionMenu extends Phaser.Scene {
 		})
 		
 		buttons.forEach(button => button.display())
+
+		this.events.on('shutdown', () => {
+			musicPlayer.shutdown()
+		})
 	}
 }
