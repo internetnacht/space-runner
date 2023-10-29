@@ -49,7 +49,7 @@ export default class PauseMenu extends Phaser.Scene {
 			scene: this,
 			x: this.cameras.main.width/2,
 			initialY: this.cameras.main.height/2,
-			margin: MEASURES.buttons.click.margin.list,
+			margin: MEASURES.buttons.click.margin.normal,
 			buttons: buttonsConfig
 		})
 		

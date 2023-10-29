@@ -9,7 +9,21 @@ export const MEASURES = Object.freeze({
 	buttons: {
 		click: {
 			margin: {
-				list: 10
+				normal: 10,
+				compact: 10
+			}
+		},
+		toggle: {
+			margin: {
+				normal: 10,
+				compact: 5
+			},
+			padding: {
+				normal: 5,
+				compact: 2
+			},
+			text: {
+				margin: 5
 			}
 		}
 	}

@@ -27,9 +27,9 @@ export default class WorldSelectionMenu extends Phaser.Scene {
 
 		const buttons = ClickButtonFactory.createListFromConfig({
 			scene: this,
-			x: MEASURES.buttons.click.margin.list,
+			x: MEASURES.buttons.click.margin.normal,
 			initialY: 0,
-			margin: MEASURES.buttons.click.margin.list,
+			margin: MEASURES.buttons.click.margin.normal,
 			buttons: worlds
 				.map(world => world.getSceneKey())
 				.map(worldKey => {
