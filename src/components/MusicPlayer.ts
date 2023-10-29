@@ -30,12 +30,16 @@ export default class MusicPlayer {
 		}
 	}
 
-	public play (audio: AudioKey) {
-		this.loadAudio(audio).then(() => this.playLoadedAudio(audio))
+	public play (audio: AudioKey, config?: Phaser.Types.Sound.SoundConfig) {
+		this.loadAudio(audio).then(() => this.playLoadedAudio(audio, config))
 	}
 
-	private playLoadedAudio (audio: AudioKey) {
-		this.scene.sound.play(audio)
+	private playLoadedAudio (audio: AudioKey, config?: Phaser.Types.Sound.SoundConfig) {
+		this.scene.sound.play(audio, config)
+	}
+
+	public loop (audio: AudioKey) {
+		this.play(audio, { loop: true })
 	}
 
 	public async loadAudio (audio: AudioKey): Promise<any> {

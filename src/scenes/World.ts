@@ -46,7 +46,7 @@ export default class World extends Phaser.Scene {
 
 		this.player = this.createPlayer(map)
 		this.musicplayer = new MusicPlayer(this, this.userSettings)
-		this.musicplayer.play('audio-background')
+		this.musicplayer.loop('audio-background')
 
 		this.setupCamera(map)
 		this.addLayers(map, tileset)

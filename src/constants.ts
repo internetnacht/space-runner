@@ -23,7 +23,8 @@ export const filePaths = Object.freeze({
 		tilemap: (worldId: number) => `tilemaps/map${worldId}.json`
 	},
 	audio: {
-		"audio-background": 'audio/A+Drop+In+the+Desert.mp3'
+		"audio-background": 'audio/A+Drop+In+the+Desert.mp3',
+		"audio-starting-screen": 'audio/Dawn.mp3'
 	}
 })
 
