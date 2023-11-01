@@ -1,0 +1,194 @@
+\documentclass{article}
+
+\usepackage{float}
+\usepackage{graphicx}
+\graphicspath{ {./images/}}
+
+\newcommand{\erklaerbild}[2]{
+	\begin{figure}[H]
+		\center
+		\includegraphics[width=\textwidth]{#1}
+		\caption{#2}
+	\end{figure}
+}
+
+\begin{document}
+
+\tableofcontents
+
+\section{about this guide}
+This guide is separated into two parts. First general tutorials about Tiled. Then the documentation of the custom magic stuff implemented by dexter to make you able to create complex levels without having to touch program code.
+
+\section{some names}
+\begin{itemize}
+	\item collisions/colliding/... if the player collides with something, he/she can hit it. It's like an obstacle instead of a background wall. The player can't walk through it, would stand on it, etc.
+\end{itemize}
+
+\section{custom properties?}
+Everything you draw/place/... in Tiled has some properties, like position, color, etc. Additionally you can set custom properties that have a type and value you choose.
+
+Custom properties can have one of various data types. The most important are:
+\begin{itemize}
+	\item bool: yes/no, true/false, checked box/unchecked box, etc.
+	\item string: normal text
+\end{itemize}
+
+\subsection{visual manual}
+\erklaerbild
+	{custom_prop_1_edit.png}
+	{Right click on the layer.}
+
+\erklaerbild
+	{custom_prop_2_edit.png}
+	{Left click on "Layer Properties...".}
+
+\erklaerbild
+	{custom_prop_3.png}
+	{Now you see the layer properties. Maybe you see it in some area in Tiled instead of a new window. It doesn't matter.}
+
+\erklaerbild
+	{custom_prop_4_edit.png}
+	{To add a custom property, left click on the green + icon.}
+
+\erklaerbild
+	{custom_prop_5_edit.png}
+	{The property adding window opens. You can select the data type (in the image string is selected) and the property name.}
+
+\erklaerbild
+	{custom_prop_6_edit.png}
+	{To edit a custom property, right click it.}
+
+\section{layers?}
+\subsection{tile layers}
+A tile layer consists of tiles. Tiles are the individual parts of the spritesheet. Tile layers are used for directly visible stuff. Here you're drawing.
+
+\subsection{object layers}
+An object layer consists of objects. Objects can be whatever you want and aren't directly visible. We use them for example for spawn points, platform movement paths, etc.
+
+Objects can be of various types. Currently we only use points. As the name implies, they simply are a point in the map.
+
+\subsubsection{visual manual}
+\erklaerbild
+	{insert_point_edit.png}
+	{This is the button to select the point adding tool.}
+
+\subsection{object layer lists}
+You can see the list of objects of an object layer and edit the individual name and properties of an object.
+
+\subsubsection{visual manual}
+\erklaerbild
+	{object_list_1_edit.png}
+	{To see the object lists, click on the Objects tab.}
+
+\erklaerbild
+	{object_list_2_edit.png}
+	{Expand the list of the wanted layer.}
+
+\erklaerbild
+	{object_list_3.png}
+	{Now you see every object that's in the layer. In the image the layer `moving` has five points.}
+
+\erklaerbild
+	{object_list_4_edit.png}
+	{To edit the name of an object, double left click it.}
+
+\erklaerbild
+	{object_list_5.png}
+	{Then type whatever you want.}
+
+\erklaerbild
+	{object_list_6.png}
+	{In the image the five points were numbered 1 to 5.}
+
+\section{Tiled special custom properties}
+Until now all special custom properties are used on layers and NOT an individual tiles. For the collide property this has serious impact on file sizes and using this style everywhere makes the usage easier.
+
+\subsection{collide}
+\begin{itemize}
+	\item Name: collide
+	\item Type: bool
+	\item Meant for: Tile layers
+\end{itemize}
+
+All tiles of the tile layer will collide with the player.
+
+\subsection{kill}
+\begin{itemize}
+	\item Name: kill
+	\item Type: bool
+	\item Meant for: any layer
+\end{itemize}
+
+Everything in this layer will kill the player on contact. Tiles, enemies, etc.
+
+\subsection{teleport\_to}
+\begin{itemize}
+	\item Name: teleport\_to
+	\item Type: string
+	\item Meant for: any layer
+\end{itemize}
+
+When the player hits anything in this layer, he/she gets teleported to the map with the name set in the teleport\_to property.
+
+\subsection{visual examples}
+
+\erklaerbild
+	{custom_prop_collide.png}
+	{This layer has the collide property set to true. The player will collide with every tile of it.}
+
+\erklaerbild
+	{custom_prop_kill.png}
+	{This layer has the kill property set to true. The player will die when hitting something of this layer. This includes tiles and NPCs that got spawned because of the layer. (until now these two things are the only killing ones)}
+
+\erklaerbild
+	{custom_prop_teleport_to.png}
+	{This layer has the teleport\_to property set to "secret\_chamber\_map". If the player hits anything in this layer, he/she will get teleported to the map that's saved in the file named "secret\_chamber\_map".}
+
+\section{Tiled special layers}
+\subsection{Spawn}
+\begin{itemize}
+	\item Name: Spawn
+	\item Type: Object layer
+\end{itemize}
+
+Contains the players spawn. The first object of the layer is selected and used as the spawn position.
+
+\subsection{Player}
+\begin{itemize}
+	\item Name: Player
+	\item Type: Tilelayer
+\end{itemize}
+
+Contains nothing. The layer at which the player will be displayed. Layers above will be displayed above the player and layers underneath will be displayed behind the player.
+
+\subsection{moving*}
+\begin{itemize}
+	\item Name: moving\textit{write whatever you want here, only the "moving" prefix is important}
+	\item Type: Object layer
+\end{itemize}
+
+Contains two or more points. The points mark the path which the moving platform will follow. The object layer itself has the following parameters (still work in progress):
+\begin{itemize}
+ 	\item platform look
+ 	\item platform size
+ 	\item platform speed
+\end{itemize}
+
+In the Tiled Objects view, the points have to be numbered. The movement path just loops through the points going from lowest to biggest. E.g. with the points named 1, 2, 3 and 4, the platform will first go to 1, then 2, then 3, then 4, then 1, then 2, then 3, then 4, then 1 and so on.
+
+\subsection{npc*}
+\begin{itemize}
+	\item Name: npc\textit{write whatever you want here, only the "npc" prefix is important}
+	\item Type: object layer
+\end{itemize}
+
+Contains points. Each point needs the custom property `type` which determines the type of NPC. It can be one of the following:
+\begin{itemize}
+ 	\item work in progress...
+\end{itemize}
+Points with an invalid type (including no type) will be ignored.
+A point only determines the spawn location of an NPC. After spawning they behave on their own.
+
+To set enemies, i.e. NPCs that kill on contact, use the custom `kill` property.
+
+\end{document}

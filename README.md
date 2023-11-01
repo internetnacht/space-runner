@@ -17,23 +17,13 @@
  * todo
  * loading/waiting screen on level start to get into the mood
  * Schiebeleistenbutton
+ * separate rooms -> some kind of portal objects
+  * manage level endings with this technique
+ * set lights in Tiled
 
 ### code todo
+ * general code cleaning
  * make user settings system cleaner
-
-## Tiled custom settings
-todo: setting Theme, maybe camera movement speed
-
-### Tiled special layers
-#### Spawn
-Type: Object layer
-
-Contains the players spawn. The first object of the layer is selected and used as the spawn position.
-
-#### Player
-Type: any
-
-Contains nothing. The layer depth at which the player will be displayed. Layers above will be displayed above the player and layers underneath will be displayed behind the player.
 
 ## Prerequisites
 
