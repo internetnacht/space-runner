@@ -1,65 +1,12 @@
-import { filePaths } from '../constants'
+import { GameCharacter } from './GameCharacter';
 
-type PlayerType = "dude"
-
-export default class Player {
-	private readonly sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
-	private readonly playerKey: PlayerType
-
-	public static loadAssets(scene: Phaser.Scene) {
-		scene.load.spritesheet('dude', filePaths.sprites.dude, { frameWidth: 32, frameHeight: 48 })
-	}
-
-	public constructor(scene: Phaser.Scene, spawnPosition?: { x: number; y: number }, playerKey: PlayerType = 'dude') {
-		this.playerKey = playerKey
-
-		if (spawnPosition === undefined) {
-			this.sprite = scene.physics.add.sprite(0, 0, 'dude')
-		} else {
-			this.sprite = scene.physics.add.sprite(spawnPosition.x, spawnPosition.y, 'dude')
-		}
-
-		this.sprite.setBounce(0.1)
-
-		this.addMovementAnimations(scene)
-	}
-
-	private addMovementAnimations(scene: Phaser.Scene) {
-		scene.anims.create({
-			key: `${this.playerKey}-player-left`,
-			frames: scene.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-			frameRate: 10,
-			repeat: -1,
+export default class Player extends GameCharacter {
+	public constructor(scene: Phaser.Scene, spawnPosition?: { x: number; y: number }) {
+		super(scene, spawnPosition, 'dude')
+		
+		this.setController({
+			act: this.move.bind(this)
 		})
-
-		scene.anims.create({
-			key: `${this.playerKey}-player-jumping-left`,
-			frames: [{key: 'dude', frame: 1}],
-			frameRate: 20
-		})
-
-		scene.anims.create({
-			key: `${this.playerKey}-player-jumping-right`,
-			frames: [{key: 'dude', frame: 6}],
-			frameRate: 20
-		})
-
-		scene.anims.create({
-			key: `${this.playerKey}-player-turn`,
-			frames: [{ key: 'dude', frame: 4 }],
-			frameRate: 20,
-		})
-
-		scene.anims.create({
-			key: `${this.playerKey}-player-right`,
-			frames: scene.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-			frameRate: 10,
-			repeat: -1,
-		})
-	}
-
-	public update(scene: Phaser.Scene) {
-		this.move(scene)
 	}
 
 	private move(scene: Phaser.Scene) {
@@ -92,31 +39,9 @@ export default class Player {
 	private moveSideWays (velocity: number, direction: string) {
 		this.sprite.setVelocityX(velocity)
 		if (this.sprite.body.onFloor()) {
-			this.sprite.anims.play(`${this.playerKey}-player-${direction}`, true)
+			this.sprite.anims.play(`character-${this.type}-${direction}`, true)
 		} else if (['left', 'right'].includes(direction)) {
-			this.sprite.anims.play(`${this.playerKey}-player-jumping-${direction}`)
+			this.sprite.anims.play(`character-${this.type}-jumping-${direction}`)
 		}
-	}
-
-	public getCollider (): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
-		return this.sprite
-	}
-
-	public attachToCamera(camera: Phaser.Cameras.Scene2D.Camera) {
-		camera.startFollow(this.sprite)
-	}
-
-	public shutdown () {}
-
-	public setDisplayDepth (depth: number): void {
-		this.sprite.setDepth(depth)
-	}
-
-	public getX (): number {
-		return this.sprite.x
-	}
-
-	public getY (): number {
-		return this.sprite.y
 	}
 }
