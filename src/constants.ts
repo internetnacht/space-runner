@@ -28,10 +28,6 @@ export const MEASURES = Object.freeze({
 			},
 		},
 	},
-	chunks: {
-		width: 32,
-		height: 32,
-	},
 	tiles: {
 		width: 16,
 		height: 16,

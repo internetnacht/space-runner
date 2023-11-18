@@ -77,8 +77,8 @@ export default class ChunkLoader {
 
 			console.log(chunkX + ' ' + chunkY)
 
-			const offsetX = chunkX*MEASURES.chunks.width*MEASURES.tiles.width
-			const offsetY = chunkY*MEASURES.chunks.height*MEASURES.tiles.height
+			const offsetX = chunkX*this.mapMaster.chunkWidth*MEASURES.tiles.width
+			const offsetY = chunkY*this.mapMaster.chunkHeight*MEASURES.tiles.height
 
 			//console.log(offsetX + ' ' + offsetY)
 	
@@ -130,7 +130,7 @@ export default class ChunkLoader {
 				}
 			}
 
-			context.scene.add.rectangle(offsetX, offsetY, MEASURES.chunks.width*MEASURES.tiles.width, MEASURES.chunks.height*MEASURES.tiles.height)
+			context.scene.add.rectangle(offsetX, offsetY, this.mapMaster.chunkWidth*MEASURES.tiles.width, this.mapMaster.chunkHeight*MEASURES.tiles.height)
 				.setOrigin(0,0)
 				.setStrokeStyle(2, 0x1a65ac)
 				.setDepth(100)
