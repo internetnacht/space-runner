@@ -95,6 +95,29 @@ export const SCENE_ASSET_KEYS = Object.freeze({
 	},
 })
 
+export const GLOBAL_ASSET_KEYS = Object.freeze({
+	images: {
+		background: 'background_image_key',
+		toggler: {
+			on: 'toggle-button-on',
+			off: 'toggle-button-off',
+		},
+	},
+})
+
+export const TILED_CUSTOM_CONSTANTS = Object.freeze({
+	layers: {
+		spawn: {
+			name: 'Player',
+		},
+		properties: {
+			collide: {
+				name: 'collide',
+			},
+		},
+	},
+})
+
 export const PHASER_FILE_TYPE_TO_LOADER = Object.freeze({
 	audio: 'audio',
 	tilemapJSON: 'tilemapTiledJSON',

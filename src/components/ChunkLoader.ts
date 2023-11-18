@@ -1,5 +1,11 @@
 import { List } from 'immutable'
-import { MEASURES, SCENE_ASSET_KEYS, TILED_TILESET_NAME, filePaths } from '../constants'
+import {
+	MEASURES,
+	SCENE_ASSET_KEYS,
+	TILED_CUSTOM_CONSTANTS,
+	TILED_TILESET_NAME,
+	filePaths,
+} from '../constants'
 import { ChunkContext, ChunkId } from '../global-types'
 import { computeChunkId, layerGetBoolProperty, loadFile, typecheck } from '../utils'
 import { MapChunk, MapMasterT } from '../tiled-types'
@@ -132,7 +138,12 @@ export default class ChunkLoader {
 				}
 				//layer.setOrigin(0,0)
 
-				if (layerGetBoolProperty(layer, 'collide')) {
+				if (
+					layerGetBoolProperty(
+						layer,
+						TILED_CUSTOM_CONSTANTS.layers.properties.collide.name
+					)
+				) {
 					layer.setCollisionByExclusion([])
 					if (context.player === undefined) {
 						throw 'player is unexpectedly undefined'
@@ -145,7 +156,7 @@ export default class ChunkLoader {
 
 			for (const [index, layer] of layers.entries()) {
 				const depth = MEASURES.maps.layerDepthOffset + index
-				if (layer.layer.name === 'Player') {
+				if (layer.layer.name === TILED_CUSTOM_CONSTANTS.layers.spawn.name) {
 					context.player.setDisplayDepth(depth)
 				} else {
 					layer.setDepth(depth)

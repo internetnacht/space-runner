@@ -1,5 +1,5 @@
 import Player from '../components/Player.ts'
-import { MEASURES, SCENE_ASSET_KEYS, filePaths } from '../constants.ts'
+import { GLOBAL_ASSET_KEYS, MEASURES, SCENE_ASSET_KEYS, filePaths } from '../constants.ts'
 import MusicPlayer from '../components/MusicPlayer.ts'
 import GameSettings from '../components/UserSettings.ts'
 import { typecheck } from '../utils.ts'
@@ -32,10 +32,7 @@ export default class World extends Phaser.Scene {
 
 	public preload() {
 		this.load.image(SCENE_ASSET_KEYS.maps.tileset(this.getSceneKey()), filePaths.sprites.sheet)
-		this.load.image(
-			SCENE_ASSET_KEYS.images.background(this.getSceneKey()),
-			filePaths.images.background
-		)
+		this.load.image(GLOBAL_ASSET_KEYS.images.background, filePaths.images.background)
 		this.load.json(
 			SCENE_ASSET_KEYS.maps.master(this.getSceneKey()),
 			filePaths.maps.master(this.getSceneKey())
@@ -119,7 +116,7 @@ export default class World extends Phaser.Scene {
 
 	private addBackgroundImage() {
 		const backgroundImage = this.add
-			.image(0, 0, SCENE_ASSET_KEYS.images.background(this.getSceneKey()))
+			.image(0, 0, GLOBAL_ASSET_KEYS.images.background)
 			.setOrigin(0, 0)
 			.setDepth(-1)
 

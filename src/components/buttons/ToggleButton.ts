@@ -1,4 +1,4 @@
-import { MEASURES } from '../../constants'
+import { GLOBAL_ASSET_KEYS, MEASURES } from '../../constants'
 import Button from './Button'
 import { ButtonLabelConfig } from './configs/ButtonLabelConfig'
 import { ToggleButtonConfig } from './configs/ToggleButtonConfig'
@@ -12,7 +12,10 @@ export default class ToggleButton implements Button {
 	private toggleState: boolean
 	private stateChangeCallback: (toggleState: boolean) => void
 
-	public constructor(scene: Phaser.Scene, config: ToggleButtonConfig & Partial<ButtonLabelConfig>) {
+	public constructor(
+		scene: Phaser.Scene,
+		config: ToggleButtonConfig & Partial<ButtonLabelConfig>
+	) {
 		this.toggleState = config.initialState
 		this.stateChangeCallback = config.stateChangeCallback
 
@@ -22,7 +25,7 @@ export default class ToggleButton implements Button {
 			scene,
 			config.x,
 			config.y + MEASURES.buttons.toggle.margin.normal,
-			'toggle-button-on'
+			GLOBAL_ASSET_KEYS.images.toggler.on
 		)
 			.setOrigin(0)
 			.setScale(0.2)
@@ -31,7 +34,7 @@ export default class ToggleButton implements Button {
 			scene,
 			config.x,
 			config.y + MEASURES.buttons.toggle.margin.normal,
-			'toggle-button-off'
+			GLOBAL_ASSET_KEYS.images.toggler.off
 		)
 			.setOrigin(0)
 			.setScale(0.2)
