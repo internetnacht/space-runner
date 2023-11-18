@@ -19,7 +19,7 @@ export default class ChunkLoader {
 		const chunkId = computeChunkId(x, y, {
 			horizontalChunkAmount: this.mapMaster.horizontalChunkAmount,
 			chunkWidth: this.mapMaster.chunkWidth,
-			chunkHeight: this.mapMaster.chunkHeight
+			chunkHeight: this.mapMaster.chunkHeight,
 		})
 
 		if (this.currentChunk === chunkId) return
@@ -40,34 +40,38 @@ export default class ChunkLoader {
 
 		const unwantedChunks = this.currentlyLoadedChunks.filter((chunk) => !nextVisibleChunks.includes(chunk.id))
 
-		const chunkCreationPromises = newVisibleChunks
-			.map(this.loadChunk(context))
-			.map(this.createChunk(context))
+		const chunkCreationPromises = newVisibleChunks.map(this.loadChunk(context)).map(this.createChunk(context))
 
 		unwantedChunks.forEach(this.destroyOldChunk)
 
 		return Promise.all(chunkCreationPromises)
 	}
 
-	private loadChunk (context: ChunkContext) {
+	private loadChunk(context: ChunkContext) {
 		return async (chunk: ChunkId) => {
 			const chunkFilePath = filePaths.maps.chunk(context.worldSceneKey, chunk)
 
-			const chunkMapProm = loadFile({
-				key: SCENE_ASSET_KEYS.maps.chunk(context.worldSceneKey, chunk),
-				type: 'tilemapJSON',
-				filePath: chunkFilePath
-			}, context.scene.load,
-			(key) => context.scene.load.tilemapTiledJSON(key, chunkFilePath),
-			(key) => context.scene.cache.tilemap.get(key) !== undefined)
+			const chunkMapProm = loadFile(
+				{
+					key: SCENE_ASSET_KEYS.maps.chunk(context.worldSceneKey, chunk),
+					type: 'tilemapJSON',
+					filePath: chunkFilePath,
+				},
+				context.scene.load,
+				(key) => context.scene.load.tilemapTiledJSON(key, chunkFilePath),
+				(key) => context.scene.cache.tilemap.get(key) !== undefined
+			)
 
-			const chunkJSONProm = loadFile({
-				key: SCENE_ASSET_KEYS.maps.chunkJSON(context.worldSceneKey, chunk),
-				type: 'json',
-				filePath: chunkFilePath
-			}, context.scene.load,
-			(key) => context.scene.load.json(key, chunkFilePath),
-			(key) => context.scene.cache.json.get(key) !== undefined)
+			const chunkJSONProm = loadFile(
+				{
+					key: SCENE_ASSET_KEYS.maps.chunkJSON(context.worldSceneKey, chunk),
+					type: 'json',
+					filePath: chunkFilePath,
+				},
+				context.scene.load,
+				(key) => context.scene.load.json(key, chunkFilePath),
+				(key) => context.scene.cache.json.get(key) !== undefined
+			)
 
 			console.log('awaiting loading chunks')
 			await chunkJSONProm
@@ -87,13 +91,16 @@ export default class ChunkLoader {
 
 			console.log(chunkX + ' ' + chunkY)
 
-			const offsetX = chunkX*this.mapMaster.chunkWidth*MEASURES.tiles.width
-			const offsetY = chunkY*this.mapMaster.chunkHeight*MEASURES.tiles.height
+			const offsetX = chunkX * this.mapMaster.chunkWidth * MEASURES.tiles.width
+			const offsetY = chunkY * this.mapMaster.chunkHeight * MEASURES.tiles.height
 
 			//console.log(offsetX + ' ' + offsetY)
-	
+
 			console.log('creating chunk ' + chunk)
-			const chunkJSON = typecheck(context.scene.cache.json.get(SCENE_ASSET_KEYS.maps.chunkJSON(context.worldSceneKey, chunk)), MapChunk)
+			const chunkJSON = typecheck(
+				context.scene.cache.json.get(SCENE_ASSET_KEYS.maps.chunkJSON(context.worldSceneKey, chunk)),
+				MapChunk
+			)
 
 			const chunkTileMap = context.scene.make.tilemap({
 				key: SCENE_ASSET_KEYS.maps.chunk(context.worldSceneKey, chunk),
@@ -101,19 +108,22 @@ export default class ChunkLoader {
 				tileHeight: this.mapMaster.tileHeight,
 				width: chunkJSON.width,
 				height: chunkJSON.height,
-				insertNull: true
+				insertNull: true,
 			})
 
-			const tileset = chunkTileMap.addTilesetImage(TILED_TILESET_NAME, SCENE_ASSET_KEYS.maps.tileset(context.worldSceneKey))
+			const tileset = chunkTileMap.addTilesetImage(
+				TILED_TILESET_NAME,
+				SCENE_ASSET_KEYS.maps.tileset(context.worldSceneKey)
+			)
 			if (tileset === null) {
 				throw 'failed to create tileset object for chunk ' + chunk + ' of world ' + context.worldSceneKey
 			}
 
 			const tileLayerNames = List(chunkJSON.layers)
-				.filter(layer => layer.type === 'tilelayer')
-				.map(layer => String(layer.name))
+				.filter((layer) => layer.type === 'tilelayer')
+				.map((layer) => String(layer.name))
 
-			const layers = tileLayerNames.map(layerName => {
+			const layers = tileLayerNames.map((layerName) => {
 				const layer = chunkTileMap.createLayer(layerName, [tileset], offsetX, offsetY)
 				if (layer === null) {
 					throw "map couldn't create layer " + layerName
@@ -140,8 +150,14 @@ export default class ChunkLoader {
 				}
 			}
 
-			context.scene.add.rectangle(offsetX, offsetY, this.mapMaster.chunkWidth*MEASURES.tiles.width, this.mapMaster.chunkHeight*MEASURES.tiles.height)
-				.setOrigin(0,0)
+			context.scene.add
+				.rectangle(
+					offsetX,
+					offsetY,
+					this.mapMaster.chunkWidth * MEASURES.tiles.width,
+					this.mapMaster.chunkHeight * MEASURES.tiles.height
+				)
+				.setOrigin(0, 0)
 				.setStrokeStyle(2, 0x1a65ac)
 				.setDepth(100)
 		}

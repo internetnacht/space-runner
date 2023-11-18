@@ -33,31 +33,31 @@ export default class PauseMenu extends Phaser.Scene {
 		const buttonsConfig = List([
 			{
 				label: 'Fortfahren',
-				cb: this.resumeCallingScene.bind(this)
+				cb: this.resumeCallingScene.bind(this),
 			},
 			{
 				label: 'Welt neustarten',
-				cb: this.restartCallingScene.bind(this)
+				cb: this.restartCallingScene.bind(this),
 			},
 			{
 				label: 'Zurück zur Levelauswahl',
-				cb: this.backToWorldSelection.bind(this)
-			}
+				cb: this.backToWorldSelection.bind(this),
+			},
 		])
 
 		const buttons = ClickButton.createVerticalButtonList({
 			scene: this,
-			x: this.cameras.main.width/2,
-			initialY: this.cameras.main.height/2,
+			x: this.cameras.main.width / 2,
+			initialY: this.cameras.main.height / 2,
 			margin: MEASURES.buttons.click.margin.normal,
-			buttons: buttonsConfig
+			buttons: buttonsConfig,
 		})
 
-		buttons.forEach(button => button.display())
+		buttons.forEach((button) => button.display())
 
 		const toggleButton = new ToggleButton(this, {
-			x: this.cameras.main.width/2,
-			y: buttons.last()?.getBottom() ?? this.cameras.main.height/2,
+			x: this.cameras.main.width / 2,
+			y: buttons.last()?.getBottom() ?? this.cameras.main.height / 2,
 			fixed: true,
 			initialState: this.userSettings?.musicIsOn ?? false,
 			label: 'Musik',
@@ -67,10 +67,9 @@ export default class PauseMenu extends Phaser.Scene {
 				} else {
 					throw 'tried to set userSettings.musicIsOn but userSettings were undefined'
 				}
-			}
+			},
 		})
 		toggleButton.display()
-		
 
 		const keyboard = this.input.keyboard
 		if (keyboard === null) {
@@ -85,23 +84,23 @@ export default class PauseMenu extends Phaser.Scene {
 		}
 
 		this.scene.resume(this.callingScene, {
-			userSettings: this.userSettings
+			userSettings: this.userSettings,
 		})
 		this.scene.stop()
 	}
 
-	private restartCallingScene () {
+	private restartCallingScene() {
 		if (this.callingScene === undefined) {
 			throw 'calling scene key is undefined'
 		}
 		this.scene.start(this.callingScene, {
-			userSettings: this.userSettings?.clone()
+			userSettings: this.userSettings?.clone(),
 		})
 	}
 
-	private backToWorldSelection () {
+	private backToWorldSelection() {
 		this.scene.start('WorldSelectionMenu', {
-			userSettings: this.userSettings?.clone()
+			userSettings: this.userSettings?.clone(),
 		})
 		if (this.callingScene === undefined) {
 			throw 'calling scene key is undefined'

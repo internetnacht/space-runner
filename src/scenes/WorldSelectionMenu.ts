@@ -5,15 +5,14 @@ import { MEASURES, worlds } from '../constants.ts'
 
 export default class WorldSelectionMenu extends Phaser.Scene {
 	private userSettings?: GameSettings
-	
+
 	public constructor() {
 		super({
 			key: 'WorldSelectionMenu',
 		})
-
 	}
 
-	public init (data: Record<string, unknown>) {
+	public init(data: Record<string, unknown>) {
 		if (data.userSettings instanceof GameSettings) {
 			this.userSettings = data.userSettings
 		} else {
@@ -31,20 +30,20 @@ export default class WorldSelectionMenu extends Phaser.Scene {
 			initialY: 0,
 			margin: MEASURES.buttons.click.margin.normal,
 			buttons: worlds
-				.map(world => world.getSceneKey())
-				.map(worldKey => {
+				.map((world) => world.getSceneKey())
+				.map((worldKey) => {
 					return {
 						label: worldKey,
 						cb: () => {
 							this.scene.start(worldKey, {
-								userSettings: this.userSettings?.clone()
+								userSettings: this.userSettings?.clone(),
 							})
-						}
+						},
 					}
-				})
+				}),
 		})
-		
-		buttons.forEach(button => button.display())
+
+		buttons.forEach((button) => button.display())
 
 		this.events.on('shutdown', () => {
 			musicPlayer.shutdown()

@@ -33,16 +33,16 @@ export const MEASURES = Object.freeze({
 		height: 16,
 	},
 	maps: {
-		layerDepthOffset: 10
+		layerDepthOffset: 10,
 	},
 	player: {
 		spawn: {
 			default: {
 				x: 0,
-				y: 0
-			}
-		}
-	}
+				y: 0,
+			},
+		},
+	},
 })
 
 export const filePaths = Object.freeze({

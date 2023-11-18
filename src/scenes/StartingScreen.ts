@@ -22,7 +22,7 @@ class StartingScreen extends Phaser.Scene {
 		worlds.forEach((world) => this.scene.add(world.getSceneKey(), world))
 
 		this.scene.start('WorldSelectionMenu', {
-			userSettings: GameSettings.default()
+			userSettings: GameSettings.default(),
 		})
 	}
 }

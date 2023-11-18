@@ -10,7 +10,7 @@ export interface Asset {
 }
 
 export interface ChunkContext {
-	readonly scene: Phaser.Scene,
-	readonly player: Player,
+	readonly scene: Phaser.Scene
+	readonly player: Player
 	readonly worldSceneKey: string
 }

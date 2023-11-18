@@ -1,6 +1,6 @@
-import { filePaths } from "../constants";
+import { filePaths } from '../constants'
 
-type CharacterType = "dude"
+type CharacterType = 'dude'
 
 interface CharacterController {
 	act: (scene: Phaser.Scene) => void
@@ -29,7 +29,7 @@ export class GameCharacter {
 		this.addMovementAnimations(scene)
 	}
 
-	protected setController (controller: CharacterController) {
+	protected setController(controller: CharacterController) {
 		this.controller = controller
 	}
 
@@ -43,14 +43,14 @@ export class GameCharacter {
 
 		scene.anims.create({
 			key: `character-${this.type}-jumping-left`,
-			frames: [{key: 'dude', frame: 1}],
-			frameRate: 20
+			frames: [{ key: 'dude', frame: 1 }],
+			frameRate: 20,
 		})
 
 		scene.anims.create({
 			key: `character-${this.type}-jumping-right`,
-			frames: [{key: 'dude', frame: 6}],
-			frameRate: 20
+			frames: [{ key: 'dude', frame: 6 }],
+			frameRate: 20,
 		})
 
 		scene.anims.create({
@@ -71,7 +71,7 @@ export class GameCharacter {
 		this.controller?.act(scene)
 	}
 
-	public getCollider (): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
+	public getCollider(): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
 		return this.sprite
 	}
 
@@ -79,26 +79,26 @@ export class GameCharacter {
 		camera.startFollow(this.sprite)
 	}
 
-	public shutdown () {}
+	public shutdown() {}
 
-	public setDisplayDepth (depth: number): void {
+	public setDisplayDepth(depth: number): void {
 		this.sprite.setDepth(depth)
 	}
 
-	public getX (): number {
+	public getX(): number {
 		return this.sprite.x
 	}
 
-	public getY (): number {
+	public getY(): number {
 		return this.sprite.y
 	}
 
-	public freeze () {
+	public freeze() {
 		this.sprite.body.setImmovable()
 		this.sprite.body.setAllowGravity(false)
 	}
 
-	public unfreeze () {
+	public unfreeze() {
 		this.sprite.body.setImmovable(false)
 		this.sprite.body.setAllowGravity()
 	}

@@ -12,35 +12,35 @@ export default class ClickButton implements Button {
 		const scrollFactor = computeScrollFactor(config.fixed)
 
 		const text = new Phaser.GameObjects.Text(scene, config.x, config.y, config.label, {})
-		.setOrigin(0)
-		.setPadding(8, 5)
-		.setStyle({ backgroundColor: '#EEE', fill: '#111' })
-		.setInteractive({ useHandCursor: true })
-		.setScrollFactor(scrollFactor, scrollFactor)
-		.on('pointerdown', config.clickCallback)
-		.on('pointerover', () => text.setStyle({ fill: '#f39c12' }))
-		.on('pointerout', () => text.setStyle({ fill: '#111' }))
+			.setOrigin(0)
+			.setPadding(8, 5)
+			.setStyle({ backgroundColor: '#EEE', fill: '#111' })
+			.setInteractive({ useHandCursor: true })
+			.setScrollFactor(scrollFactor, scrollFactor)
+			.on('pointerdown', config.clickCallback)
+			.on('pointerover', () => text.setStyle({ fill: '#f39c12' }))
+			.on('pointerout', () => text.setStyle({ fill: '#111' }))
 
 		this.text = text
 	}
 
-	public getX (): number {
+	public getX(): number {
 		return this.text.x
 	}
 
-	public getY (): number {
+	public getY(): number {
 		return this.text.y
 	}
 
-	public getWidth (): number {
+	public getWidth(): number {
 		return this.text.width
 	}
 
-	public getHeight (): number {
+	public getHeight(): number {
 		return this.text.height
 	}
 
-	public getBottom (): number {
+	public getBottom(): number {
 		return this.getY() + this.getHeight()
 	}
 
@@ -48,30 +48,29 @@ export default class ClickButton implements Button {
 		this.text.destroy()
 	}
 
-	public display () {
+	public display() {
 		this.text.addToDisplayList()
 	}
 
-	public static createVerticalButtonList (listConfig: {
-		scene: Phaser.Scene,
-		x: number,
-		initialY: number,
+	public static createVerticalButtonList(listConfig: {
+		scene: Phaser.Scene
+		x: number
+		initialY: number
 		margin: number
-		buttons: List<{ label: string, cb: () => void }>
+		buttons: List<{ label: string; cb: () => void }>
 	}): List<ClickButton> {
-		return listConfig.buttons
-			.reduce((buttons, buttonConfig) => {
-				const yOffset = buttons.last()?.getBottom() ?? listConfig.initialY
+		return listConfig.buttons.reduce((buttons, buttonConfig) => {
+			const yOffset = buttons.last()?.getBottom() ?? listConfig.initialY
 
-				const nextButton = new ClickButton(listConfig.scene, {
-					x: listConfig.x,
-					y: yOffset + listConfig.margin,
-					fixed: true,
-					label: buttonConfig.label,
-					clickCallback: buttonConfig.cb
-				})
+			const nextButton = new ClickButton(listConfig.scene, {
+				x: listConfig.x,
+				y: yOffset + listConfig.margin,
+				fixed: true,
+				label: buttonConfig.label,
+				clickCallback: buttonConfig.cb,
+			})
 
-				return buttons.push(nextButton)
-			}, List<ClickButton>())
+			return buttons.push(nextButton)
+		}, List<ClickButton>())
 	}
 }

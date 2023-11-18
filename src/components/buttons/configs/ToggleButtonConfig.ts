@@ -1,5 +1,5 @@
-import { ButtonClickConfig } from "./ButtonClickConfig"
-import { ButtonConfig } from "./ButtonConfig"
+import { ButtonClickConfig } from './ButtonClickConfig'
+import { ButtonConfig } from './ButtonConfig'
 
 export interface ToggleButtonConfig extends ButtonConfig, Partial<ButtonClickConfig> {
 	initialState: boolean

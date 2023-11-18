@@ -4,6 +4,6 @@ export default interface Button {
 	getWidth(): number
 	getHeight(): number
 	getBottom(): number
-	destruct (): void
-	display (): void
+	destruct(): void
+	display(): void
 }

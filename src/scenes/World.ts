@@ -12,7 +12,7 @@ export default class World extends Phaser.Scene {
 	private userSettings?: GameSettings
 	private chunkLoader?: ChunkLoader
 
-	public static buildSceneKey (id: number): string {
+	public static buildSceneKey(id: number): string {
 		return `World${id}`
 	}
 
@@ -24,7 +24,7 @@ export default class World extends Phaser.Scene {
 		this.worldId = worldId
 	}
 
-	public init (data: Record<string, unknown>) {
+	public init(data: Record<string, unknown>) {
 		if (data.userSettings instanceof GameSettings) {
 			this.userSettings = data.userSettings
 		}
@@ -44,15 +44,16 @@ export default class World extends Phaser.Scene {
 		this.chunkLoader = new ChunkLoader(-1, mapMaster)
 		this.player = new Player(this, spawnCoordinates)
 		this.player.freeze()
-		this.chunkLoader.update(this.player.getX(), this.player.getY(), {
-			player: this.player,
-			scene: this,
-			worldSceneKey: this.getSceneKey()
-		}).then(() => {
-			this.player?.unfreeze()
-			console.log('initial chunks loaded')
-		})
-		
+		this.chunkLoader
+			.update(this.player.getX(), this.player.getY(), {
+				player: this.player,
+				scene: this,
+				worldSceneKey: this.getSceneKey(),
+			})
+			.then(() => {
+				this.player?.unfreeze()
+				console.log('initial chunks loaded')
+			})
 
 		const musicplayer = new MusicPlayer(this, this.userSettings)
 		musicplayer.loop('audio-background')
@@ -67,18 +68,18 @@ export default class World extends Phaser.Scene {
 		})
 	}
 
-	private extractSpawnCoordinates (mapMaster: MapMasterT): {x: number, y: number} {
+	private extractSpawnCoordinates(mapMaster: MapMasterT): { x: number; y: number } {
 		const defaultSpawn = MEASURES.player.spawn.default
-		const spawnLayer = mapMaster.globalLayers.find(layer => layer.name === 'Spawn')
-		
+		const spawnLayer = mapMaster.globalLayers.find((layer) => layer.name === 'Spawn')
+
 		if (spawnLayer === undefined) {
-			return {x: defaultSpawn.x, y: defaultSpawn.y}
+			return { x: defaultSpawn.x, y: defaultSpawn.y }
 		} else {
 			const spawnObj = spawnLayer.objects[0]
 			if (spawnObj === undefined) {
-				return {x: defaultSpawn.x, y: defaultSpawn.y}
+				return { x: defaultSpawn.x, y: defaultSpawn.y }
 			} else {
-				return {x: spawnObj.x, y: spawnObj.y}
+				return { x: spawnObj.x, y: spawnObj.y }
 			}
 		}
 	}
@@ -88,18 +89,18 @@ export default class World extends Phaser.Scene {
 			throw 'player is unexpectedly undefined'
 		}
 		this.player.update(this)
-		
+
 		if (this.chunkLoader === undefined) {
 			throw 'chunk loader is unexpectedly undefined'
 		}
 		this.chunkLoader.update(this.player.getX(), this.player.getY(), {
 			player: this.player,
 			scene: this,
-			worldSceneKey: this.getSceneKey()
+			worldSceneKey: this.getSceneKey(),
 		})
 	}
 
-	public getSceneKey (): string {
+	public getSceneKey(): string {
 		return World.buildSceneKey(this.worldId)
 	}
 
@@ -111,7 +112,10 @@ export default class World extends Phaser.Scene {
 	}
 
 	private addBackgroundImage() {
-		const backgroundImage = this.add.image(0, 0, SCENE_ASSET_KEYS.images.background(this.getSceneKey())).setOrigin(0, 0).setDepth(-1)
+		const backgroundImage = this.add
+			.image(0, 0, SCENE_ASSET_KEYS.images.background(this.getSceneKey()))
+			.setOrigin(0, 0)
+			.setDepth(-1)
 
 		if (this.cameras.main === undefined) {
 			throw 'camera is unexpectedly undefined'
@@ -128,9 +132,9 @@ export default class World extends Phaser.Scene {
 			throw 'keyboard input plugin is null'
 		}
 		keyboard.on('keydown-ESC', () => {
-			this.scene.launch('PauseMenu', { 
+			this.scene.launch('PauseMenu', {
 				callingScene: this.getSceneKey(),
-				userSettings: this.userSettings
+				userSettings: this.userSettings,
 			})
 			this.scene.pause()
 		})

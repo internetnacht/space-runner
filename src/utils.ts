@@ -13,7 +13,17 @@ export function layerGetBoolProperty(layer: Phaser.Tilemaps.TilemapLayer, propNa
 	)
 }
 
-export function loadFile(asset: Asset, loader: Phaser.Loader.LoaderPlugin, loadCb: (key: string) => void, alreadyLoadedCb: (key: string) => boolean): Promise<Asset> {
+/**
+ * selecting the phaser loader by asset key doesn't work because some scope references are lost even when using .bind(this)
+ * therefore redundant callbacks are necessary
+ * todo maybe I just haven't found a solution yet
+ */
+export function loadFile(
+	asset: Asset,
+	loader: Phaser.Loader.LoaderPlugin,
+	loadCb: (key: string) => void,
+	alreadyLoadedCb: (key: string) => boolean
+): Promise<Asset> {
 	if (alreadyLoadedCb(asset.key)) {
 		console.log('asset ' + asset.key + ' already loaded')
 		return Promise.resolve(asset)
@@ -32,7 +42,11 @@ export function loadFile(asset: Asset, loader: Phaser.Loader.LoaderPlugin, loadC
 	return p
 }
 
-export function computeChunkId (x: number, y: number, measures: { horizontalChunkAmount: number, chunkWidth: number, chunkHeight: number}): number {
+export function computeChunkId(
+	x: number,
+	y: number,
+	measures: { horizontalChunkAmount: number; chunkWidth: number; chunkHeight: number }
+): number {
 	const tileX = Math.floor(x / MEASURES.tiles.width)
 	const tileY = Math.floor(y / MEASURES.tiles.height)
 	const chunkX = Math.floor(tileX / measures.chunkWidth)
@@ -41,13 +55,13 @@ export function computeChunkId (x: number, y: number, measures: { horizontalChun
 	return chunkY * measures.horizontalChunkAmount + chunkX
 }
 
-export function typecheck<P extends Props> (obj: unknown, type: TypeC<P>) {
+export function typecheck<P extends Props>(obj: unknown, type: TypeC<P>) {
 	const decoded = type.decode(obj)
 
 	if (isLeft(decoded)) {
 		console.error(obj)
 		throw 'obj doesnt suit type'
 	}
-	
+
 	return decoded.right
 }

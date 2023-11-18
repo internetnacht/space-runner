@@ -1,11 +1,11 @@
-import { GameCharacter } from './GameCharacter';
+import { GameCharacter } from './GameCharacter'
 
 export default class Player extends GameCharacter {
 	public constructor(scene: Phaser.Scene, spawnPosition?: { x: number; y: number }) {
 		super(scene, spawnPosition, 'dude')
-		
+
 		this.setController({
-			act: this.move.bind(this)
+			act: this.move.bind(this),
 		})
 	}
 
@@ -36,7 +36,7 @@ export default class Player extends GameCharacter {
 		}
 	}
 
-	private moveSideWays (velocity: number, direction: string) {
+	private moveSideWays(velocity: number, direction: string) {
 		this.sprite.setVelocityX(velocity)
 		if (this.sprite.body.onFloor()) {
 			this.sprite.anims.play(`character-${this.type}-${direction}`, true)
