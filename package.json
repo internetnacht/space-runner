@@ -14,7 +14,9 @@
 		"vite": "^4.4.5"
 	},
 	"dependencies": {
+		"fp-ts": "^2.16.1",
 		"immutable": "^5.0.0-beta.4",
+		"io-ts": "^2.2.20",
 		"phaser": "^3.60.0"
 	}
 }

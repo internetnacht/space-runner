@@ -1,16 +1,17 @@
 import Player from '../components/Player.ts'
-import { List } from "immutable"
-import { filePaths } from '../constants.ts'
+import { MEASURES, SCENE_ASSET_KEYS, filePaths } from '../constants.ts'
 import MusicPlayer from '../components/MusicPlayer.ts'
 import GameSettings from '../components/UserSettings.ts'
-import { layerGetBoolProperty } from '../utils.ts'
+import { computeChunkId, typecheck } from '../utils.ts'
+import ChunkLoader from '../components/ChunkLoader.ts'
+import { MapMaster, MapMasterT } from '../tiled-types.ts'
 
 export default class World extends Phaser.Scene {
 	private player?: Player
-	private camera?: Phaser.Cameras.Scene2D.Camera
 	private musicplayer?: MusicPlayer
 	private readonly worldId: number
 	private userSettings?: GameSettings
+	private chunkLoader?: ChunkLoader
 
 	public static buildSceneKey (id: number): string {
 		return `World${id}`
@@ -31,26 +32,33 @@ export default class World extends Phaser.Scene {
 	}
 
 	public preload() {
-		this.load.image(`${this.getSceneKey()}-tiles`, filePaths.sprites.sheet)
-		this.load.image(`${this.getSceneKey()}-backgroundImageKey`, filePaths.images.background)
-		this.load.tilemapTiledJSON(`${this.getSceneKey()}-map`, filePaths.maps.tilemap(this.worldId))
-		this.load.json(`${this.getSceneKey()}-mapjson`, filePaths.maps.tilemap(this.worldId))
+		this.load.image(SCENE_ASSET_KEYS.maps.tileset(this.getSceneKey()), filePaths.sprites.sheet)
+		this.load.image(SCENE_ASSET_KEYS.images.background(this.getSceneKey()), filePaths.images.background)
+		this.load.json(SCENE_ASSET_KEYS.maps.master(this.getSceneKey()), filePaths.maps.master(this.getSceneKey()))
 	}
 
 	public create() {
-		const map = this.make.tilemap({ key: `${this.getSceneKey()}-map` })
-		const tileset = map.addTilesetImage('spritesheet', `${this.getSceneKey()}-tiles`)
-		if (tileset === null) {
-			throw 'failed to create tileset object'
-		}
+		const mapMaster = typecheck(this.cache.json.get(SCENE_ASSET_KEYS.maps.master(this.getSceneKey())), MapMaster)
 
-		this.player = this.createPlayer(map)
+		const spawnCoordinates = this.extractSpawnCoordinates(mapMaster)
+		const spawnChunk = computeChunkId(spawnCoordinates.x, spawnCoordinates.y, { 
+			horizontalChunkAmount: mapMaster.horizontalChunkAmount,
+			chunkWidth: mapMaster.chunkWidth,
+			chunkHeight: mapMaster.chunkHeight
+		})
+
+		this.chunkLoader = new ChunkLoader(-1, mapMaster)
+		this.player = new Player(this, this.getSceneKey(), spawnCoordinates)
+		this.chunkLoader.update(this.player.getX(), this.player.getY(), {
+			player: this.player,
+			scene: this,
+			worldSceneKey: this.getSceneKey()
+		})
+
 		this.musicplayer = new MusicPlayer(this, this.userSettings)
 		this.musicplayer.loop('audio-background')
 
-		this.setupCamera(map)
-		const layers = this.addLayers(map, tileset)
-		this.setDisplayDepths(layers, this.player)
+		this.setupCamera()
 		this.addBackgroundImage()
 		this.addPauseMenuCallbacks()
 
@@ -60,84 +68,56 @@ export default class World extends Phaser.Scene {
 		})
 	}
 
+	private extractSpawnCoordinates (mapMaster: MapMasterT): {x: number, y: number} {
+		const defaultSpawn = MEASURES.player.spawn.default
+		const spawnLayer = mapMaster.globalLayers.find(layer => layer.name === 'Spawn')
+		
+		if (spawnLayer === undefined) {
+			return {x: defaultSpawn.x, y: defaultSpawn.y}
+		} else {
+			const spawnObj = spawnLayer.objects[0]
+			if (spawnObj === undefined) {
+				return {x: defaultSpawn.x, y: defaultSpawn.y}
+			} else {
+				return {x: spawnObj.x, y: spawnObj.y}
+			}
+		}
+	}
+
 	public update() {
 		if (this.player === undefined) {
 			throw 'player is unexpectedly undefined'
 		}
 		this.player.update(this)
+		
+		if (this.chunkLoader === undefined) {
+			throw 'chunk loader is unexpectedly undefined'
+		}
+		this.chunkLoader.update(this.player.getX(), this.player.getY(), {
+			player: this.player,
+			scene: this,
+			worldSceneKey: this.getSceneKey()
+		})
 	}
 
 	public getSceneKey (): string {
 		return World.buildSceneKey(this.worldId)
 	}
 
-	private createPlayer(map: Phaser.Tilemaps.Tilemap): Player {
-		const spawnPoint = map.findObject('Spawn', () => true)
-
-		if (spawnPoint === null || spawnPoint.x === undefined || spawnPoint.y === undefined) {
-			return new Player(this, this.getSceneKey())
-		} else {
-			return new Player(this, this.getSceneKey(), { x: spawnPoint.x, y: spawnPoint.y })
-		}
-	}
-
-	private setupCamera(map: Phaser.Tilemaps.Tilemap) {
-		this.camera = this.cameras.main
-		this.camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
+	private setupCamera() {
 		if (this.player === undefined) {
 			throw 'player is unexpectedly undefined'
 		}
-		this.player.attachToCamera(this.camera)
-	}
-
-	private addLayers(map: Phaser.Tilemaps.Tilemap, tileset: Phaser.Tilemaps.Tileset): List<Phaser.Tilemaps.TilemapLayer> {
-		const mapJSON = this.cache.json.get(`${this.getSceneKey()}-mapjson`)
-		const tileLayerNames = List(mapJSON.layers)
-			.filter((layer: any) => layer.type === 'tilelayer')
-			.map(function (layer: any) {
-				return String(layer.name)
-			})
-
-		const layers = tileLayerNames.map(layerName => {
-			const layer = map.createLayer(layerName, [tileset])
-			if (layer === null) {
-				throw "map couldn't create layer " + layerName
-			}
-
-			if (layerGetBoolProperty(layer, 'collide')) {
-				layer.setCollisionByExclusion([-1])
-				if (this.player === undefined) {
-					throw 'player is unexpectedly undefined'
-				}
-				this.physics.add.collider(this.player.getCollider(), layer)
-			}
-
-			return layer
-		})
-
-		return layers
-	}
-
-	private setDisplayDepths (layers: List<Phaser.Tilemaps.TilemapLayer>, player: Player) {
-		const depthOffset = 10
-
-		for (const [index, layer] of layers.entries()) {
-			const depth = depthOffset + index
-			if (layer.layer.name === 'Player') {
-				player.setDisplayDepth(depth)
-			} else {
-				layer.setDepth(depth)
-			}
-		}
+		this.player.attachToCamera(this.cameras.main)
 	}
 
 	private addBackgroundImage() {
-		const backgroundImage = this.add.image(0, 0, `${this.getSceneKey()}-backgroundImageKey`).setOrigin(0, 0).setDepth(-1)
+		const backgroundImage = this.add.image(0, 0, SCENE_ASSET_KEYS.images.background(this.getSceneKey())).setOrigin(0, 0).setDepth(-1)
 
-		if (this.camera === undefined) {
+		if (this.cameras.main === undefined) {
 			throw 'camera is unexpectedly undefined'
 		}
-		this.camera.on('followupdate', function (camera: Phaser.Cameras.Scene2D.BaseCamera) {
+		this.cameras.main.on('followupdate', function (camera: Phaser.Cameras.Scene2D.BaseCamera) {
 			backgroundImage.x = camera.scrollX
 			backgroundImage.y = camera.scrollY
 		})

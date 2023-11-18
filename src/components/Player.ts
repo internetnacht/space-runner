@@ -109,4 +109,12 @@ export default class Player {
 	public setDisplayDepth (depth: number): void {
 		this.sprite.setDepth(depth)
 	}
+
+	public getX (): number {
+		return this.sprite.x
+	}
+
+	public getY (): number {
+		return this.sprite.y
+	}
 }
