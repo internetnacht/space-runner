@@ -1,9 +1,14 @@
 import { filePaths } from '../constants';
+import { Asset } from '../global-types';
+import { loadFile } from '../utils';
 import GameSettings from './UserSettings';
 
 type AudioKey = keyof typeof filePaths.audio
 
 export default class MusicPlayer {
+	/**
+	 * sound is played via a Phaser.Scene instance -> MusicPlayer depends on its scene
+	 */
 	private readonly scene: Phaser.Scene
 
 	public static loadAssets (scene: Phaser.Scene) {
@@ -20,12 +25,9 @@ export default class MusicPlayer {
 	}
 
 	private updateToSettings (settings: Readonly<GameSettings>): void {
-		console.log(settings)
 		if (settings.musicIsOn) {
-			console.log('resuming')
 			this.scene.sound.setMute(false)
 		} else {
-			console.log('pausing')
 			this.scene.sound.setMute(true)
 		}
 	}
@@ -42,19 +44,18 @@ export default class MusicPlayer {
 		this.play(audio, { loop: true })
 	}
 
-	public async loadAudio (audio: AudioKey): Promise<any> {
+	public async loadAudio (audio: AudioKey): Promise<Asset> {
+		const asset: Asset = {
+			key: audio,
+			type: 'audio',
+			filePath: filePaths.audio[audio]
+		}
+
 		if (this.scene.load.cacheManager.audio.has(audio)) {
-			return new Promise(resolve => resolve(null))
+			return new Promise(resolve => resolve(asset))
 		}
 		
-		return new Promise(resolve => {
-			this.scene.load.once(`filecomplete-audio-${audio}`, () => {
-				resolve(null)
-			});
-
-			const loader = this.scene.load.audio(audio, filePaths.audio[audio]);
-			loader.start();
-		})
+		return loadFile(asset, this.scene.load, () => this.scene.load.audio(audio, filePaths.audio[audio]))
 	}
 
 	public pause () {
