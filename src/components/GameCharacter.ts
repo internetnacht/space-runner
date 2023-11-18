@@ -1,4 +1,4 @@
-import { filePaths } from '../constants'
+import { SCENE_ASSET_KEYS, filePaths } from '../constants'
 
 type CharacterType = 'dude'
 
@@ -15,13 +15,17 @@ export class GameCharacter {
 		scene.load.spritesheet('dude', filePaths.sprites.dude, { frameWidth: 32, frameHeight: 48 })
 	}
 
-	public constructor(scene: Phaser.Scene, spawnPosition?: { x: number; y: number }, type: CharacterType = 'dude') {
+	public constructor(
+		scene: Phaser.Scene,
+		spawnPosition?: { x: number; y: number },
+		type: CharacterType = 'dude'
+	) {
 		this.type = type
 
 		if (spawnPosition === undefined) {
-			this.sprite = scene.physics.add.sprite(0, 0, 'dude')
+			this.sprite = scene.physics.add.sprite(0, 0, this.type)
 		} else {
-			this.sprite = scene.physics.add.sprite(spawnPosition.x, spawnPosition.y, 'dude')
+			this.sprite = scene.physics.add.sprite(spawnPosition.x, spawnPosition.y, this.type)
 		}
 
 		this.sprite.setBounce(0.1)
@@ -35,32 +39,32 @@ export class GameCharacter {
 
 	private addMovementAnimations(scene: Phaser.Scene) {
 		scene.anims.create({
-			key: `character-${this.type}-left`,
+			key: SCENE_ASSET_KEYS.animations.character.moving.left(this.type),
 			frames: scene.anims.generateFrameNumbers(this.type, { start: 0, end: 3 }),
 			frameRate: 10,
 			repeat: -1,
 		})
 
 		scene.anims.create({
-			key: `character-${this.type}-jumping-left`,
-			frames: [{ key: 'dude', frame: 1 }],
+			key: SCENE_ASSET_KEYS.animations.character.moving.jumping.left(this.type),
+			frames: [{ key: this.type, frame: 1 }],
 			frameRate: 20,
 		})
 
 		scene.anims.create({
-			key: `character-${this.type}-jumping-right`,
-			frames: [{ key: 'dude', frame: 6 }],
+			key: SCENE_ASSET_KEYS.animations.character.moving.jumping.right(this.type),
+			frames: [{ key: this.type, frame: 6 }],
 			frameRate: 20,
 		})
 
 		scene.anims.create({
-			key: `character-${this.type}-turn`,
-			frames: [{ key: 'dude', frame: 4 }],
+			key: SCENE_ASSET_KEYS.animations.character.moving.turn(this.type),
+			frames: [{ key: this.type, frame: 4 }],
 			frameRate: 20,
 		})
 
 		scene.anims.create({
-			key: `character-${this.type}-right`,
+			key: SCENE_ASSET_KEYS.animations.character.moving.right(this.type),
 			frames: scene.anims.generateFrameNumbers(this.type, { start: 5, end: 8 }),
 			frameRate: 10,
 			repeat: -1,

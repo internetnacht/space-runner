@@ -1,3 +1,4 @@
+import { SCENE_ASSET_KEYS } from '../constants'
 import { GameCharacter } from './GameCharacter'
 
 export default class Player extends GameCharacter {
@@ -36,12 +37,22 @@ export default class Player extends GameCharacter {
 		}
 	}
 
-	private moveSideWays(velocity: number, direction: string) {
+	private moveSideWays(velocity: number, direction: 'left' | 'right' | 'turn') {
 		this.sprite.setVelocityX(velocity)
-		if (this.sprite.body.onFloor()) {
-			this.sprite.anims.play(`character-${this.type}-${direction}`, true)
-		} else if (['left', 'right'].includes(direction)) {
-			this.sprite.anims.play(`character-${this.type}-jumping-${direction}`)
+
+		if (direction === 'turn') {
+			this.sprite.anims.play(SCENE_ASSET_KEYS.animations.character.moving.turn(this.type))
+			return
 		}
+
+		const animationKeySelector = (() => {
+			if (this.sprite.body.onFloor()) {
+				return SCENE_ASSET_KEYS.animations.character.moving.jumping
+			} else {
+				return SCENE_ASSET_KEYS.animations.character.moving
+			}
+		})()
+
+		this.sprite.anims.play(animationKeySelector[direction](this.type))
 	}
 }

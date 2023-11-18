@@ -61,7 +61,8 @@ export const filePaths = Object.freeze({
 	},
 	maps: {
 		master: (worldSceneKey: string) => `maps/${worldSceneKey}/master.json`,
-		chunk: (worldSceneKey: string, chunk: ChunkId) => `maps/${worldSceneKey}/chunk${chunk}.json`,
+		chunk: (worldSceneKey: string, chunk: ChunkId) =>
+			`maps/${worldSceneKey}/chunk${chunk}.json`,
 	},
 	audio: {
 		'audio-background': 'audio/A+Drop+In+the+Desert.mp3',
@@ -78,6 +79,19 @@ export const SCENE_ASSET_KEYS = Object.freeze({
 	},
 	images: {
 		background: (sceneKey: string) => sceneKey + '_backgroundImageKey',
+	},
+	animations: {
+		character: {
+			moving: {
+				left: (characterType: string) => `character-${characterType}-left`,
+				right: (characterType: string) => `character-${characterType}-right`,
+				turn: (characterType: string) => `character-${characterType}-turn`,
+				jumping: {
+					left: (characterType: string) => `character-${characterType}-jumping-left`,
+					right: (characterType: string) => `character-${characterType}-jumping-right`,
+				},
+			},
+		},
 	},
 })
 
