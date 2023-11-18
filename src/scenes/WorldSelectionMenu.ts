@@ -1,6 +1,6 @@
 import MusicPlayer from '../components/MusicPlayer.ts'
 import GameSettings from '../components/UserSettings.ts'
-import ClickButtonFactory from '../components/buttons/ClickButtonFactory.ts'
+import ClickButton from '../components/buttons/ClickButton.ts'
 import { MEASURES, worlds } from '../constants.ts'
 
 export default class WorldSelectionMenu extends Phaser.Scene {
@@ -23,9 +23,9 @@ export default class WorldSelectionMenu extends Phaser.Scene {
 
 	public create() {
 		const musicPlayer = new MusicPlayer(this, this.userSettings)
-		musicPlayer.loop('audio-starting-screen')
+		//musicPlayer.loop('audio-starting-screen')
 
-		const buttons = ClickButtonFactory.createListFromConfig({
+		const buttons = ClickButton.createVerticalButtonList({
 			scene: this,
 			x: MEASURES.buttons.click.margin.normal,
 			initialY: 0,

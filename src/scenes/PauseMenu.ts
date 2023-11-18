@@ -1,8 +1,8 @@
-import ClickButtonFactory from '../components/buttons/ClickButtonFactory.js'
 import { List } from 'immutable'
 import GameSettings from '../components/UserSettings.js'
 import { MEASURES } from '../constants.js'
-import ToggleButtonFactory from '../components/buttons/ToggleButtonFactory.js'
+import ClickButton from '../components/buttons/ClickButton.js'
+import ToggleButton from '../components/buttons/ToggleButton.js'
 
 export default class PauseMenu extends Phaser.Scene {
 	private callingScene?: string
@@ -45,32 +45,32 @@ export default class PauseMenu extends Phaser.Scene {
 			}
 		])
 
-		const buttons = ClickButtonFactory.createListFromConfig({
+		const buttons = ClickButton.createVerticalButtonList({
 			scene: this,
 			x: this.cameras.main.width/2,
 			initialY: this.cameras.main.height/2,
 			margin: MEASURES.buttons.click.margin.normal,
 			buttons: buttonsConfig
 		})
-		
+
 		buttons.forEach(button => button.display())
 
-		const toggleButtonFactory = new ToggleButtonFactory(
-			this.cameras.main.width/2,
-			buttons.last()?.getBottom() ?? this.cameras.main.height/2
-		)
-		toggleButtonFactory.setFixed(true)
-		toggleButtonFactory.setInitialState(this.userSettings?.musicIsOn ?? false)
-		toggleButtonFactory.setLabel('Musik')
-		toggleButtonFactory.setCallback(toggleState => {
-			if (this.userSettings !== undefined) {
-				this.userSettings.musicIsOn = toggleState
-			} else {
-				throw 'tried to set userSettings.musicIsOn but userSettings were undefined'
+		const toggleButton = new ToggleButton(this, {
+			x: this.cameras.main.width/2,
+			y: buttons.last()?.getBottom() ?? this.cameras.main.height/2,
+			fixed: true,
+			initialState: this.userSettings?.musicIsOn ?? false,
+			label: 'Musik',
+			stateChangeCallback: (toggleState) => {
+				if (this.userSettings !== undefined) {
+					this.userSettings.musicIsOn = toggleState
+				} else {
+					throw 'tried to set userSettings.musicIsOn but userSettings were undefined'
+				}
 			}
 		})
-		const toggleButton = toggleButtonFactory.build(this)
 		toggleButton.display()
+		
 
 		const keyboard = this.input.keyboard
 		if (keyboard === null) {
