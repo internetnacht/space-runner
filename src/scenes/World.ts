@@ -8,7 +8,6 @@ import { MapMaster, MapMasterT } from '../tiled-types.ts'
 
 export default class World extends Phaser.Scene {
 	private player?: Player
-	private musicplayer?: MusicPlayer
 	private readonly worldId: number
 	private userSettings?: GameSettings
 	private chunkLoader?: ChunkLoader
@@ -55,8 +54,8 @@ export default class World extends Phaser.Scene {
 			worldSceneKey: this.getSceneKey()
 		})
 
-		this.musicplayer = new MusicPlayer(this, this.userSettings)
-		this.musicplayer.loop('audio-background')
+		const musicplayer = new MusicPlayer(this, this.userSettings)
+		musicplayer.loop('audio-background')
 
 		this.setupCamera()
 		this.addBackgroundImage()
@@ -64,7 +63,7 @@ export default class World extends Phaser.Scene {
 
 		this.events.on('shutdown', () => {
 			this.player?.shutdown()
-			this.musicplayer?.shutdown()
+			musicplayer?.shutdown()
 		})
 	}
 
