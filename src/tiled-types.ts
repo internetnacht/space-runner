@@ -1,7 +1,7 @@
 import * as t from "io-ts"
 
 /**
- * type currently only check fields that are used by inacht code
+ * types currently only check fields that are used by inacht code
  */
 
 export const MapLayerObject = t.type({
