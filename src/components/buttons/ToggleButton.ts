@@ -91,12 +91,28 @@ export default class ToggleButton implements Button {
 		this.stateChangeCallback(this.toggleState)
 	}
 
-	public getX(): number {
+	public get x(): number {
 		return this.overlay.x
 	}
 
-	public getY(): number {
+	public set x(newX: number) {
+		const change = newX - this.x
+		this.overlay.setX(Math.floor(this.overlay.x + change))
+		this.togglerOn.setX(Math.floor(this.togglerOn.x + change))
+		this.togglerOff.setX(Math.floor(this.togglerOff.x + change))
+		this.text.setX(Math.floor(this.text.x + change))
+	}
+
+	public get y(): number {
 		return this.overlay.y
+	}
+
+	public set y(newY: number) {
+		const change = newY - this.y
+		this.overlay.setY(Math.floor(this.overlay.y + change))
+		this.togglerOn.setY(Math.floor(this.togglerOn.y + change))
+		this.togglerOff.setY(Math.floor(this.togglerOff.y + change))
+		this.text.setY(Math.floor(this.text.y + change))
 	}
 
 	public getWidth(): number {
@@ -108,7 +124,7 @@ export default class ToggleButton implements Button {
 	}
 
 	public getBottom(): number {
-		return this.getY() + this.getHeight()
+		return this.y + this.getHeight()
 	}
 
 	public destruct(): void {
@@ -136,5 +152,10 @@ export default class ToggleButton implements Button {
 
 	public isOn(): boolean {
 		return this.toggleState
+	}
+
+	public center() {
+		this.x = this.x - this.getWidth() / 2
+		this.y = this.y - this.getHeight() / 2
 	}
 }

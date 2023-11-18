@@ -53,7 +53,10 @@ export default class PauseMenu extends Phaser.Scene {
 			buttons: buttonsConfig,
 		})
 
-		buttons.forEach((button) => button.display())
+		buttons.forEach((button) => {
+			button.center()
+			button.display()
+		})
 
 		const toggleButton = new ToggleButton(this, {
 			x: this.cameras.main.width / 2,
@@ -69,6 +72,7 @@ export default class PauseMenu extends Phaser.Scene {
 				}
 			},
 		})
+		toggleButton.center()
 		toggleButton.display()
 
 		const keyboard = this.input.keyboard

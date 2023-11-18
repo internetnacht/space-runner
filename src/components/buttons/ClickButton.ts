@@ -8,7 +8,10 @@ import { ButtonConfig } from './configs/ButtonConfig'
 export default class ClickButton implements Button {
 	private readonly text: Phaser.GameObjects.Text
 
-	public constructor(scene: Phaser.Scene, config: ButtonConfig & ButtonClickConfig & ButtonLabelConfig) {
+	public constructor(
+		scene: Phaser.Scene,
+		config: ButtonConfig & ButtonClickConfig & ButtonLabelConfig
+	) {
 		const scrollFactor = computeScrollFactor(config.fixed)
 
 		const text = new Phaser.GameObjects.Text(scene, config.x, config.y, config.label, {})
@@ -24,12 +27,20 @@ export default class ClickButton implements Button {
 		this.text = text
 	}
 
-	public getX(): number {
+	public get x(): number {
 		return this.text.x
 	}
 
-	public getY(): number {
+	public set x(newX: number) {
+		this.text.setX(Math.floor(newX))
+	}
+
+	public get y(): number {
 		return this.text.y
+	}
+
+	public set y(newY: number) {
+		this.text.setY(Math.floor(newY))
 	}
 
 	public getWidth(): number {
@@ -41,7 +52,7 @@ export default class ClickButton implements Button {
 	}
 
 	public getBottom(): number {
-		return this.getY() + this.getHeight()
+		return this.y + this.getHeight()
 	}
 
 	public destruct() {
@@ -72,5 +83,10 @@ export default class ClickButton implements Button {
 
 			return buttons.push(nextButton)
 		}, List<ClickButton>())
+	}
+
+	public center() {
+		this.x = this.x - this.getWidth() / 2
+		this.y = this.y - this.getHeight() / 2
 	}
 }
