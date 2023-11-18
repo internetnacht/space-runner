@@ -1,15 +1,17 @@
 import { filePaths } from '../constants'
 
+type PlayerType = "dude"
+
 export default class Player {
-	private readonly sceneKey: string
 	private readonly sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
+	private readonly playerKey: PlayerType
 
 	public static loadAssets(scene: Phaser.Scene) {
 		scene.load.spritesheet('dude', filePaths.sprites.dude, { frameWidth: 32, frameHeight: 48 })
 	}
 
-	public constructor(scene: Phaser.Scene, sceneKey: string, spawnPosition?: { x: number; y: number }) {
-		this.sceneKey = sceneKey
+	public constructor(scene: Phaser.Scene, spawnPosition?: { x: number; y: number }, playerKey: PlayerType = 'dude') {
+		this.playerKey = playerKey
 
 		if (spawnPosition === undefined) {
 			this.sprite = scene.physics.add.sprite(0, 0, 'dude')
@@ -24,32 +26,32 @@ export default class Player {
 
 	private addMovementAnimations(scene: Phaser.Scene) {
 		scene.anims.create({
-			key: `${this.sceneKey}-player-left`,
+			key: `${this.playerKey}-player-left`,
 			frames: scene.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
 			frameRate: 10,
 			repeat: -1,
 		})
 
 		scene.anims.create({
-			key: `${this.sceneKey}-player-jumping-left`,
+			key: `${this.playerKey}-player-jumping-left`,
 			frames: [{key: 'dude', frame: 1}],
 			frameRate: 20
 		})
 
 		scene.anims.create({
-			key: `${this.sceneKey}-player-jumping-right`,
+			key: `${this.playerKey}-player-jumping-right`,
 			frames: [{key: 'dude', frame: 6}],
 			frameRate: 20
 		})
 
 		scene.anims.create({
-			key: `${this.sceneKey}-player-turn`,
+			key: `${this.playerKey}-player-turn`,
 			frames: [{ key: 'dude', frame: 4 }],
 			frameRate: 20,
 		})
 
 		scene.anims.create({
-			key: `${this.sceneKey}-player-right`,
+			key: `${this.playerKey}-player-right`,
 			frames: scene.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
 			frameRate: 10,
 			repeat: -1,
@@ -90,9 +92,9 @@ export default class Player {
 	private moveSideWays (velocity: number, direction: string) {
 		this.sprite.setVelocityX(velocity)
 		if (this.sprite.body.onFloor()) {
-			this.sprite.anims.play(`${this.sceneKey}-player-${direction}`, true)
+			this.sprite.anims.play(`${this.playerKey}-player-${direction}`, true)
 		} else if (['left', 'right'].includes(direction)) {
-			this.sprite.anims.play(`${this.sceneKey}-player-jumping-${direction}`)
+			this.sprite.anims.play(`${this.playerKey}-player-jumping-${direction}`)
 		}
 	}
 

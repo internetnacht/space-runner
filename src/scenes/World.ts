@@ -47,7 +47,7 @@ export default class World extends Phaser.Scene {
 		})
 
 		this.chunkLoader = new ChunkLoader(-1, mapMaster)
-		this.player = new Player(this, this.getSceneKey(), spawnCoordinates)
+		this.player = new Player(this, spawnCoordinates)
 		this.chunkLoader.update(this.player.getX(), this.player.getY(), {
 			player: this.player,
 			scene: this,
