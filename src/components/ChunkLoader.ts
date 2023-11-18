@@ -111,7 +111,7 @@ export default class ChunkLoader {
 				//layer.setOrigin(0,0)
 
 				if (layerGetBoolProperty(layer, 'collide')) {
-					layer.setCollisionByExclusion([-1])
+					layer.setCollisionByExclusion([])
 					if (context.player === undefined) {
 						throw 'player is unexpectedly undefined'
 					}
