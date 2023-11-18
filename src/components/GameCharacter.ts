@@ -92,4 +92,14 @@ export class GameCharacter {
 	public getY (): number {
 		return this.sprite.y
 	}
+
+	public freeze () {
+		this.sprite.body.setImmovable()
+		this.sprite.body.setAllowGravity(false)
+	}
+
+	public unfreeze () {
+		this.sprite.body.setImmovable(false)
+		this.sprite.body.setAllowGravity()
+	}
 }

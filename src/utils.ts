@@ -13,7 +13,12 @@ export function layerGetBoolProperty(layer: Phaser.Tilemaps.TilemapLayer, propNa
 	)
 }
 
-export function loadFile(asset: Asset, loader: Phaser.Loader.LoaderPlugin, loadCb: () => void): Promise<Asset> {
+export function loadFile(asset: Asset, loader: Phaser.Loader.LoaderPlugin, loadCb: (key: string) => void, alreadyLoadedCb: (key: string) => boolean): Promise<Asset> {
+	if (alreadyLoadedCb(asset.key)) {
+		console.log('asset ' + asset.key + ' already loaded')
+		return Promise.resolve(asset)
+	}
+
 	console.log('loading ' + asset.filePath)
 	const p = new Promise<Asset>((resolve) => {
 		loader.on(`filecomplete-${asset.type}-${asset.key}`, () => {
@@ -21,7 +26,7 @@ export function loadFile(asset: Asset, loader: Phaser.Loader.LoaderPlugin, loadC
 		})
 	})
 
-	loadCb()
+	loadCb(asset.key)
 	loader.start()
 
 	return p

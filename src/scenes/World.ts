@@ -2,7 +2,7 @@ import Player from '../components/Player.ts'
 import { MEASURES, SCENE_ASSET_KEYS, filePaths } from '../constants.ts'
 import MusicPlayer from '../components/MusicPlayer.ts'
 import GameSettings from '../components/UserSettings.ts'
-import { computeChunkId, typecheck } from '../utils.ts'
+import { typecheck } from '../utils.ts'
 import ChunkLoader from '../components/ChunkLoader.ts'
 import { MapMaster, MapMasterT } from '../tiled-types.ts'
 
@@ -43,11 +43,16 @@ export default class World extends Phaser.Scene {
 
 		this.chunkLoader = new ChunkLoader(-1, mapMaster)
 		this.player = new Player(this, spawnCoordinates)
+		this.player.freeze()
 		this.chunkLoader.update(this.player.getX(), this.player.getY(), {
 			player: this.player,
 			scene: this,
 			worldSceneKey: this.getSceneKey()
+		}).then(() => {
+			this.player?.unfreeze()
+			console.log('initial chunks loaded')
 		})
+		
 
 		const musicplayer = new MusicPlayer(this, this.userSettings)
 		musicplayer.loop('audio-background')

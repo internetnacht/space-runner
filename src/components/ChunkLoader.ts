@@ -15,7 +15,7 @@ export default class ChunkLoader {
 		this.currentlyLoadedChunks = []
 	}
 
-	public update(x: number, y: number, context: ChunkContext) {
+	public async update(x: number, y: number, context: ChunkContext) {
 		const chunkId = computeChunkId(x, y, {
 			horizontalChunkAmount: this.mapMaster.horizontalChunkAmount,
 			chunkWidth: this.mapMaster.chunkWidth,
@@ -25,10 +25,10 @@ export default class ChunkLoader {
 		if (this.currentChunk === chunkId) return
 
 		this.currentChunk = chunkId
-		this.updateVisibleChunks(chunkId, context)
+		return this.updateVisibleChunks(chunkId, context)
 	}
 
-	private updateVisibleChunks(chunk: ChunkId, context: ChunkContext) {
+	private async updateVisibleChunks(chunk: ChunkId, context: ChunkContext) {
 		const surroundingChunks = this.getSurroundingChunks(chunk)
 		const nextVisibleChunks = surroundingChunks.push(chunk)
 
@@ -40,37 +40,47 @@ export default class ChunkLoader {
 
 		const unwantedChunks = this.currentlyLoadedChunks.filter((chunk) => !nextVisibleChunks.includes(chunk.id))
 
-		newVisibleChunks.map(this.loadChunk(context, this.createChunk(context)))
+		const chunkCreationPromises = newVisibleChunks
+			.map(this.loadChunk(context))
+			.map(this.createChunk(context))
 
 		unwantedChunks.forEach(this.destroyOldChunk)
+
+		return Promise.all(chunkCreationPromises)
 	}
 
-	private loadChunk (context: ChunkContext, cb: (chunk: ChunkId) => void) {
-		return (chunk: ChunkId) => {
+	private loadChunk (context: ChunkContext) {
+		return async (chunk: ChunkId) => {
 			const chunkFilePath = filePaths.maps.chunk(context.worldSceneKey, chunk)
 
 			const chunkMapProm = loadFile({
 				key: SCENE_ASSET_KEYS.maps.chunk(context.worldSceneKey, chunk),
 				type: 'tilemapJSON',
 				filePath: chunkFilePath
-			}, context.scene.load, () => context.scene.load.tilemapTiledJSON(SCENE_ASSET_KEYS.maps.chunk(context.worldSceneKey, chunk), chunkFilePath))
+			}, context.scene.load,
+			(key) => context.scene.load.tilemapTiledJSON(key, chunkFilePath),
+			(key) => context.scene.cache.tilemap.get(key) !== undefined)
 
 			const chunkJSONProm = loadFile({
 				key: SCENE_ASSET_KEYS.maps.chunkJSON(context.worldSceneKey, chunk),
 				type: 'json',
 				filePath: chunkFilePath
-			}, context.scene.load, () => context.scene.load.json(SCENE_ASSET_KEYS.maps.chunkJSON(context.worldSceneKey, chunk), chunkFilePath))
+			}, context.scene.load,
+			(key) => context.scene.load.json(key, chunkFilePath),
+			(key) => context.scene.cache.json.get(key) !== undefined)
 
-			chunkMapProm.then(() => {
-				chunkJSONProm.then(() => {
-					cb(chunk)
-				})
-			})
+			console.log('awaiting loading chunks')
+			await chunkJSONProm
+			await chunkMapProm
+			console.log('awaited loading chunks')
+
+			return chunk
 		}
 	}
 
 	private createChunk(context: ChunkContext) {
-		return (chunk: ChunkId) => {
+		return async (chunkProm: Promise<ChunkId>) => {
+			const chunk = await chunkProm
 			console.log(chunk)
 			const chunkX = chunk % this.mapMaster.horizontalChunkAmount
 			const chunkY = Math.floor(chunk / this.mapMaster.horizontalChunkAmount)

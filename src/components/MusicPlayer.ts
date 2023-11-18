@@ -55,7 +55,9 @@ export default class MusicPlayer {
 			return new Promise(resolve => resolve(asset))
 		}
 		
-		return loadFile(asset, this.scene.load, () => this.scene.load.audio(audio, filePaths.audio[audio]))
+		return loadFile(asset, this.scene.load,
+			(key) => this.scene.load.audio(key, filePaths.audio[audio]),
+			(key) => this.scene.cache.audio.get(key) !== undefined)
 	}
 
 	public pause () {
