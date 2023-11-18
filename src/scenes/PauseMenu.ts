@@ -41,7 +41,15 @@ export default class PauseMenu extends Phaser.Scene {
 			},
 			{
 				label: 'Zurück zur Levelauswahl',
-				cb: this.backToWorldSelection.bind(this),
+				cb: (() => {
+					this.backToScene('WorldSelectionMenu')
+				}).bind(this),
+			},
+			{
+				label: 'Zurück zum Startbildschirm',
+				cb: (() => {
+					this.backToScene('StartingScreen')
+				}).bind(this),
 			},
 		])
 
@@ -102,8 +110,8 @@ export default class PauseMenu extends Phaser.Scene {
 		})
 	}
 
-	private backToWorldSelection() {
-		this.scene.start('WorldSelectionMenu', {
+	private backToScene(sceneKey: string) {
+		this.scene.start(sceneKey, {
 			userSettings: this.userSettings?.clone(),
 		})
 		if (this.callingScene === undefined) {

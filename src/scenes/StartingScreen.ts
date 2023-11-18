@@ -27,7 +27,9 @@ class StartingScreen extends Phaser.Scene {
 	}
 
 	create() {
-		worlds.forEach((world) => this.scene.add(world.getSceneKey(), world))
+		worlds
+			.filter((world) => this.scene.manager.keys[world.getSceneKey()] === undefined)
+			.forEach((world) => this.scene.add(world.getSceneKey(), world))
 
 		this.add
 			.image(
