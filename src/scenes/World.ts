@@ -1,7 +1,7 @@
 import Player from '../components/Player.ts'
 import { GLOBAL_ASSET_KEYS, MEASURES, SCENE_ASSET_KEYS, filePaths } from '../constants.ts'
 import MusicPlayer from '../components/MusicPlayer.ts'
-import GameSettings from '../components/UserSettings.ts'
+import GameSettings from '../components/GameSettings.ts'
 import { typecheck } from '../utils.ts'
 import ChunkLoader from '../components/ChunkLoader.ts'
 import { MapMaster, MapMasterT } from '../tiled-types.ts'

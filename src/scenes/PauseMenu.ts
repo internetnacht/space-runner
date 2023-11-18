@@ -1,5 +1,5 @@
 import { List } from 'immutable'
-import GameSettings from '../components/UserSettings.js'
+import GameSettings from '../components/GameSettings.js'
 import { MEASURES } from '../constants.js'
 import ClickButton from '../components/buttons/ClickButton.js'
 import ToggleButton from '../components/buttons/ToggleButton.js'

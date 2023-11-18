@@ -1,10 +1,11 @@
 import MusicPlayer from '../components/MusicPlayer.ts'
-import GameSettings from '../components/UserSettings.ts'
+import GameSettings from '../components/GameSettings.ts'
 import ClickButton from '../components/buttons/ClickButton.ts'
 import { MEASURES, worlds } from '../constants.ts'
 
 export default class WorldSelectionMenu extends Phaser.Scene {
 	private userSettings?: GameSettings
+	private musicPlayer?: MusicPlayer
 
 	public constructor() {
 		super({
@@ -18,12 +19,13 @@ export default class WorldSelectionMenu extends Phaser.Scene {
 		} else {
 			throw 'expected usersettings but got ' + data.userSettings
 		}
+
+		if (data.musicPlayer instanceof MusicPlayer) {
+			this.musicPlayer = data.musicPlayer
+		}
 	}
 
 	public create() {
-		const musicPlayer = new MusicPlayer(this, this.userSettings)
-		//musicPlayer.loop('audio-starting-screen')
-
 		const buttons = ClickButton.createVerticalButtonList({
 			scene: this,
 			x: MEASURES.buttons.click.margin.normal,
@@ -46,7 +48,7 @@ export default class WorldSelectionMenu extends Phaser.Scene {
 		buttons.forEach((button) => button.display())
 
 		this.events.on('shutdown', () => {
-			musicPlayer.shutdown()
+			this.musicPlayer?.shutdown()
 		})
 	}
 }

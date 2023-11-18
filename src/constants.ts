@@ -58,6 +58,9 @@ export const filePaths = Object.freeze({
 				off: 'images/button-toggle-off.png',
 			},
 		},
+		startingScreen: {
+			background: 'images/starting-screen.jpg',
+		},
 	},
 	maps: {
 		master: (worldSceneKey: string) => `maps/${worldSceneKey}/master.json`,
@@ -102,6 +105,9 @@ export const GLOBAL_ASSET_KEYS = Object.freeze({
 			on: 'toggle-button-on',
 			off: 'toggle-button-off',
 		},
+		startingScreen: {
+			background: 'starting-screen-background-image',
+		},
 	},
 })
 
@@ -126,8 +132,7 @@ export const PHASER_FILE_TYPE_TO_LOADER = Object.freeze({
 
 export type PHASER_FILE_TYPES = keyof typeof PHASER_FILE_TYPE_TO_LOADER
 
-// todo load this list dynamically based on map files
-const worldIds = List([4, 6, 7])
+const worldIds = List([4, 6, 7]) //List(__WORLD_ID_LIST__)
 export const worlds = worldIds.map((id) => new World(id))
 
 export const TILED_TILESET_NAME = 'spritesheet'

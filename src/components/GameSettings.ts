@@ -2,7 +2,7 @@ export default class GameSettings {
 	private listeners: ((settings: Readonly<GameSettings>) => void)[]
 	private _musicIsOn: boolean
 
-	public static default(): Readonly<GameSettings> {
+	public static default(): GameSettings {
 		return new GameSettings()
 	}
 
