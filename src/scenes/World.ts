@@ -32,12 +32,21 @@ export default class World extends Phaser.Scene {
 
 	public preload() {
 		this.load.image(SCENE_ASSET_KEYS.maps.tileset(this.getSceneKey()), filePaths.sprites.sheet)
-		this.load.image(SCENE_ASSET_KEYS.images.background(this.getSceneKey()), filePaths.images.background)
-		this.load.json(SCENE_ASSET_KEYS.maps.master(this.getSceneKey()), filePaths.maps.master(this.getSceneKey()))
+		this.load.image(
+			SCENE_ASSET_KEYS.images.background(this.getSceneKey()),
+			filePaths.images.background
+		)
+		this.load.json(
+			SCENE_ASSET_KEYS.maps.master(this.getSceneKey()),
+			filePaths.maps.master(this.getSceneKey())
+		)
 	}
 
 	public create() {
-		const mapMaster = typecheck(this.cache.json.get(SCENE_ASSET_KEYS.maps.master(this.getSceneKey())), MapMaster)
+		const mapMaster = typecheck(
+			this.cache.json.get(SCENE_ASSET_KEYS.maps.master(this.getSceneKey())),
+			MapMaster
+		)
 
 		const spawnCoordinates = this.extractSpawnCoordinates(mapMaster)
 
@@ -50,10 +59,7 @@ export default class World extends Phaser.Scene {
 				scene: this,
 				worldSceneKey: this.getSceneKey(),
 			})
-			.then(() => {
-				this.player?.unfreeze()
-				console.log('initial chunks loaded')
-			})
+			.then(() => this.player?.unfreeze())
 
 		const musicplayer = new MusicPlayer(this, this.userSettings)
 		musicplayer.loop('audio-background')

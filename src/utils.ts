@@ -25,11 +25,9 @@ export function loadFile(
 	alreadyLoadedCb: (key: string) => boolean
 ): Promise<Asset> {
 	if (alreadyLoadedCb(asset.key)) {
-		console.log('asset ' + asset.key + ' already loaded')
 		return Promise.resolve(asset)
 	}
 
-	console.log('loading ' + asset.filePath)
 	const p = new Promise<Asset>((resolve) => {
 		loader.on(`filecomplete-${asset.type}-${asset.key}`, () => {
 			resolve(asset)

@@ -32,15 +32,17 @@ export default class ChunkLoader {
 		const surroundingChunks = this.getSurroundingChunks(chunk)
 		const nextVisibleChunks = surroundingChunks.push(chunk)
 
-		console.log(surroundingChunks)
-
 		const newVisibleChunks = nextVisibleChunks.filter(
 			(chunk) => !this.currentlyLoadedChunks.map((c) => c.id).includes(chunk)
 		)
 
-		const unwantedChunks = this.currentlyLoadedChunks.filter((chunk) => !nextVisibleChunks.includes(chunk.id))
+		const unwantedChunks = this.currentlyLoadedChunks.filter(
+			(chunk) => !nextVisibleChunks.includes(chunk.id)
+		)
 
-		const chunkCreationPromises = newVisibleChunks.map(this.loadChunk(context)).map(this.createChunk(context))
+		const chunkCreationPromises = newVisibleChunks
+			.map(this.loadChunk(context))
+			.map(this.createChunk(context))
 
 		unwantedChunks.forEach(this.destroyOldChunk)
 
@@ -73,10 +75,8 @@ export default class ChunkLoader {
 				(key) => context.scene.cache.json.get(key) !== undefined
 			)
 
-			console.log('awaiting loading chunks')
 			await chunkJSONProm
 			await chunkMapProm
-			console.log('awaited loading chunks')
 
 			return chunk
 		}
@@ -85,20 +85,17 @@ export default class ChunkLoader {
 	private createChunk(context: ChunkContext) {
 		return async (chunkProm: Promise<ChunkId>) => {
 			const chunk = await chunkProm
-			console.log(chunk)
+
 			const chunkX = chunk % this.mapMaster.horizontalChunkAmount
 			const chunkY = Math.floor(chunk / this.mapMaster.horizontalChunkAmount)
-
-			console.log(chunkX + ' ' + chunkY)
 
 			const offsetX = chunkX * this.mapMaster.chunkWidth * MEASURES.tiles.width
 			const offsetY = chunkY * this.mapMaster.chunkHeight * MEASURES.tiles.height
 
-			//console.log(offsetX + ' ' + offsetY)
-
-			console.log('creating chunk ' + chunk)
 			const chunkJSON = typecheck(
-				context.scene.cache.json.get(SCENE_ASSET_KEYS.maps.chunkJSON(context.worldSceneKey, chunk)),
+				context.scene.cache.json.get(
+					SCENE_ASSET_KEYS.maps.chunkJSON(context.worldSceneKey, chunk)
+				),
 				MapChunk
 			)
 
@@ -116,7 +113,12 @@ export default class ChunkLoader {
 				SCENE_ASSET_KEYS.maps.tileset(context.worldSceneKey)
 			)
 			if (tileset === null) {
-				throw 'failed to create tileset object for chunk ' + chunk + ' of world ' + context.worldSceneKey
+				throw (
+					'failed to create tileset object for chunk ' +
+					chunk +
+					' of world ' +
+					context.worldSceneKey
+				)
 			}
 
 			const tileLayerNames = List(chunkJSON.layers)
@@ -182,7 +184,6 @@ export default class ChunkLoader {
 			const surroundingX = chunkX + hori
 			const surroundingY = chunkY + verti
 			if (this.chunkCoordinatesAreValid(surroundingX, surroundingY)) {
-				console.log('surrounding: ' + surroundingX + ' ' + surroundingY)
 				surrounding.push(surroundingY * this.mapMaster.horizontalChunkAmount + surroundingX)
 			}
 		}
