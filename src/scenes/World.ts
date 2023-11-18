@@ -40,11 +40,6 @@ export default class World extends Phaser.Scene {
 		const mapMaster = typecheck(this.cache.json.get(SCENE_ASSET_KEYS.maps.master(this.getSceneKey())), MapMaster)
 
 		const spawnCoordinates = this.extractSpawnCoordinates(mapMaster)
-		const spawnChunk = computeChunkId(spawnCoordinates.x, spawnCoordinates.y, { 
-			horizontalChunkAmount: mapMaster.horizontalChunkAmount,
-			chunkWidth: mapMaster.chunkWidth,
-			chunkHeight: mapMaster.chunkHeight
-		})
 
 		this.chunkLoader = new ChunkLoader(-1, mapMaster)
 		this.player = new Player(this, spawnCoordinates)
