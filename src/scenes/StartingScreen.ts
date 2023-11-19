@@ -3,7 +3,7 @@ import { GLOBAL_ASSET_KEYS, MEASURES, filePaths, worlds } from '../constants.ts'
 import MusicPlayer from '../components/MusicPlayer.ts'
 import GameSettings from '../components/GameSettings.ts'
 import { loadButtonAssets } from '../components/buttons/button-utils.ts'
-import ClickButton from '../components/buttons/ClickButton.ts'
+import { FancyClickButton } from '../components/buttons/FancyClickButton.ts'
 
 class StartingScreen extends Phaser.Scene {
 	private userSettings: GameSettings
@@ -42,13 +42,15 @@ class StartingScreen extends Phaser.Scene {
 			.setScale(0.7)
 
 		const musicPlayer = new MusicPlayer(this, this.userSettings)
-		musicPlayer.loop('audio-starting-screen')
+		//musicPlayer.loop('audio-starting-screen')
 
-		const button = new ClickButton(this, {
+		const fancy = new FancyClickButton(this, {
 			x: MEASURES.window.width / 2,
 			y: MEASURES.window.height * (2 / 3),
 			label: 'Start',
 			fixed: true,
+			hoverFillColor: 0x00ff00,
+			idleFillColor: 0x0000ff,
 			clickCallback: () => {
 				this.scene.start('WorldSelectionMenu', {
 					userSettings: this.userSettings,
@@ -56,9 +58,8 @@ class StartingScreen extends Phaser.Scene {
 				})
 			},
 		})
-
-		button.center()
-		button.display()
+		fancy.center()
+		fancy.display()
 	}
 }
 

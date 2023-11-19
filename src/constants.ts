@@ -14,6 +14,13 @@ export const MEASURES = Object.freeze({
 				compact: 10,
 			},
 		},
+		fancy: {
+			click: {
+				padding: {
+					big: 16,
+				},
+			},
+		},
 		toggle: {
 			margin: {
 				normal: 10,
@@ -132,7 +139,7 @@ export const PHASER_FILE_TYPE_TO_LOADER = Object.freeze({
 
 export type PHASER_FILE_TYPES = keyof typeof PHASER_FILE_TYPE_TO_LOADER
 
-const worldIds = List([4, 6, 7]) //List(__WORLD_ID_LIST__)
+const worldIds = List([4, 6, 7])
 export const worlds = worldIds.map((id) => new World(id))
 
 export const TILED_TILESET_NAME = 'spritesheet'
