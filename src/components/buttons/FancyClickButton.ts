@@ -1,3 +1,4 @@
+import { List } from 'immutable'
 import { MEASURES } from '../../constants'
 import Button from './Button'
 import { computeScrollFactor } from './button-utils'
@@ -68,7 +69,7 @@ export class FancyClickButton implements Button {
 		return this.background.height
 	}
 	get bottom(): number {
-		return this.x + this.height
+		return this.y + this.height
 	}
 	destruct(): void {
 		this.text.destroy()
@@ -81,5 +82,31 @@ export class FancyClickButton implements Button {
 	center(): void {
 		this.x = this.x - this.width / 2
 		this.y = this.y - this.height / 2
+	}
+
+	public static createVerticalButtonList(listConfig: {
+		scene: Phaser.Scene
+		x: number
+		initialY: number
+		margin: number
+		idleFillColor: number
+		hoverFillColor: number
+		buttons: List<{ label: string; cb: () => void }>
+	}): List<FancyClickButton> {
+		return listConfig.buttons.reduce((buttons, buttonConfig) => {
+			const yOffset = buttons.last()?.bottom ?? listConfig.initialY
+
+			const nextButton = new FancyClickButton(listConfig.scene, {
+				x: listConfig.x,
+				y: yOffset + listConfig.margin,
+				fixed: true,
+				label: buttonConfig.label,
+				idleFillColor: listConfig.idleFillColor,
+				hoverFillColor: listConfig.hoverFillColor,
+				clickCallback: buttonConfig.cb,
+			})
+
+			return buttons.push(nextButton)
+		}, List<FancyClickButton>())
 	}
 }
