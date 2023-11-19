@@ -1,8 +1,8 @@
 import { List } from 'immutable'
 import GameSettings from '../components/GameSettings.js'
 import { MEASURES } from '../constants.js'
-import ClickButton from '../components/buttons/ClickButton.js'
 import ToggleButton from '../components/buttons/ToggleButton.js'
+import { FancyClickButton } from '../components/buttons/FancyClickButton.js'
 
 export default class PauseMenu extends Phaser.Scene {
 	private callingScene?: string
@@ -53,11 +53,14 @@ export default class PauseMenu extends Phaser.Scene {
 			},
 		])
 
-		const buttons = ClickButton.createVerticalButtonList({
+		const buttons = FancyClickButton.createVerticalButtonList({
 			scene: this,
 			x: this.cameras.main.width / 2,
-			initialY: this.cameras.main.height / 2,
+			initialY: this.cameras.main.height / 4,
 			margin: MEASURES.buttons.click.margin.normal,
+			idleFillColor: 0x00ff00,
+			hoverFillColor: 0x0000ff,
+			buttonWidth: this.cameras.main.width / 2,
 			buttons: buttonsConfig,
 		})
 
