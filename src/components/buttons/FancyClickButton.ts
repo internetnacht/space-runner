@@ -5,6 +5,7 @@ import { computeScrollFactor } from './button-utils'
 import { ButtonClickConfig } from './configs/ButtonClickConfig'
 import { ButtonConfig } from './configs/ButtonConfig'
 import { ButtonLabelConfig } from './configs/ButtonLabelConfig'
+import { ButtonSizeConfig } from './configs/ButtonSizeConfig'
 import { ButtonStyleConfig } from './configs/ButtonStyleConfig'
 
 export class FancyClickButton implements Button {
@@ -13,7 +14,11 @@ export class FancyClickButton implements Button {
 
 	public constructor(
 		scene: Phaser.Scene,
-		config: ButtonConfig & ButtonClickConfig & ButtonLabelConfig & ButtonStyleConfig
+		config: ButtonConfig &
+			ButtonClickConfig &
+			ButtonLabelConfig &
+			ButtonStyleConfig &
+			Partial<ButtonSizeConfig>
 	) {
 		const scrollFactor = computeScrollFactor(config.fixed)
 
@@ -32,8 +37,11 @@ export class FancyClickButton implements Button {
 			scene,
 			config.x,
 			config.y,
-			text.width + 2 * MEASURES.buttons.fancy.click.padding.big,
-			text.height + 2 * MEASURES.buttons.fancy.click.padding.big,
+			Math.max(config.width ?? 0, text.width + 2 * MEASURES.buttons.fancy.click.padding.big),
+			Math.max(
+				config.height ?? 0,
+				text.height + 2 * MEASURES.buttons.fancy.click.padding.big
+			),
 			config.idleFillColor
 		)
 			.setInteractive({ useHandCursor: true })
@@ -91,6 +99,8 @@ export class FancyClickButton implements Button {
 		margin: number
 		idleFillColor: number
 		hoverFillColor: number
+		buttonWidth?: number
+		buttonHeight?: number
 		buttons: List<{ label: string; cb: () => void }>
 	}): List<FancyClickButton> {
 		return listConfig.buttons.reduce((buttons, buttonConfig) => {
@@ -103,6 +113,8 @@ export class FancyClickButton implements Button {
 				label: buttonConfig.label,
 				idleFillColor: listConfig.idleFillColor,
 				hoverFillColor: listConfig.hoverFillColor,
+				width: listConfig.buttonWidth,
+				height: listConfig.buttonHeight,
 				clickCallback: buttonConfig.cb,
 			})
 
