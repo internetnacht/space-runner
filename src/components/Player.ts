@@ -47,12 +47,12 @@ export default class Player extends GameCharacter {
 
 		const animationKeySelector = (() => {
 			if (this.sprite.body.onFloor()) {
-				return SCENE_ASSET_KEYS.animations.character.moving.jumping
-			} else {
 				return SCENE_ASSET_KEYS.animations.character.moving
+			} else {
+				return SCENE_ASSET_KEYS.animations.character.moving.jumping
 			}
 		})()
 
-		this.sprite.anims.play(animationKeySelector[direction](this.type))
+		this.sprite.anims.play(animationKeySelector[direction](this.type), true)
 	}
 }
