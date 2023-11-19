@@ -43,16 +43,16 @@ export default class ClickButton implements Button {
 		this.text.setY(Math.floor(newY))
 	}
 
-	public getWidth(): number {
+	public get width(): number {
 		return this.text.width
 	}
 
-	public getHeight(): number {
+	public get height(): number {
 		return this.text.height
 	}
 
-	public getBottom(): number {
-		return this.y + this.getHeight()
+	public get bottom(): number {
+		return this.y + this.height
 	}
 
 	public destruct() {
@@ -71,7 +71,7 @@ export default class ClickButton implements Button {
 		buttons: List<{ label: string; cb: () => void }>
 	}): List<ClickButton> {
 		return listConfig.buttons.reduce((buttons, buttonConfig) => {
-			const yOffset = buttons.last()?.getBottom() ?? listConfig.initialY
+			const yOffset = buttons.last()?.bottom ?? listConfig.initialY
 
 			const nextButton = new ClickButton(listConfig.scene, {
 				x: listConfig.x,
@@ -86,7 +86,7 @@ export default class ClickButton implements Button {
 	}
 
 	public center() {
-		this.x = this.x - this.getWidth() / 2
-		this.y = this.y - this.getHeight() / 2
+		this.x = this.x - this.width / 2
+		this.y = this.y - this.height / 2
 	}
 }

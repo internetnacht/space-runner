@@ -115,16 +115,16 @@ export default class ToggleButton implements Button {
 		this.text.setY(Math.floor(this.text.y + change))
 	}
 
-	public getWidth(): number {
+	public get width(): number {
 		return this.overlay.width
 	}
 
-	public getHeight(): number {
+	public get height(): number {
 		return this.overlay.height
 	}
 
-	public getBottom(): number {
-		return this.y + this.getHeight()
+	public get bottom(): number {
+		return this.y + this.height
 	}
 
 	public destruct(): void {
@@ -155,7 +155,7 @@ export default class ToggleButton implements Button {
 	}
 
 	public center() {
-		this.x = this.x - this.getWidth() / 2
-		this.y = this.y - this.getHeight() / 2
+		this.x = this.x - this.width / 2
+		this.y = this.y - this.height / 2
 	}
 }

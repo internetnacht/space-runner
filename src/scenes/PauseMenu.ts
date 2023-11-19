@@ -68,7 +68,7 @@ export default class PauseMenu extends Phaser.Scene {
 
 		const toggleButton = new ToggleButton(this, {
 			x: this.cameras.main.width / 2,
-			y: buttons.last()?.getBottom() ?? this.cameras.main.height / 2,
+			y: buttons.last()?.bottom ?? this.cameras.main.height / 2,
 			fixed: true,
 			initialState: this.userSettings?.musicIsOn ?? false,
 			label: 'Musik',
