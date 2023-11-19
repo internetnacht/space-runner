@@ -19,6 +19,7 @@ export const MEASURES = Object.freeze({
 				padding: {
 					big: 16,
 				},
+				margin: 10,
 			},
 		},
 		toggle: {

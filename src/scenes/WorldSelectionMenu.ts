@@ -1,7 +1,7 @@
 import MusicPlayer from '../components/MusicPlayer.ts'
 import GameSettings from '../components/GameSettings.ts'
-import ClickButton from '../components/buttons/ClickButton.ts'
 import { MEASURES, worlds } from '../constants.ts'
+import { FancyClickButton } from '../components/buttons/FancyClickButton.ts'
 
 export default class WorldSelectionMenu extends Phaser.Scene {
 	private userSettings?: GameSettings
@@ -26,11 +26,14 @@ export default class WorldSelectionMenu extends Phaser.Scene {
 	}
 
 	public create() {
-		const buttons = ClickButton.createVerticalButtonList({
+		const buttons = FancyClickButton.createVerticalButtonList({
 			scene: this,
 			x: MEASURES.buttons.click.margin.normal,
 			initialY: 0,
-			margin: MEASURES.buttons.click.margin.normal,
+			margin: MEASURES.buttons.fancy.click.margin,
+			idleFillColor: 0x00ff00,
+			hoverFillColor: 0x0000ff,
+			buttonWidth: MEASURES.window.width - 2 * MEASURES.buttons.fancy.click.margin,
 			buttons: worlds
 				.map((world) => world.getSceneKey())
 				.map((worldKey) => {
