@@ -1,5 +1,5 @@
 import Player from '../components/Player.ts'
-import { GLOBAL_ASSET_KEYS, MEASURES, filePaths, worlds } from '../constants.ts'
+import { GLOBAL_ASSET_KEYS, MEASURES, filePaths, levels } from '../constants.ts'
 import MusicPlayer from '../components/MusicPlayer.ts'
 import GameSettings from '../components/GameSettings.ts'
 import { loadButtonAssets } from '../components/buttons/button-utils.ts'
@@ -27,9 +27,9 @@ class StartingScreen extends Phaser.Scene {
 	}
 
 	create() {
-		worlds
-			.filter((world) => this.scene.manager.keys[world.getSceneKey()] === undefined)
-			.forEach((world) => this.scene.add(world.getSceneKey(), world))
+		levels
+			.filter((level) => this.scene.manager.keys[level.id] === undefined)
+			.forEach((level) => this.scene.add(level.id, level))
 
 		this.add
 			.image(

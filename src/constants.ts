@@ -1,5 +1,5 @@
 import { ChunkId } from './global-types.ts'
-import World from './scenes/World.ts'
+import Level from './scenes/Level.ts'
 import { List } from 'immutable'
 
 export const MEASURES = Object.freeze({
@@ -128,6 +128,9 @@ export const TILED_CUSTOM_CONSTANTS = Object.freeze({
 			collide: {
 				name: 'collide',
 			},
+			kill: {
+				name: 'kill',
+			},
 		},
 	},
 })
@@ -140,7 +143,7 @@ export const PHASER_FILE_TYPE_TO_LOADER = Object.freeze({
 
 export type PHASER_FILE_TYPES = keyof typeof PHASER_FILE_TYPE_TO_LOADER
 
-const worldIds = List([4, 6, 7])
-export const worlds = worldIds.map((id) => new World(id))
+const levelList = JSON.parse(import.meta.env.VITE_LEVELS) as string[]
+export const levels = List(levelList.map((level) => new Level(level)))
 
 export const TILED_TILESET_NAME = 'spritesheet'

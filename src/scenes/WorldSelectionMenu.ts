@@ -1,6 +1,6 @@
 import MusicPlayer from '../components/MusicPlayer.ts'
 import GameSettings from '../components/GameSettings.ts'
-import { MEASURES, worlds } from '../constants.ts'
+import { MEASURES, levels } from '../constants.ts'
 import { FancyClickButton } from '../components/buttons/FancyClickButton.ts'
 
 export default class WorldSelectionMenu extends Phaser.Scene {
@@ -34,13 +34,13 @@ export default class WorldSelectionMenu extends Phaser.Scene {
 			idleFillColor: 0x00ff00,
 			hoverFillColor: 0x0000ff,
 			buttonWidth: MEASURES.window.width - 2 * MEASURES.buttons.fancy.click.margin,
-			buttons: worlds
-				.map((world) => world.getSceneKey())
-				.map((worldKey) => {
+			buttons: levels
+				.map((level) => level.id)
+				.map((level) => {
 					return {
-						label: worldKey,
+						label: level,
 						cb: () => {
-							this.scene.start(worldKey, {
+							this.scene.start(level, {
 								userSettings: this.userSettings?.clone(),
 							})
 						},

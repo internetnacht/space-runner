@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 import { MEASURES } from './constants.ts'
 import StartingScreen from './scenes/StartingScreen.ts'
 import WorldSelectionMenu from './scenes/WorldSelectionMenu.ts'
-import World from './scenes/World.ts'
+import Level from './scenes/Level.ts'
 import PauseMenu from './scenes/PauseMenu.ts'
 
 const config = {
@@ -17,13 +17,13 @@ const config = {
 		default: 'arcade',
 		arcade: {
 			gravity: { y: 900 },
-			debug: false,
+			debug: true,
 		},
 	},
 	fps: {
 		target: 30,
 	},
-	scene: [StartingScreen, WorldSelectionMenu, World, PauseMenu],
+	scene: [StartingScreen, WorldSelectionMenu, Level, PauseMenu],
 	audio: {
 		disableWebAudio: true,
 	},
