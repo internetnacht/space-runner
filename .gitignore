@@ -1,4 +1,6 @@
-assets/maps/World*/**
+assets/maps/*/
+.env
+
 # Logs
 logs
 *.log

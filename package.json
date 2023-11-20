@@ -4,7 +4,8 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"dev": "vite",
+		"setup": "node setup/setup.js",
+		"dev": "npm run setup; vite",
 		"build": "tsc && vite build",
 		"preview": "vite preview",
 		"prepare": "husky install"
@@ -21,9 +22,10 @@
 		"fp-ts": "^2.16.1",
 		"immutable": "^5.0.0-beta.4",
 		"io-ts": "^2.2.20",
-		"phaser": "^3.60.0"
+		"phaser": "^3.60.0",
+		"phaser-map-splitter": "file:../phaser-map-splitter"
 	},
 	"lint-staged": {
-		"*.ts": "prettier --write"
+		"*.{ts,js}": "prettier --write"
 	}
 }
