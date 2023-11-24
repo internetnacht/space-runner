@@ -23,7 +23,7 @@
 		"immutable": "^5.0.0-beta.4",
 		"io-ts": "^2.2.20",
 		"phaser": "^3.60.0",
-		"phaser-map-splitter": "file:../phaser-map-splitter"
+		"phaser-map-splitter": "^0.9.0"
 	},
 	"lint-staged": {
 		"*.{ts,js}": "prettier --write"
