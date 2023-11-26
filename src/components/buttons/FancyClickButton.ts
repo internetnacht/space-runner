@@ -44,7 +44,6 @@ export class FancyClickButton implements Button {
 			),
 			config.idleFillColor
 		)
-			.setInteractive({ useHandCursor: true })
 			.on('pointerdown', config.clickCallback)
 			.on('pointerover', () => background.setFillStyle(config.hoverFillColor))
 			.on('pointerout', () => background.setFillStyle(config.idleFillColor))
@@ -86,6 +85,7 @@ export class FancyClickButton implements Button {
 	display(): void {
 		this.text.addToDisplayList()
 		this.background.addToDisplayList()
+		this.background.setInteractive({ useHandCursor: true })
 	}
 	center(): void {
 		this.x = this.x - this.width / 2
