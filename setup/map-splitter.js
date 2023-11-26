@@ -28,8 +28,8 @@ async function mapFileChanged(path) {
 	}
 
 	const dirContents = await readdir(dirName)
-	const dirFile = dirContents[0]
-	const dirStats = dirFile !== (await (undefined ? stat(dirFile) : stat(dirName)))
+	const dirFile = join(dirName, dirContents[0])
+	const dirStats = await (dirFile !== undefined ? stat(dirFile) : stat(dirName))
 
 	const fileStat = await stat(path)
 
