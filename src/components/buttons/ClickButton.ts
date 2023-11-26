@@ -5,13 +5,14 @@ import { computeScrollFactor } from './button-utils'
 import { ButtonClickConfig } from './configs/ButtonClickConfig'
 import { ButtonConfig } from './configs/ButtonConfig'
 
-export default class ClickButton implements Button {
+export default class ClickButton extends Button {
 	private readonly text: Phaser.GameObjects.Text
 
 	public constructor(
 		scene: Phaser.Scene,
 		config: ButtonConfig & ButtonClickConfig & ButtonLabelConfig
 	) {
+		super(scene)
 		const scrollFactor = computeScrollFactor(config.fixed)
 
 		const text = new Phaser.GameObjects.Text(scene, config.x, config.y, config.label, {})

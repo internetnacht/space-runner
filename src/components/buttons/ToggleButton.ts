@@ -4,7 +4,7 @@ import { ButtonLabelConfig } from './configs/ButtonLabelConfig'
 import { ToggleButtonConfig } from './configs/ToggleButtonConfig'
 import { computeScrollFactor } from './button-utils'
 
-export default class ToggleButton implements Button {
+export default class ToggleButton extends Button {
 	private readonly text: Phaser.GameObjects.Text
 	private readonly togglerOn: Phaser.GameObjects.Image
 	private readonly togglerOff: Phaser.GameObjects.Image
@@ -16,6 +16,7 @@ export default class ToggleButton implements Button {
 		scene: Phaser.Scene,
 		config: ToggleButtonConfig & Partial<ButtonLabelConfig>
 	) {
+		super(scene)
 		this.toggleState = config.initialState
 		this.stateChangeCallback = config.stateChangeCallback
 

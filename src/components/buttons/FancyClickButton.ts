@@ -8,7 +8,7 @@ import { ButtonLabelConfig } from './configs/ButtonLabelConfig'
 import { ButtonSizeConfig } from './configs/ButtonSizeConfig'
 import { ButtonStyleConfig } from './configs/ButtonStyleConfig'
 
-export class FancyClickButton implements Button {
+export class FancyClickButton extends Button {
 	private readonly background: Phaser.GameObjects.Rectangle
 	private readonly text: Phaser.GameObjects.Text
 
@@ -20,6 +20,7 @@ export class FancyClickButton implements Button {
 			ButtonStyleConfig &
 			Partial<ButtonSizeConfig>
 	) {
+		super(scene)
 		const scrollFactor = computeScrollFactor(config.fixed)
 
 		const text = new Phaser.GameObjects.Text(
