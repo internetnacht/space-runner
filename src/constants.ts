@@ -132,6 +132,9 @@ export const TILED_CUSTOM_CONSTANTS = Object.freeze({
 			kill: {
 				name: 'kill',
 			},
+			finish: {
+				name: 'finish',
+			},
 		},
 	},
 })

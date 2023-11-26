@@ -28,6 +28,7 @@ export class ChunkLayer {
 
 		this.addColliders()
 		this.addKillsProperty()
+		this.addFinishProperty()
 	}
 
 	private layerGetBoolProperty(propName: string) {
@@ -58,6 +59,19 @@ export class ChunkLayer {
 				this.layer,
 				(_, layer) => {
 					this.context.player.kill(layer)
+				}
+			)
+		}
+	}
+
+	public addFinishProperty() {
+		if (this.layerGetBoolProperty(TILED_CUSTOM_CONSTANTS.layers.properties.finish.name)) {
+			this.layer.setCollisionByExclusion([])
+			this.context.scene.physics.add.overlap(
+				this.context.player.getCollider(),
+				this.layer,
+				() => {
+					console.log('level finished!')
 				}
 			)
 		}
