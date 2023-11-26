@@ -76,8 +76,9 @@ export const filePaths = Object.freeze({
 			`maps/${worldSceneKey}/chunk${chunk}.json`,
 	},
 	audio: {
-		'audio-background': 'audio/A+Drop+In+the+Desert.mp3',
-		'audio-starting-screen': 'audio/Dawn.mp3',
+		'audio-background': 'audio/at+the+wheel.mp3',
+		'audio-starting-screen': 'audio/Unlimited+power.mp3',
+		'audio-died': 'audio/Black+&+White.mp3',
 	},
 })
 
