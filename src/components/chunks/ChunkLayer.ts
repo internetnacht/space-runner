@@ -54,7 +54,7 @@ export class ChunkLayer {
 	public addKillsProperty() {
 		if (this.layerGetBoolProperty(TILED_CUSTOM_CONSTANTS.layers.properties.kill.name)) {
 			this.layer.setCollisionByExclusion([])
-			this.context.scene.physics.add.collider(
+			this.context.scene.physics.add.overlap(
 				this.context.player.getCollider(),
 				this.layer,
 				(_, layer) => {
