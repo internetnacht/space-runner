@@ -3,11 +3,13 @@ import GameSettings from '../components/GameSettings'
 import { FancyClickButton } from '../components/buttons/FancyClickButton'
 import { MEASURES } from '../constants'
 import { DeathCause } from '../global-types'
+import MusicPlayer from '../components/MusicPlayer'
 
 export class DeathScene extends Phaser.Scene {
 	private userSettings?: GameSettings
 	private callingScene?: string
 	private deathCause?: DeathCause
+	private musicplayer?: MusicPlayer
 
 	public constructor() {
 		super({
@@ -26,10 +28,17 @@ export class DeathScene extends Phaser.Scene {
 			//todo unclean
 			this.deathCause = data.deathCause as DeathCause
 		}
+
+		if (data.musicplayer instanceof MusicPlayer) {
+			this.musicplayer = data.musicplayer
+		}
 	}
 
 	public create() {
 		this.scene.bringToTop()
+
+		this.musicplayer?.stop('audio-background')
+		this.musicplayer?.loop('audio-died')
 
 		const text = new Phaser.GameObjects.Text(
 			this,

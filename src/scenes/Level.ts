@@ -37,6 +37,9 @@ export default class Level extends Phaser.Scene {
 	}
 
 	public create() {
+		const musicplayer = new MusicPlayer(this, this.userSettings)
+		musicplayer.loop('audio-background')
+
 		const mapMaster = typecheck(
 			this.cache.json.get(SCENE_ASSET_KEYS.maps.master(this._id)),
 			MapMaster
@@ -52,6 +55,7 @@ export default class Level extends Phaser.Scene {
 					userSettings: this.userSettings,
 					callingScene: this._id,
 					deathCause: cause,
+					musicplayer,
 				})
 				this.scene.pause()
 			},
@@ -65,9 +69,6 @@ export default class Level extends Phaser.Scene {
 				worldSceneKey: this._id,
 			})
 			.then(() => this.player?.unfreeze())
-
-		const musicplayer = new MusicPlayer(this, this.userSettings)
-		musicplayer.loop('audio-background')
 
 		this.setupCamera()
 		this.addBackgroundImage()

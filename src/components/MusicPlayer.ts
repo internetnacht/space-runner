@@ -44,6 +44,10 @@ export default class MusicPlayer {
 		this.play(audio, { loop: true })
 	}
 
+	public stop(audio: AudioKey) {
+		this.scene.sound.stopByKey(audio)
+	}
+
 	public async loadAudio(audio: AudioKey): Promise<Asset> {
 		const asset: Asset = {
 			key: audio,
