@@ -1,5 +1,8 @@
 assets/maps/*/
 .env
+docs/*
+!docs/*.tex
+!docs/*.pdf
 
 # Logs
 logs
