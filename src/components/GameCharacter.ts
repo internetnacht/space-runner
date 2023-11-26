@@ -1,4 +1,5 @@
 import { SCENE_ASSET_KEYS, filePaths } from '../constants'
+import { DeathCause } from '../global-types'
 
 type CharacterType = 'dude'
 
@@ -10,6 +11,7 @@ export class GameCharacter {
 	protected readonly sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
 	protected readonly type: CharacterType
 	protected controller?: CharacterController
+	protected readonly deathCallback: (cause: DeathCause) => void
 
 	public static loadAssets(scene: Phaser.Scene) {
 		scene.load.spritesheet('dude', filePaths.sprites.dude, { frameWidth: 32, frameHeight: 48 })
@@ -18,9 +20,11 @@ export class GameCharacter {
 	public constructor(
 		scene: Phaser.Scene,
 		spawnPosition?: { x: number; y: number },
-		type: CharacterType = 'dude'
+		type: CharacterType = 'dude',
+		deathCallback: (cause: DeathCause) => void = () => {}
 	) {
 		this.type = type
+		this.deathCallback = deathCallback
 
 		if (spawnPosition === undefined) {
 			this.sprite = scene.physics.add.sprite(0, 0, this.type)
@@ -31,6 +35,10 @@ export class GameCharacter {
 		this.sprite.setBounce(0.1)
 
 		this.addMovementAnimations(scene)
+	}
+
+	public kill(cause: Phaser.Tilemaps.Tile | Phaser.Types.Physics.Arcade.GameObjectWithBody) {
+		this.deathCallback(cause)
 	}
 
 	protected setController(controller: CharacterController) {

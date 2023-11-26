@@ -1,9 +1,14 @@
 import { SCENE_ASSET_KEYS } from '../constants'
+import { DeathCause } from '../global-types'
 import { GameCharacter } from './GameCharacter'
 
 export default class Player extends GameCharacter {
-	public constructor(scene: Phaser.Scene, spawnPosition?: { x: number; y: number }) {
-		super(scene, spawnPosition, 'dude')
+	public constructor(
+		scene: Phaser.Scene,
+		deathCallback: (cause: DeathCause) => void,
+		spawnPosition?: { x: number; y: number }
+	) {
+		super(scene, spawnPosition, 'dude', deathCallback)
 
 		this.setController({
 			act: this.move.bind(this),

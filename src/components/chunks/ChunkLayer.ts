@@ -52,11 +52,12 @@ export class ChunkLayer {
 
 	public addKillsProperty() {
 		if (this.layerGetBoolProperty(TILED_CUSTOM_CONSTANTS.layers.properties.kill.name)) {
+			this.layer.setCollisionByExclusion([])
 			this.context.scene.physics.add.collider(
 				this.context.player.getCollider(),
 				this.layer,
-				() => {
-					console.log('player hit lethal tile')
+				(_, layer) => {
+					this.context.player.kill(layer)
 				}
 			)
 		}

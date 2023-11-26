@@ -45,7 +45,18 @@ export default class Level extends Phaser.Scene {
 		const spawnCoordinates = this.extractSpawnCoordinates(mapMaster)
 
 		this.chunkLoader = new ChunkLoader(mapMaster)
-		this.player = new Player(this, spawnCoordinates)
+		this.player = new Player(
+			this,
+			(cause) => {
+				this.scene.launch('DeathScene', {
+					userSettings: this.userSettings,
+					callingScene: this._id,
+					deathCause: cause,
+				})
+				this.scene.pause()
+			},
+			spawnCoordinates
+		)
 		this.player.freeze()
 		this.chunkLoader
 			.update(this.player.getX(), this.player.getY(), {
@@ -85,7 +96,7 @@ export default class Level extends Phaser.Scene {
 	}
 
 	public update() {
-		console.log(this.game.loop.actualFps)
+		//console.log(this.game.loop.actualFps)
 		if (this.player === undefined) {
 			throw 'player is unexpectedly undefined'
 		}
