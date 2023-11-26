@@ -3,7 +3,7 @@ import { GLOBAL_ASSET_KEYS, MEASURES, SCENE_ASSET_KEYS, filePaths } from '../con
 import MusicPlayer from '../components/MusicPlayer.ts'
 import GameSettings from '../components/GameSettings.ts'
 import { typecheck } from '../utils.ts'
-import ChunkLoader from '../components/ChunkLoader.ts'
+import ChunkLoader from '../components/chunks/ChunkLoader.ts'
 import { MapMaster, MapMasterT } from '../tiled-types.ts'
 
 export default class Level extends Phaser.Scene {
@@ -44,7 +44,7 @@ export default class Level extends Phaser.Scene {
 
 		const spawnCoordinates = this.extractSpawnCoordinates(mapMaster)
 
-		this.chunkLoader = new ChunkLoader(-1, mapMaster)
+		this.chunkLoader = new ChunkLoader(mapMaster)
 		this.player = new Player(this, spawnCoordinates)
 		this.player.freeze()
 		this.chunkLoader
@@ -85,6 +85,7 @@ export default class Level extends Phaser.Scene {
 	}
 
 	public update() {
+		console.log(this.game.loop.actualFps)
 		if (this.player === undefined) {
 			throw 'player is unexpectedly undefined'
 		}

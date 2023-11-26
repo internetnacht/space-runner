@@ -1,17 +1,6 @@
 import { Props, TypeC } from 'io-ts'
-import { MEASURES } from './constants'
 import { Asset } from './global-types'
 import { isLeft } from 'fp-ts/lib/Either'
-
-export function layerGetBoolProperty(layer: Phaser.Tilemaps.TilemapLayer, propName: string) {
-	const properties = layer.layer.properties
-	return (
-		//phaser uses object as the type for prop but object is completely unusable -> necessary to use any here
-		properties.findIndex(function (prop: any) {
-			return prop.name === propName && prop.value === true
-		}) !== -1
-	)
-}
 
 /**
  * selecting the phaser loader by asset key doesn't work because some scope references are lost even when using .bind(this)
@@ -38,19 +27,6 @@ export function loadFile(
 	loader.start()
 
 	return p
-}
-
-export function computeChunkId(
-	x: number,
-	y: number,
-	measures: { horizontalChunkAmount: number; chunkWidth: number; chunkHeight: number }
-): number {
-	const tileX = Math.floor(x / MEASURES.tiles.width)
-	const tileY = Math.floor(y / MEASURES.tiles.height)
-	const chunkX = Math.floor(tileX / measures.chunkWidth)
-	const chunkY = Math.floor(tileY / measures.chunkHeight)
-
-	return chunkY * measures.horizontalChunkAmount + chunkX
 }
 
 export function typecheck<P extends Props>(obj: unknown, type: TypeC<P>) {

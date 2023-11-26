@@ -14,3 +14,8 @@ export interface ChunkContext {
 	readonly player: Player
 	readonly worldSceneKey: string
 }
+
+export interface Point {
+	readonly x: number
+	readonly y: number
+}

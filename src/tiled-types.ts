@@ -40,5 +40,8 @@ export const MapChunk = t.type({
 	width: t.number,
 	height: t.number,
 	layers: t.array(TilemapMapLayer),
+	id: t.number,
+	tilewidth: t.number,
+	tileheight: t.number,
 })
 export type MapChunkT = t.TypeOf<typeof MapChunk>
