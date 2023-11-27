@@ -48,7 +48,7 @@ export class FinishedScreen extends Phaser.Scene {
 			idleFillColor: 0x00ff00,
 			label: ':)',
 			x: this.cameras.main.width / 2,
-			y: this.cameras.main.width / 2,
+			y: this.cameras.main.height / 2,
 		})
 		button.center()
 		button.display()
