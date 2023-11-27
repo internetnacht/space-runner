@@ -2,13 +2,13 @@ import { List } from 'immutable'
 import GameSettings from '../components/GameSettings'
 import { FancyClickButton } from '../components/buttons/FancyClickButton'
 import { MEASURES } from '../constants'
-import { DeathCause } from '../global-types'
+import { CollisionCause } from '../global-types'
 import MusicPlayer from '../components/MusicPlayer'
 
 export class DeathScene extends Phaser.Scene {
 	private userSettings?: GameSettings
 	private callingScene?: string
-	private deathCause?: DeathCause
+	private deathCause?: CollisionCause
 	private musicplayer?: MusicPlayer
 
 	public constructor() {
@@ -26,7 +26,7 @@ export class DeathScene extends Phaser.Scene {
 		}
 		if (data.deathCause !== undefined) {
 			//todo unclean
-			this.deathCause = data.deathCause as DeathCause
+			this.deathCause = data.deathCause as CollisionCause
 		}
 
 		if (data.musicplayer instanceof MusicPlayer) {

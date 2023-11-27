@@ -59,6 +59,14 @@ export default class Level extends Phaser.Scene {
 				})
 				this.scene.pause()
 			},
+			() => {
+				this.scene.launch('FinishedScreen', {
+					userSettings: this.userSettings,
+					callingScene: this._id,
+					musicplayer: musicplayer,
+				})
+				this.scene.pause()
+			},
 			spawnCoordinates
 		)
 		this.player.freeze()

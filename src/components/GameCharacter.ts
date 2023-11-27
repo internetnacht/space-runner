@@ -1,5 +1,5 @@
 import { SCENE_ASSET_KEYS, filePaths } from '../constants'
-import { DeathCause } from '../global-types'
+import { CollisionCause } from '../global-types'
 
 type CharacterType = 'dude'
 
@@ -11,7 +11,8 @@ export class GameCharacter {
 	protected readonly sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
 	protected readonly type: CharacterType
 	protected controller?: CharacterController
-	protected readonly deathCallback: (cause: DeathCause) => void
+	protected readonly deathCallback: (cause: CollisionCause) => void
+	protected readonly finishCallback: (target: CollisionCause) => void
 
 	public static loadAssets(scene: Phaser.Scene) {
 		scene.load.spritesheet('dude', filePaths.sprites.dude, { frameWidth: 32, frameHeight: 48 })
@@ -21,10 +22,12 @@ export class GameCharacter {
 		scene: Phaser.Scene,
 		spawnPosition?: { x: number; y: number },
 		type: CharacterType = 'dude',
-		deathCallback: (cause: DeathCause) => void = () => {}
+		deathCallback: (cause: CollisionCause) => void = () => {},
+		finishCallback: (cause: CollisionCause) => void = () => {}
 	) {
 		this.type = type
 		this.deathCallback = deathCallback
+		this.finishCallback = finishCallback
 
 		if (spawnPosition === undefined) {
 			this.sprite = scene.physics.add.sprite(0, 0, this.type)
@@ -37,8 +40,12 @@ export class GameCharacter {
 		this.addMovementAnimations(scene)
 	}
 
-	public kill(cause: Phaser.Tilemaps.Tile | Phaser.Types.Physics.Arcade.GameObjectWithBody) {
+	public kill(cause: CollisionCause) {
 		this.deathCallback(cause)
+	}
+
+	public reachFinishLine(target: CollisionCause) {
+		this.finishCallback(target)
 	}
 
 	protected setController(controller: CharacterController) {

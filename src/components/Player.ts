@@ -1,14 +1,15 @@
 import { SCENE_ASSET_KEYS } from '../constants'
-import { DeathCause } from '../global-types'
+import { CollisionCause } from '../global-types'
 import { GameCharacter } from './GameCharacter'
 
 export default class Player extends GameCharacter {
 	public constructor(
 		scene: Phaser.Scene,
-		deathCallback: (cause: DeathCause) => void,
+		deathCallback: (cause: CollisionCause) => void,
+		finishCallback: (cause: CollisionCause) => void,
 		spawnPosition?: { x: number; y: number }
 	) {
-		super(scene, spawnPosition, 'dude', deathCallback)
+		super(scene, spawnPosition, 'dude', deathCallback, finishCallback)
 
 		this.setController({
 			act: this.move.bind(this),

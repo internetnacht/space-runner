@@ -5,6 +5,7 @@ import WorldSelectionMenu from './scenes/WorldSelectionMenu.ts'
 import Level from './scenes/Level.ts'
 import PauseMenu from './scenes/PauseMenu.ts'
 import { DeathScene } from './scenes/DeathScene.ts'
+import { FinishedScreen } from './scenes/FinishedScreen.ts'
 
 const config = {
 	type: Phaser.AUTO,
@@ -24,7 +25,7 @@ const config = {
 	fps: {
 		target: 30,
 	},
-	scene: [StartingScreen, WorldSelectionMenu, Level, PauseMenu, DeathScene],
+	scene: [StartingScreen, WorldSelectionMenu, Level, PauseMenu, DeathScene, FinishedScreen],
 	audio: {
 		disableWebAudio: true,
 	},

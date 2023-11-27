@@ -20,4 +20,4 @@ export interface Point {
 	readonly y: number
 }
 
-export type DeathCause = Phaser.Tilemaps.Tile | Phaser.Types.Physics.Arcade.GameObjectWithBody
+export type CollisionCause = Phaser.Tilemaps.Tile | Phaser.Types.Physics.Arcade.GameObjectWithBody

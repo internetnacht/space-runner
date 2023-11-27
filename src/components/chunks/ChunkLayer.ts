@@ -44,9 +44,6 @@ export class ChunkLayer {
 	public addColliders() {
 		if (this.layerGetBoolProperty(TILED_CUSTOM_CONSTANTS.layers.properties.collide.name)) {
 			this.layer.setCollisionByExclusion([])
-			if (this.context.player === undefined) {
-				throw 'player is unexpectedly undefined'
-			}
 			this.context.scene.physics.add.collider(this.context.player.getCollider(), this.layer)
 		}
 	}
@@ -54,11 +51,12 @@ export class ChunkLayer {
 	public addKillsProperty() {
 		if (this.layerGetBoolProperty(TILED_CUSTOM_CONSTANTS.layers.properties.kill.name)) {
 			this.layer.setCollisionByExclusion([])
-			this.context.scene.physics.add.overlap(
+
+			this.context.scene.physics.add.collider(
 				this.context.player.getCollider(),
 				this.layer,
-				(_, layer) => {
-					this.context.player.kill(layer)
+				(_, cause) => {
+					this.context.player.kill(cause)
 				}
 			)
 		}
@@ -67,11 +65,11 @@ export class ChunkLayer {
 	public addFinishProperty() {
 		if (this.layerGetBoolProperty(TILED_CUSTOM_CONSTANTS.layers.properties.finish.name)) {
 			this.layer.setCollisionByExclusion([])
-			this.context.scene.physics.add.overlap(
+			this.context.scene.physics.add.collider(
 				this.context.player.getCollider(),
 				this.layer,
-				() => {
-					console.log('level finished!')
+				(target) => {
+					this.context.player.reachFinishLine(target)
 				}
 			)
 		}

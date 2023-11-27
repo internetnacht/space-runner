@@ -79,6 +79,7 @@ export const filePaths = Object.freeze({
 		'audio-background': 'audio/at+the+wheel.mp3',
 		'audio-starting-screen': 'audio/Unlimited+power.mp3',
 		'audio-died': 'audio/Black+&+White.mp3',
+		'audio-finished': 'audio/Morning.mp3',
 	},
 })
 
