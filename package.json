@@ -4,7 +4,7 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"setup": "node setup/setup.js",
+		"setup": "node setup.js",
 		"dev": "npm run setup; vite",
 		"build": "tsc && vite build",
 		"preview": "vite preview",
