@@ -3,6 +3,7 @@ assets/maps/*/
 docs/*
 !docs/*.tex
 !docs/*.pdf
+INITIAL_INSTALL.bat
 
 # Logs
 logs
