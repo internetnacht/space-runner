@@ -4,6 +4,7 @@ import MusicPlayer from '../components/MusicPlayer.ts'
 import GameSettings from '../components/GameSettings.ts'
 import { loadButtonAssets } from '../components/buttons/button-utils.ts'
 import { FancyClickButton } from '../components/buttons/FancyClickButton.ts'
+import { MovingPlatform } from '../components/map-components/MovingPlatform.ts'
 
 class StartingScreen extends Phaser.Scene {
 	private userSettings: GameSettings
@@ -23,6 +24,7 @@ class StartingScreen extends Phaser.Scene {
 		)
 		Player.loadAssets(this)
 		MusicPlayer.loadAssets(this)
+		MovingPlatform.loadAssets(this.load)
 		loadButtonAssets(this.load)
 	}
 

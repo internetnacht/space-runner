@@ -5,9 +5,15 @@ import GameSettings from '../components/GameSettings.ts'
 import { typecheck } from '../utils.ts'
 import ChunkLoader from '../components/chunks/ChunkLoader.ts'
 import { MapMaster, MapMasterT } from '../tiled-types.ts'
+import { GameCharacter } from '../components/GameCharacter.ts'
+import { MovementPathPoint } from '../components/map-components/MovementPathPoint.ts'
+import { List } from 'immutable'
+import { MovingPlatform } from '../components/map-components/MovingPlatform.ts'
+import { Platform } from '../components/map-components/Platform.ts'
 
 export default class Level extends Phaser.Scene {
 	private player?: Player
+	private movingPlatforms?: List<MovingPlatform>
 	private readonly _id: string
 	private userSettings?: GameSettings
 	private chunkLoader?: ChunkLoader
@@ -78,6 +84,7 @@ export default class Level extends Phaser.Scene {
 			})
 			.then(() => this.player?.unfreeze())
 
+		this.movingPlatforms = this.addMovingPlatforms(mapMaster, this.player)
 		this.setupCamera()
 		this.addBackgroundImage()
 		this.addPauseMenuCallbacks()
@@ -119,6 +126,8 @@ export default class Level extends Phaser.Scene {
 			scene: this,
 			worldSceneKey: this._id,
 		})
+
+		this.movingPlatforms?.forEach((platform) => platform.update())
 	}
 
 	private setupCamera() {
@@ -155,5 +164,40 @@ export default class Level extends Phaser.Scene {
 			})
 			this.scene.pause()
 		})
+	}
+
+	private addMovingPlatforms(
+		mapMaster: MapMasterT,
+		character: GameCharacter
+	): List<MovingPlatform> {
+		const platforms = List(mapMaster.globalLayers)
+			.filter((layer) => layer.name.indexOf('moving') === 0)
+			.map((layer) =>
+				List(
+					layer.objects.map((obj) => {
+						return {
+							x: obj.x,
+							y: obj.y,
+						}
+					})
+				)
+			)
+			.map(MovementPathPoint.constructCircularLinkedList)
+			.map(
+				(initialMovementPoint) =>
+					new MovingPlatform(
+						{
+							type: Platform.std,
+							scene: this,
+						},
+						initialMovementPoint
+					)
+			)
+
+		platforms.forEach((platform) =>
+			this.physics.add.collider(platform.getCollider(), character.getCollider())
+		)
+
+		return platforms
 	}
 }
