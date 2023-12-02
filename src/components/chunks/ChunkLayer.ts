@@ -43,9 +43,13 @@ export class ChunkLayer {
 
 		this.layer = layer
 
-		this.addColliders()
-		this.addKillsProperty()
-		this.addFinishProperty()
+		const background = this.layerGetBoolProperty(
+			TILED_CUSTOM_CONSTANTS.layers.properties.background.name
+		)
+		if (!background) {
+			this.layer.setCollisionByExclusion([])
+			this.addColliders()
+		}
 	}
 
 	private layerGetBoolProperty(propName: string) {
@@ -59,16 +63,24 @@ export class ChunkLayer {
 	}
 
 	public addColliders() {
-		if (!this.layerGetBoolProperty(TILED_CUSTOM_CONSTANTS.layers.properties.background.name)) {
-			this.layer.setCollisionByExclusion([])
-			this.context.scene.physics.add.collider(
-				this.context.player.getCollider(),
-				this.layer,
-				//@ts-ignore
-				() => {},
-				(player, tile) => this.characterHitsTile(tile, this.context.player)
-			)
-		}
+		const kill = this.layerGetBoolProperty(TILED_CUSTOM_CONSTANTS.layers.properties.kill.name)
+		const finish = this.layerGetBoolProperty(
+			TILED_CUSTOM_CONSTANTS.layers.properties.finish.name
+		)
+
+		this.context.scene.physics.add.collider(
+			this.context.player.getCollider(),
+			this.layer,
+			(a, b) => {
+				if (kill) {
+					this.reactToKillCollision(a, b)
+				}
+				if (finish) {
+					this.reactToFinishCollision(a, b)
+				}
+			},
+			(_, tile) => this.characterHitsTile(tile as Phaser.Tilemaps.Tile, this.context.player)
+		)
 	}
 
 	private characterHitsTile(tile: Phaser.Tilemaps.Tile, character: GameCharacter): boolean {
@@ -77,41 +89,26 @@ export class ChunkLayer {
 		}
 
 		if (character.getBottom() > tile.layer.tilemapLayer.y + tile.pixelY) {
-			console.log('moving up platform')
 			return false
 		} else if (character.isMovingDown()) {
-			console.log('moving down through platform')
 			return false
 		}
 
 		return true
 	}
 
-	public addKillsProperty() {
-		if (this.layerGetBoolProperty(TILED_CUSTOM_CONSTANTS.layers.properties.kill.name)) {
-			this.layer.setCollisionByExclusion([])
-
-			this.context.scene.physics.add.collider(
-				this.context.player.getCollider(),
-				this.layer,
-				(_, cause) => {
-					this.context.player.kill(cause)
-				}
-			)
-		}
+	public reactToKillCollision(
+		_: any,
+		cause: Phaser.Tilemaps.Tile | Phaser.Types.Physics.Arcade.GameObjectWithBody
+	) {
+		this.context.player.kill(cause)
 	}
 
-	public addFinishProperty() {
-		if (this.layerGetBoolProperty(TILED_CUSTOM_CONSTANTS.layers.properties.finish.name)) {
-			this.layer.setCollisionByExclusion([])
-			this.context.scene.physics.add.collider(
-				this.context.player.getCollider(),
-				this.layer,
-				(target) => {
-					this.context.player.reachFinishLine(target)
-				}
-			)
-		}
+	public reactToFinishCollision(
+		target: Phaser.Tilemaps.Tile | Phaser.Types.Physics.Arcade.GameObjectWithBody,
+		_: any
+	) {
+		this.context.player.reachFinishLine(target)
 	}
 
 	public setDepth(depth: number) {
