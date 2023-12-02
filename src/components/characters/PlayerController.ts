@@ -29,7 +29,7 @@ export class PlayerController implements GameCharacterController {
 			throw 'keyboard plugin is null'
 		}
 		const cursors = keyboard.createCursorKeys()
-		const speed = DEBUG ? 160 * 4 : 160
+		const speed = DEBUG ? 160 * 2 : 160
 
 		this.down = cursors.down.isDown
 
