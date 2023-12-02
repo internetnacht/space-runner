@@ -1,5 +1,11 @@
 import Player from '../components/characters/Player.ts'
-import { GLOBAL_ASSET_KEYS, MEASURES, SCENE_ASSET_KEYS, filePaths } from '../constants.ts'
+import {
+	GLOBAL_ASSET_KEYS,
+	MEASURES,
+	SCENE_ASSET_KEYS,
+	TILED_CUSTOM_CONSTANTS,
+	filePaths,
+} from '../constants.ts'
 import MusicPlayer from '../components/MusicPlayer.ts'
 import GameSettings from '../components/GameSettings.ts'
 import { typecheck } from '../utils.ts'
@@ -11,6 +17,7 @@ import { List } from 'immutable'
 import { MovingPlatform } from '../components/map-components/MovingPlatform.ts'
 import { Platform } from '../components/map-components/Platform.ts'
 import { Point } from '../components/Point.ts'
+import { ChunkContext } from '../global-types.ts'
 
 export default class Level extends Phaser.Scene {
 	private player?: Player
@@ -18,6 +25,7 @@ export default class Level extends Phaser.Scene {
 	private readonly _id: string
 	private userSettings?: GameSettings
 	private chunkLoader?: ChunkLoader
+	private chunkContext?: ChunkContext
 
 	public get id(): string {
 		return this._id
@@ -77,12 +85,16 @@ export default class Level extends Phaser.Scene {
 			spawnCoordinates
 		)
 		this.player.freeze()
+
+		this.chunkContext = {
+			player: this.player,
+			scene: this,
+			worldSceneKey: this._id,
+			globalLayers: mapMaster.globalLayers,
+		}
+
 		this.chunkLoader
-			.update(new Point(this.player.getX(), this.player.getY()), {
-				player: this.player,
-				scene: this,
-				worldSceneKey: this._id,
-			})
+			.update(new Point(this.player.getX(), this.player.getY()), this.chunkContext)
 			.then(() => this.player?.unfreeze())
 
 		this.movingPlatforms = this.addMovingPlatforms(mapMaster, this.player)
@@ -98,7 +110,10 @@ export default class Level extends Phaser.Scene {
 
 	private extractSpawnCoordinates(mapMaster: MapMasterT): { x: number; y: number } {
 		const defaultSpawn = MEASURES.player.spawn.default
-		const spawnLayer = mapMaster.globalLayers.find((layer) => layer.name === 'Spawn')
+		const spawnLayer = mapMaster.globalLayers.find(
+			(layer) =>
+				layer.name.toLowerCase() === TILED_CUSTOM_CONSTANTS.layers.spawn.name.toLowerCase()
+		)
 
 		if (spawnLayer === undefined) {
 			return { x: defaultSpawn.x, y: defaultSpawn.y }
@@ -122,11 +137,13 @@ export default class Level extends Phaser.Scene {
 		if (this.chunkLoader === undefined) {
 			throw 'chunk loader is unexpectedly undefined'
 		}
-		this.chunkLoader.update(new Point(this.player.getX(), this.player.getY()), {
-			player: this.player,
-			scene: this,
-			worldSceneKey: this._id,
-		})
+		if (this.chunkContext === undefined) {
+			throw 'chunk context is unexpectedly undefined'
+		}
+		this.chunkLoader.update(
+			new Point(this.player.getX(), this.player.getY()),
+			this.chunkContext
+		)
 
 		this.movingPlatforms?.forEach((platform) => platform.update())
 	}

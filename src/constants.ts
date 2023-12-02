@@ -129,6 +129,9 @@ export const GLOBAL_ASSET_KEYS = Object.freeze({
 export const TILED_CUSTOM_CONSTANTS = Object.freeze({
 	layers: {
 		spawn: {
+			name: 'Spawn',
+		},
+		player: {
 			name: 'Player',
 		},
 		properties: {
@@ -140,6 +143,9 @@ export const TILED_CUSTOM_CONSTANTS = Object.freeze({
 			},
 			finish: {
 				name: 'finish',
+			},
+			teleportToPlace: {
+				name: 'teleportToPlace',
 			},
 		},
 		platforms: {

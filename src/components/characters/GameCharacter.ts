@@ -1,5 +1,6 @@
 import { SCENE_ASSET_KEYS, filePaths } from '../../constants'
 import { CollisionCause } from '../../global-types'
+import { Point } from '../Point'
 import { GameCharacterController } from './GameCharacterController'
 
 type CharacterType = 'dude'
@@ -51,6 +52,10 @@ export class GameCharacter {
 
 	protected setController(controller: GameCharacterController) {
 		this.controller = controller
+	}
+
+	public teleportTo(position: Point) {
+		this.sprite.setPosition(position.x, position.y)
 	}
 
 	private addMovementAnimations(scene: Phaser.Scene) {

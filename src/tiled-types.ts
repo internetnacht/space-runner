@@ -46,3 +46,10 @@ export const MapChunk = t.type({
 	tileheight: t.number,
 })
 export type MapChunkT = t.TypeOf<typeof MapChunk>
+
+export const TilemapLayerProperty = t.type({
+	name: t.string,
+	type: t.string,
+	value: t.union([t.boolean, t.string]),
+})
+export type TilemapLayerPropertyT = t.TypeOf<typeof TilemapLayerProperty>
