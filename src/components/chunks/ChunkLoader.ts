@@ -1,37 +1,45 @@
 import { List } from 'immutable'
-import { SCENE_ASSET_KEYS, filePaths } from '../../constants'
+import { DEBUG, SCENE_ASSET_KEYS, filePaths } from '../../constants'
 import { ChunkContext, ChunkId } from '../../global-types'
 import { loadFile, typecheck } from '../../utils'
 import { MapChunk, MapChunkT, MapMasterT } from '../../tiled-types'
 import { Chunk } from './Chunk'
+import { Point } from '../Point'
 
 export default class ChunkLoader {
-	private currentChunk: Chunk | null
+	private currentChunkCoordinates: Point | null
 	private currentlyLoadedChunks: List<Chunk>
 	private readonly mapMaster: MapMasterT
 
 	public constructor(mapMasterFile: MapMasterT) {
-		this.currentChunk = null
+		this.currentChunkCoordinates = null
 		this.mapMaster = mapMasterFile
 		this.currentlyLoadedChunks = List()
 	}
 
-	public async update(x: number, y: number, context: ChunkContext) {
-		const chunkId = Chunk.computeChunkId(x, y, {
-			horizontalChunkAmount: this.mapMaster.horizontalChunkAmount,
+	public async update(position: Point, context: ChunkContext) {
+		const chunkCoordinates = Chunk.computeChunkCoordinates(position, {
 			//smaller border chunks don't cause problems because they're at the border -> their id stays the same, just the map ends sooner than normal
 			chunkWidth: this.mapMaster.chunkWidth,
 			chunkHeight: this.mapMaster.chunkHeight,
 		})
 
 		// this technique is essential for usable FPS, without it FPS drop gradually below 15 or less
-		if (this.currentChunk !== null && this.currentChunk.is(chunkId)) return
+		if (
+			this.currentChunkCoordinates !== null &&
+			this.currentChunkCoordinates.equals(chunkCoordinates)
+		)
+			return
 
-		return this.updateVisibleChunks(chunkId, context)
+		this.currentChunkCoordinates = chunkCoordinates
+		await this.updateVisibleChunks(chunkCoordinates, context)
 	}
 
-	private async updateVisibleChunks(centerChunkId: ChunkId, context: ChunkContext) {
-		const nextVisibleChunks = this.getLoadedChunkArea(centerChunkId)
+	private async updateVisibleChunks(centerChunkCoordinates: Point, context: ChunkContext) {
+		const nextVisibleChunks = this.getLoadedChunkArea(centerChunkCoordinates)
+		if (DEBUG) {
+			console.log(nextVisibleChunks.toArray())
+		}
 
 		const newVisibleChunks = nextVisibleChunks.filter(
 			(newVisibleChunkId) =>
@@ -53,13 +61,7 @@ export default class ChunkLoader {
 
 		unwantedChunks.forEach((chunk) => chunk.destroy())
 
-		const loadedChunks = await Promise.all(chunkCreationPromises)
-
-		const centerChunk = loadedChunks.find((chunk) => chunk.is(centerChunkId))
-		if (centerChunk === undefined) {
-			throw 'couldnt find center chunk after creating chunks'
-		}
-		this.currentChunk = centerChunk
+		await Promise.all(chunkCreationPromises)
 	}
 
 	private async loadChunk(context: ChunkContext, chunk: ChunkId): Promise<ChunkId> {
@@ -103,17 +105,17 @@ export default class ChunkLoader {
 		)
 		const chunkOrigin = Chunk.computeOrigin(chunk, {
 			horizontalChunkAmount: this.mapMaster.horizontalChunkAmount,
-			chunkWidth: chunkJSON.width,
-			chunkHeight: chunkJSON.height,
+			chunkWidth: this.mapMaster.chunkWidth,
+			chunkHeight: this.mapMaster.chunkHeight,
 		})
 
 		return new Chunk(context, chunkJSON, chunkOrigin)
 	}
 
-	private getLoadedChunkArea(chunkId: ChunkId): List<ChunkId> {
-		const chunkX = chunkId % this.mapMaster.horizontalChunkAmount
-		const chunkY = Math.floor(chunkId / this.mapMaster.horizontalChunkAmount)
-
+	private getLoadedChunkArea(centerChunkCoordinates: Point): List<ChunkId> {
+		/**
+		 * smaller chunks at the bottom and right border are no problem because chunk coordinates point to the top left chunk corner
+		 */
 		const left = -1
 		const top = 1
 		const right = 1
@@ -122,9 +124,10 @@ export default class ChunkLoader {
 		const surrounding: number[] = []
 
 		const addIfValid = (hori: number, verti: number) => {
-			const surroundingX = chunkX + hori
-			const surroundingY = chunkY + verti
-			if (this.chunkCoordinatesAreValid(surroundingX, surroundingY)) {
+			const surroundingX = centerChunkCoordinates.x + hori
+			const surroundingY = centerChunkCoordinates.y + verti
+
+			if (this.chunkCoordinatesAreValid(new Point(surroundingX, surroundingY))) {
 				surrounding.push(surroundingY * this.mapMaster.horizontalChunkAmount + surroundingX)
 			}
 		}
@@ -142,12 +145,12 @@ export default class ChunkLoader {
 		return List(surrounding)
 	}
 
-	private chunkCoordinatesAreValid(chunkX: number, chunkY: number): boolean {
+	private chunkCoordinatesAreValid(chunkCoordinates: Point): boolean {
 		return (
-			chunkX >= 0 &&
-			chunkY >= 0 &&
-			chunkX < this.mapMaster.horizontalChunkAmount &&
-			chunkY < this.mapMaster.verticalChunkAmount
+			chunkCoordinates.x >= 0 &&
+			chunkCoordinates.y >= 0 &&
+			chunkCoordinates.x < this.mapMaster.horizontalChunkAmount &&
+			chunkCoordinates.y < this.mapMaster.verticalChunkAmount
 		)
 	}
 }

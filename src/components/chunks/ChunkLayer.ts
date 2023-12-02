@@ -1,5 +1,6 @@
 import { TILED_CUSTOM_CONSTANTS } from '../../constants'
-import { ChunkContext, Point } from '../../global-types'
+import { ChunkContext } from '../../global-types'
+import { Point } from '../Point'
 
 export class ChunkLayer {
 	private readonly context: ChunkContext

@@ -26,6 +26,7 @@ export type ObjectMapLayerT = t.TypeOf<typeof ObjectMapLayer>
 
 export const MapMaster = t.type({
 	mapWidth: t.number,
+	mapHeight: t.number,
 	tileWidth: t.number,
 	tileHeight: t.number,
 	horizontalChunkAmount: t.number,

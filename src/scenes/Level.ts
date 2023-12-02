@@ -10,6 +10,7 @@ import { MovementPathPoint } from '../components/map-components/MovementPathPoin
 import { List } from 'immutable'
 import { MovingPlatform } from '../components/map-components/MovingPlatform.ts'
 import { Platform } from '../components/map-components/Platform.ts'
+import { Point } from '../components/Point.ts'
 
 export default class Level extends Phaser.Scene {
 	private player?: Player
@@ -77,7 +78,7 @@ export default class Level extends Phaser.Scene {
 		)
 		this.player.freeze()
 		this.chunkLoader
-			.update(this.player.getX(), this.player.getY(), {
+			.update(new Point(this.player.getX(), this.player.getY()), {
 				player: this.player,
 				scene: this,
 				worldSceneKey: this._id,
@@ -121,7 +122,7 @@ export default class Level extends Phaser.Scene {
 		if (this.chunkLoader === undefined) {
 			throw 'chunk loader is unexpectedly undefined'
 		}
-		this.chunkLoader.update(this.player.getX(), this.player.getY(), {
+		this.chunkLoader.update(new Point(this.player.getX(), this.player.getY()), {
 			player: this.player,
 			scene: this,
 			worldSceneKey: this._id,
@@ -175,10 +176,7 @@ export default class Level extends Phaser.Scene {
 			.map((layer) =>
 				List(
 					layer.objects.map((obj) => {
-						return {
-							x: obj.x,
-							y: obj.y,
-						}
+						return new Point(obj.x, obj.y)
 					})
 				)
 			)

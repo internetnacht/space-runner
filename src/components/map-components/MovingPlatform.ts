@@ -1,5 +1,5 @@
 import { DEBUG, SCENE_ASSET_KEYS, filePaths } from '../../constants'
-import { Point } from '../../global-types'
+import { Point } from '../Point'
 import { MovementPathPoint } from './MovementPathPoint'
 import { Platform } from './Platform'
 
@@ -93,10 +93,7 @@ export class MovingPlatform {
 	}
 
 	private get position(): Point {
-		return {
-			x: this.body.x,
-			y: this.body.y,
-		}
+		return new Point(this.body.x, this.body.y)
 	}
 
 	private updateVelocity() {

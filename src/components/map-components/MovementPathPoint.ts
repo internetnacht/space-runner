@@ -1,5 +1,5 @@
 import { List } from 'immutable'
-import { Point } from '../../global-types'
+import { Point } from '../Point'
 
 export class MovementPathPoint {
 	private _next: MovementPathPoint

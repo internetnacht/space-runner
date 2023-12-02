@@ -15,9 +15,4 @@ export interface ChunkContext {
 	readonly worldSceneKey: string
 }
 
-export interface Point {
-	readonly x: number
-	readonly y: number
-}
-
 export type CollisionCause = Phaser.Tilemaps.Tile | Phaser.Types.Physics.Arcade.GameObjectWithBody

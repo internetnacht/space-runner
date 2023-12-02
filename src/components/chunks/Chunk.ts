@@ -1,8 +1,10 @@
 import { List } from 'immutable'
-import { ChunkContext, ChunkId, Point } from '../../global-types'
+import { ChunkContext, ChunkId } from '../../global-types'
 import { ChunkLayer } from './ChunkLayer'
-import { MEASURES, SCENE_ASSET_KEYS, TILED_TILESET_NAME } from '../../constants'
+import { DEBUG, MEASURES, SCENE_ASSET_KEYS, TILED_TILESET_NAME } from '../../constants'
 import { MapChunkT } from '../../tiled-types'
+import { ChunkOutOfMapError } from '../../errors/ChunkOutOfMapError'
+import { Point } from '../Point'
 
 export class Chunk {
 	private readonly context: ChunkContext
@@ -35,20 +37,44 @@ export class Chunk {
 		const offsetX = chunkX * chunkMeasures.chunkWidth * MEASURES.tiles.width
 		const offsetY = chunkY * chunkMeasures.chunkHeight * MEASURES.tiles.height
 
-		return { x: offsetX, y: offsetY }
+		return new Point(offsetX, offsetY)
 	}
 
+	/**
+	 * @throws ChunkOutOfMapError
+	 */
 	public static computeChunkId(
-		x: number,
-		y: number,
-		measures: { horizontalChunkAmount: number; chunkWidth: number; chunkHeight: number }
+		point: Point,
+		measures: { mapWidth: number; mapHeight: number; chunkWidth: number; chunkHeight: number }
 	): number {
-		const tileX = Math.floor(x / MEASURES.tiles.width)
-		const tileY = Math.floor(y / MEASURES.tiles.height)
+		if (
+			point.x < 0 ||
+			point.y < 0 ||
+			point.x >= measures.mapWidth ||
+			point.y >= measures.mapHeight
+		) {
+			throw new ChunkOutOfMapError(point)
+		}
+
+		const { x, y } = Chunk.computeChunkCoordinates(point, measures)
+		const horizontalChunkAmount = measures.mapWidth / measures.chunkWidth
+
+		return x * horizontalChunkAmount + y
+	}
+
+	public static computeChunkCoordinates(
+		point: Point,
+		measures: {
+			chunkWidth: number
+			chunkHeight: number
+		}
+	): Point {
+		const tileX = Math.floor(point.x / MEASURES.tiles.width)
+		const tileY = Math.floor(point.y / MEASURES.tiles.height)
 		const chunkX = Math.floor(tileX / measures.chunkWidth)
 		const chunkY = Math.floor(tileY / measures.chunkHeight)
 
-		return chunkY * measures.horizontalChunkAmount + chunkX
+		return new Point(chunkX, chunkY)
 	}
 
 	public is(id: ChunkId): boolean {
@@ -76,18 +102,21 @@ export class Chunk {
 		chunkTileMap: Phaser.Tilemaps.Tilemap,
 		chunkJSON: MapChunkT
 	): List<ChunkLayer> {
-		// debug
-		context.scene.add
-			.rectangle(
-				this.origin.x,
-				this.origin.y,
-				chunkJSON.width * MEASURES.tiles.width,
-				chunkJSON.height * MEASURES.tiles.height
-			)
-			.setOrigin(0, 0)
-			.setStrokeStyle(2, 0x1a65ac)
-			.setDepth(100)
-		// debug
+		if (DEBUG) {
+			context.scene.add
+				.text(this.origin.x, this.origin.y, String(chunkJSON.id))
+				.setDepth(1000)
+			context.scene.add
+				.rectangle(
+					this.origin.x,
+					this.origin.y,
+					chunkJSON.width * MEASURES.tiles.width,
+					chunkJSON.height * MEASURES.tiles.height
+				)
+				.setOrigin(0, 0)
+				.setStrokeStyle(2, 0x1a65ac)
+				.setDepth(100)
+		}
 
 		const tileset = chunkTileMap.addTilesetImage(
 			TILED_TILESET_NAME,
