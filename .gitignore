@@ -1,4 +1,4 @@
-assets/maps/*/
+assets/maps/*
 .env
 docs/*
 !docs/*.tex
