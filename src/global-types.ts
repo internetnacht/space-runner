@@ -1,4 +1,4 @@
-import Player from './components/Player'
+import Player from './components/characters/Player'
 import { PHASER_FILE_TYPES } from './constants'
 
 export type ChunkId = number

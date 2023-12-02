@@ -132,8 +132,8 @@ export const TILED_CUSTOM_CONSTANTS = Object.freeze({
 			name: 'Player',
 		},
 		properties: {
-			collide: {
-				name: 'collide',
+			background: {
+				name: 'background',
 			},
 			kill: {
 				name: 'kill',
@@ -141,6 +141,9 @@ export const TILED_CUSTOM_CONSTANTS = Object.freeze({
 			finish: {
 				name: 'finish',
 			},
+		},
+		platforms: {
+			tileIds: [331, 332, 333],
 		},
 	},
 })

@@ -1,4 +1,4 @@
-import Player from '../components/Player.ts'
+import Player from '../components/characters/Player.ts'
 import { GLOBAL_ASSET_KEYS, MEASURES, filePaths, levels } from '../constants.ts'
 import MusicPlayer from '../components/MusicPlayer.ts'
 import GameSettings from '../components/GameSettings.ts'

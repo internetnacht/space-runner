@@ -1,16 +1,13 @@
-import { SCENE_ASSET_KEYS, filePaths } from '../constants'
-import { CollisionCause } from '../global-types'
+import { SCENE_ASSET_KEYS, filePaths } from '../../constants'
+import { CollisionCause } from '../../global-types'
+import { GameCharacterController } from './GameCharacterController'
 
 type CharacterType = 'dude'
 
-interface CharacterController {
-	act: (scene: Phaser.Scene) => void
-}
-
 export class GameCharacter {
 	protected readonly sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
-	protected readonly type: CharacterType
-	protected controller?: CharacterController
+	public readonly type: CharacterType
+	protected controller?: GameCharacterController
 	protected readonly deathCallback: (cause: CollisionCause) => void
 	protected readonly finishCallback: (target: CollisionCause) => void
 
@@ -40,6 +37,10 @@ export class GameCharacter {
 		this.addMovementAnimations(scene)
 	}
 
+	public getBottom(): number {
+		return this.sprite.body.y + this.sprite.body.height / 2
+	}
+
 	public kill(cause: CollisionCause) {
 		this.deathCallback(cause)
 	}
@@ -48,7 +49,7 @@ export class GameCharacter {
 		this.finishCallback(target)
 	}
 
-	protected setController(controller: CharacterController) {
+	protected setController(controller: GameCharacterController) {
 		this.controller = controller
 	}
 
@@ -110,6 +111,10 @@ export class GameCharacter {
 
 	public getY(): number {
 		return this.sprite.y
+	}
+
+	public isMovingDown(): boolean {
+		return this.controller?.movesDown() ?? false
 	}
 
 	public freeze() {
