@@ -1,6 +1,9 @@
+import { Platform } from './components/map-components/Platform.ts'
 import { ChunkId } from './global-types.ts'
 import Level from './scenes/Level.ts'
 import { List } from 'immutable'
+
+export const DEBUG = true
 
 export const MEASURES = Object.freeze({
 	window: {
@@ -57,6 +60,7 @@ export const filePaths = Object.freeze({
 	sprites: {
 		dude: 'sprites/dude.png',
 		sheet: 'sprites/spritesheet.png',
+		platform: (type: Platform) => 'sprites/platforms/' + type + '.png',
 	},
 	images: {
 		background: 'images/background.png',
@@ -89,6 +93,7 @@ export const SCENE_ASSET_KEYS = Object.freeze({
 		master: (sceneKey: string) => sceneKey + '_master',
 		chunk: (sceneKey: string, chunkId: ChunkId) => sceneKey + '_chunk_' + chunkId,
 		chunkJSON: (sceneKey: string, chunkId: ChunkId) => sceneKey + '_chunkjson_' + chunkId,
+		platform: (platform: Platform) => 'sprite_platform_' + platform,
 	},
 	images: {
 		background: (sceneKey: string) => sceneKey + '_backgroundImageKey',

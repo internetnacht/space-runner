@@ -1,4 +1,4 @@
-import { SCENE_ASSET_KEYS } from '../constants'
+import { DEBUG, SCENE_ASSET_KEYS } from '../constants'
 import { CollisionCause } from '../global-types'
 import { GameCharacter } from './GameCharacter'
 
@@ -32,7 +32,7 @@ export default class Player extends GameCharacter {
 		}
 
 		if (cursors.up.isDown) {
-			if (this.sprite.body.onFloor()) {
+			if (DEBUG || this.sprite.body.onFloor()) {
 				this.sprite.setVelocityY(-350)
 			} else {
 				const currentVelocity = this.sprite.body.velocity.y

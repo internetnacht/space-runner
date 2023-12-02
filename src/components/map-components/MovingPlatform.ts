@@ -1,4 +1,4 @@
-import { SCENE_ASSET_KEYS, filePaths } from '../../constants'
+import { DEBUG, SCENE_ASSET_KEYS, filePaths } from '../../constants'
 import { Point } from '../../global-types'
 import { MovementPathPoint } from './MovementPathPoint'
 import { Platform } from './Platform'
@@ -52,6 +52,14 @@ export class MovingPlatform {
 		this.nextMovementPoint = initialMovementPoint.next
 		this.currentTargetDistance = this.computeAxisDistanceSumToNextPoint()
 		this.updateVelocity()
+
+		if (DEBUG) {
+			let pointer = initialMovementPoint
+			do {
+				config.scene.add.rectangle(pointer.point.x, pointer.point.y, 4, 4, 0x0)
+				pointer = pointer.next
+			} while (pointer !== initialMovementPoint)
+		}
 	}
 
 	public update() {

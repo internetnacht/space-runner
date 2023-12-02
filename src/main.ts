@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { MEASURES } from './constants.ts'
+import { DEBUG, MEASURES } from './constants.ts'
 import StartingScreen from './scenes/StartingScreen.ts'
 import WorldSelectionMenu from './scenes/WorldSelectionMenu.ts'
 import Level from './scenes/Level.ts'
@@ -19,7 +19,7 @@ const config = {
 		default: 'arcade',
 		arcade: {
 			gravity: { y: 900 },
-			debug: true,
+			debug: DEBUG,
 		},
 	},
 	fps: {
