@@ -1,8 +1,15 @@
 \documentclass{article}
 
+\usepackage{textcomp}
 \usepackage{float}
 \usepackage{graphicx}
 \graphicspath{ {./images/}}
+
+\usepackage{hyperref}
+\hypersetup{
+    linktoc=all
+}
+
 
 \newcommand{\erklaerbild}[2]{
 	\begin{figure}[H]
@@ -16,15 +23,62 @@
 
 \tableofcontents
 
-\section{about this guide}
+\newpage
+
+\section{frequent courses (Ablauf-Checklisten)}
+\subsection{course of map editing}
+\begin{enumerate}
+	\item edit map
+	\item save map: Strg+S or top left File\textrangle Save, in your map folder that shouldn't be in the game folder
+	\item export map, top left File\textrangle Export as\textrangle file ending has to be .json or .tmj, level maps go into the game folder to assets/maps/, non-level maps go into the game folder to assets/maps/non-level-maps
+	\item if the game is running, stop it by closing the command line window (black thing that only has text)
+	\item start game by double clicking START.bat
+\end{enumerate}
+
+\subsection{course of creating a map}
+\begin{enumerate}
+	\item open Tiled
+	\item click on File\textrangle New\textrangle New Map
+	\item select:
+	\begin{itemize}
+		\item Orientation: Orthogonal
+		\item Tile layer format: Base64 (uncompressed)
+		\item Tile render order: Right Down
+		\item Map size: fixed, with whatever sizes you want
+		\item Tile size: 32 px each
+	\end{itemize}
+	\item click ok
+	\item at the bottom right at Tilesets, click on New Tileset...
+	\item MAKE SURE THAT Embed in map IS SELECTED!!!!
+	\item select the spritesheet by clicking on Browse... next to the source text input and select in the game folder assets/sprites/spritesheet.png
+	\item click ok
+	\item save map by hitting ctrl+s or File\textrangle Save, select your map project files folder (it's recommended to have the map project files folder outside the space-runner folder, to make sure it doesn't get accidentally deleted on updates)
+\end{enumerate}
+
+\subsection{course of setting up the game}
+\begin{enumerate}
+	\item if you don't know how to do this, ask one who does
+	\item install git
+	\item install nvm
+	\item create new folder
+	\item get INITIAL\_INSTALL.bat from me
+	\item put INITIAL\_INSTALL.bat into the new folder
+	\item double click on INITIAL\_INSTALL.bat, wait for it to complete
+	\item now you should have a folder space-runner in your new folder, this one includes the game
+	\item create a folder for your map project files (.tmx files) in your new folder (NOT the space-runner folder)
+\end{enumerate}
+
+\section{meta info}
+\subsection{about this guide}
 This guide is separated into two parts. First general tutorials about Tiled. Then the documentation of the custom magic stuff implemented by dexter to make you able to create complex levels without having to touch program code.
 
-\section{some names}
+\subsection{some names}
 \begin{itemize}
 	\item collisions/colliding/... if the player collides with something, he/she can hit it. It's like an obstacle instead of a background wall. The player can't walk through it, would stand on it, etc.
 \end{itemize}
 
-\section{custom properties?}
+\section{general info about Tiled}
+\subsection{custom properties?}
 Everything you draw/place/... in Tiled has some properties, like position, color, etc. Additionally you can set custom properties that have a type and value you choose.
 
 Custom properties can have one of various data types. The most important are:
@@ -33,7 +87,7 @@ Custom properties can have one of various data types. The most important are:
 	\item string: normal text
 \end{itemize}
 
-\subsection{visual manual}
+\subsubsection{visual manual}
 \erklaerbild
 	{custom_prop_1_edit.png}
 	{Right click on the layer.}
@@ -58,24 +112,23 @@ Custom properties can have one of various data types. The most important are:
 	{custom_prop_6_edit.png}
 	{To edit a custom property, right click it.}
 
-\section{layers?}
-\subsection{tile layers}
+\subsection{layers?}
+\subsubsection{tile layers}
 A tile layer consists of tiles. Tiles are the individual parts of the spritesheet. Tile layers are used for directly visible stuff. Here you're drawing.
 
-\subsection{object layers}
+\subsubsection{object layers}
 An object layer consists of objects. Objects can be whatever you want and aren't directly visible. We use them for example for spawn points, platform movement paths, etc.
 
 Objects can be of various types. Currently we only use points. As the name implies, they simply are a point in the map.
 
-\subsubsection{visual manual}
-\erklaerbild
-	{insert_point_edit.png}
-	{This is the button to select the point adding tool.}
-
-\subsection{object layer lists}
+\subsubsection{object layer lists}
 You can see the list of objects of an object layer and edit the individual name and properties of an object.
 
 \subsubsection{visual manual}
+\erklaerbild
+	{insert_point_edit.png}
+	{This is the button to select the point adding tool which can add point objects.}
+
 \erklaerbild
 	{object_list_1_edit.png}
 	{To see the object lists, click on the Objects tab.}
@@ -101,16 +154,20 @@ You can see the list of objects of an object layer and edit the individual name 
 	{In the image the five points were numbered 1 to 5.}
 
 \section{Tiled special custom properties}
-Until now all special custom properties are used on layers and NOT an individual tiles. For the collide property this has serious impact on file sizes and using this style everywhere makes the usage easier.
+Until now all special custom properties are used on layers and NOT an individual tiles. For the collide property this had serious impact on file sizes and using this style everywhere makes the usage easier.
 
-\subsection{collide}
+Update: Now, all layers collide with the player by default. Instead you can use the background property to make the player fall/walk through layers.
+
+Custom properties and special layer names doen't care about upper/lower case letters. E. g. you could write teLEPoRtTomaP instead of e. g. teleportToMap or spawn instead of Spawn.
+
+\subsection{background}
 \begin{itemize}
-	\item Name: collide
+	\item Name: background
 	\item Type: bool
 	\item Meant for: Tile layers
 \end{itemize}
 
-All tiles of the tile layer will collide with the player.
+All tiles of the tile layer will NOT collide with the player. They're like a background or foreground.
 
 \subsection{kill}
 \begin{itemize}
@@ -121,14 +178,23 @@ All tiles of the tile layer will collide with the player.
 
 Everything in this layer will kill the player on contact. Tiles, enemies, etc.
 
-\subsection{teleport\_to}
+\subsection{teleportToPlace}
 \begin{itemize}
-	\item Name: teleport\_to
-	\item Type: string
+	\item Name: teleportToPlace
+	\item Type: string, name of an object layer, has to be exactly the same name, upper/lower case matters
+	\item Meant for: tile layer
+\end{itemize}
+
+When the player hits anything in this layer, he/she gets teleported to the first object of the map with the name set in the teleport\_to\_name property.
+
+\subsection{finish}
+\begin{itemize}
+	\item Name: finish
+	\item Type: bool
 	\item Meant for: any layer
 \end{itemize}
 
-When the player hits anything in this layer, he/she gets teleported to the map with the name set in the teleport\_to property.
+On contact the level is finished. The contents of these layers are what the player tries to reach.
 
 \subsection{visual examples}
 
@@ -182,13 +248,10 @@ In the Tiled Objects view, the points have to be numbered. The movement path jus
 	\item Type: object layer
 \end{itemize}
 
-Contains points. Each point needs the custom property `type` which determines the type of NPC. It can be one of the following:
-\begin{itemize}
- 	\item work in progress...
-\end{itemize}
+Contains points. Each npc is by default the dude type. If you want another type, you have to set the custom property `type` which determines the type of NPC. Todo: work in progress
 Points with an invalid type (including no type) will be ignored.
-A point only determines the spawn location of an NPC. After spawning they behave on their own.
+A point only determines the spawn location of an NPC. After spawning they behave on their own. If an npc dies, it respawns at its spawn location.
 
-To set enemies, i.e. NPCs that kill on contact, use the custom `kill` property.
+To set enemies, i.e. NPCs that kill on contact, add the custom `kill` property to the layer.
 
 \end{document}
