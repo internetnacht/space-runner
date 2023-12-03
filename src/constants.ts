@@ -134,6 +134,9 @@ export const TILED_CUSTOM_CONSTANTS = Object.freeze({
 		player: {
 			name: 'Player',
 		},
+		npc: {
+			name: 'npc',
+		},
 		properties: {
 			background: {
 				name: 'background',

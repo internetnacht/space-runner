@@ -18,9 +18,11 @@ import { MovingPlatform } from '../components/map-components/MovingPlatform.ts'
 import { Platform } from '../components/map-components/Platform.ts'
 import { Point } from '../components/Point.ts'
 import { ChunkContext } from '../global-types.ts'
+import WigglingNPC from '../components/characters/WigglingNPC.ts'
 
 export default class Level extends Phaser.Scene {
 	private player?: Player
+	private npcs?: List<GameCharacter>
 	private movingPlatforms?: List<MovingPlatform>
 	private readonly _id: string
 	private userSettings?: GameSettings
@@ -61,6 +63,7 @@ export default class Level extends Phaser.Scene {
 		)
 
 		const spawnCoordinates = this.extractSpawnCoordinates(mapMaster)
+		this.npcs = this.createNPCs(mapMaster)
 
 		this.chunkLoader = new ChunkLoader(mapMaster)
 		this.player = new Player(
@@ -84,10 +87,10 @@ export default class Level extends Phaser.Scene {
 			},
 			spawnCoordinates
 		)
-		this.player.freeze()
 
 		this.chunkContext = {
 			player: this.player,
+			npcs: this.npcs,
 			scene: this,
 			worldSceneKey: this._id,
 			globalLayers: mapMaster.globalLayers,
@@ -95,9 +98,15 @@ export default class Level extends Phaser.Scene {
 
 		this.chunkLoader
 			.update(new Point(this.player.getX(), this.player.getY()), this.chunkContext)
-			.then(() => this.player?.unfreeze())
+			.then(() => {
+				this.player?.unfreeze()
+				this.npcs?.forEach((npc) => npc.unfreeze())
+			})
 
-		this.movingPlatforms = this.addMovingPlatforms(mapMaster, this.player)
+		this.movingPlatforms = this.addMovingPlatforms(
+			mapMaster,
+			List<GameCharacter>().push(this.player).concat(this.npcs)
+		)
 		this.setupCamera()
 		this.addBackgroundImage()
 		this.addPauseMenuCallbacks()
@@ -133,6 +142,7 @@ export default class Level extends Phaser.Scene {
 			throw 'player is unexpectedly undefined'
 		}
 		this.player.update(this)
+		this.npcs?.forEach((npc) => npc.update(this))
 
 		if (this.chunkLoader === undefined) {
 			throw 'chunk loader is unexpectedly undefined'
@@ -186,7 +196,7 @@ export default class Level extends Phaser.Scene {
 
 	private addMovingPlatforms(
 		mapMaster: MapMasterT,
-		character: GameCharacter
+		characters: List<GameCharacter>
 	): List<MovingPlatform> {
 		const platforms = List(mapMaster.globalLayers)
 			.filter((layer) => layer.name.indexOf('moving') === 0)
@@ -210,9 +220,25 @@ export default class Level extends Phaser.Scene {
 			)
 
 		platforms.forEach((platform) =>
-			this.physics.add.collider(platform.getCollider(), character.getCollider())
+			characters.forEach((character) => {
+				this.physics.add.collider(platform.getCollider(), character.getCollider())
+			})
 		)
 
 		return platforms
+	}
+
+	private createNPCs(mapMaster: MapMasterT): List<GameCharacter> {
+		const npcLayers = mapMaster.globalLayers.filter((layer) =>
+			layer.name
+				.toLowerCase()
+				.startsWith(TILED_CUSTOM_CONSTANTS.layers.npc.name.toLowerCase())
+		)
+		const npcs = npcLayers
+			.map((layer) =>
+				layer.objects.map((obj) => new WigglingNPC(this, new Point(obj.x, obj.y)))
+			)
+			.flat()
+		return List(npcs)
 	}
 }

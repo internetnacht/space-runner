@@ -47,9 +47,9 @@ export const MapChunk = t.type({
 })
 export type MapChunkT = t.TypeOf<typeof MapChunk>
 
-export const TilemapLayerProperty = t.type({
+export const TilemapEntityProperty = t.type({
 	name: t.string,
 	type: t.string,
 	value: t.union([t.boolean, t.string]),
 })
-export type TilemapLayerPropertyT = t.TypeOf<typeof TilemapLayerProperty>
+export type TilemapEntityPropertyT = t.TypeOf<typeof TilemapEntityProperty>

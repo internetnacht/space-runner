@@ -8,6 +8,7 @@ type CharacterType = 'dude'
 export class GameCharacter {
 	protected readonly sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
 	public readonly type: CharacterType
+	public readonly lethal: boolean
 	protected controller?: GameCharacterController
 	protected readonly deathCallback: (cause: CollisionCause) => void
 	protected readonly finishCallback: (target: CollisionCause) => void
@@ -21,11 +22,13 @@ export class GameCharacter {
 		spawnPosition?: { x: number; y: number },
 		type: CharacterType = 'dude',
 		deathCallback: (cause: CollisionCause) => void = () => {},
-		finishCallback: (cause: CollisionCause) => void = () => {}
+		finishCallback: (cause: CollisionCause) => void = () => {},
+		lethal = false
 	) {
 		this.type = type
 		this.deathCallback = deathCallback
 		this.finishCallback = finishCallback
+		this.lethal = lethal
 
 		if (spawnPosition === undefined) {
 			this.sprite = scene.physics.add.sprite(0, 0, this.type)
@@ -36,6 +39,7 @@ export class GameCharacter {
 		this.sprite.setBounce(0.1)
 
 		this.addMovementAnimations(scene)
+		this.freeze()
 	}
 
 	public getBottom(): number {

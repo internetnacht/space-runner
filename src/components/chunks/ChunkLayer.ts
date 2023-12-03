@@ -1,6 +1,6 @@
 import { DEBUG, TILED_CUSTOM_CONSTANTS } from '../../constants'
 import { ChunkContext } from '../../global-types'
-import { TilemapLayerProperty, TilemapLayerPropertyT } from '../../tiled-types'
+import { TilemapEntityProperty, TilemapEntityPropertyT } from '../../tiled-types'
 import { typecheck } from '../../utils'
 import { GameCharacter } from '../characters/GameCharacter'
 import { Point } from '../Point'
@@ -62,9 +62,9 @@ export class ChunkLayer {
 		)
 	}
 
-	private getLayerProperty(propName: string): TilemapLayerPropertyT[] {
+	private getLayerProperty(propName: string): TilemapEntityPropertyT[] {
 		return this.layer.layer.properties
-			.map((prop: any) => typecheck(prop, TilemapLayerProperty))
+			.map((prop: any) => typecheck(prop, TilemapEntityProperty))
 			.filter((prop) => prop.name.toLowerCase() === propName.toLowerCase())
 	}
 
@@ -81,7 +81,6 @@ export class ChunkLayer {
 			TILED_CUSTOM_CONSTANTS.layers.properties.finish.name
 		)
 		const teleportToPlace = this.getTeleportPlace()
-		console.log(teleportToPlace)
 
 		this.context.scene.physics.add.collider(
 			this.context.player.getCollider(),
@@ -99,6 +98,10 @@ export class ChunkLayer {
 			},
 			(_, tile) => this.characterHitsTile(tile as Phaser.Tilemaps.Tile, this.context.player)
 		)
+
+		this.context.npcs.forEach((npc) => {
+			this.context.scene.physics.add.collider(npc.getCollider(), this.layer)
+		})
 	}
 
 	private getTeleportPlace(): Point | null {
