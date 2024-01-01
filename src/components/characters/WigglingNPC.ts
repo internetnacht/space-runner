@@ -2,7 +2,7 @@ import { Point } from '../Point'
 import { GameCharacter } from './GameCharacter'
 import { WigglingController } from './WigglingController'
 
-export default class WigglingNPC extends GameCharacter {
+export class WigglingNPC extends GameCharacter {
 	public constructor(scene: Phaser.Scene, spawnPosition: Point, lethal = false) {
 		super(
 			scene,

@@ -6,7 +6,7 @@ import { MapChunk, MapChunkT, MapMasterT } from '../../tiled-types'
 import { Chunk } from './Chunk'
 import { Point } from '../Point'
 
-export default class ChunkLoader {
+export class ChunkLoader {
 	private currentChunkCoordinates: Point | null
 	private currentlyLoadedChunks: List<Chunk>
 	private readonly mapMaster: MapMasterT

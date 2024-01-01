@@ -1,5 +1,5 @@
 import { List } from 'immutable'
-import Player from './components/characters/Player'
+import { Player } from './components/characters/Player'
 import { PHASER_FILE_TYPES } from './constants'
 import { ObjectMapLayerT } from './tiled-types'
 import { GameCharacter } from './components/characters/GameCharacter'

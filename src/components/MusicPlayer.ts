@@ -1,11 +1,11 @@
 import { filePaths } from '../constants'
 import { Asset } from '../global-types'
 import { loadFile } from '../utils'
-import GameSettings from './GameSettings'
+import { GameSettings } from './GameSettings'
 
 type AudioKey = keyof typeof filePaths.audio
 
-export default class MusicPlayer {
+export class MusicPlayer {
 	/**
 	 * sound is played via a Phaser.Scene instance -> MusicPlayer depends on its scene
 	 */

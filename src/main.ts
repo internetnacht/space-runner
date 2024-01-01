@@ -1,9 +1,9 @@
 import Phaser from 'phaser'
 import { DEBUG, MEASURES } from './constants.ts'
-import StartingScreen from './scenes/StartingScreen.ts'
-import WorldSelectionMenu from './scenes/WorldSelectionMenu.ts'
-import Level from './scenes/Level.ts'
-import PauseMenu from './scenes/PauseMenu.ts'
+import { StartingScreen } from './scenes/StartingScreen.ts'
+import { WorldSelectionMenu } from './scenes/WorldSelectionMenu.ts'
+import { Level } from './scenes/Level.ts'
+import { PauseMenu } from './scenes/PauseMenu.ts'
 import { DeathScene } from './scenes/DeathScene.ts'
 import { FinishedScreen } from './scenes/FinishedScreen.ts'
 

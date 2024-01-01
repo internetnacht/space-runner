@@ -1,9 +1,9 @@
 import { List } from 'immutable'
-import GameSettings from '../components/GameSettings'
+import { GameSettings } from '../components/GameSettings'
 import { FancyClickButton } from '../components/buttons/FancyClickButton'
 import { MEASURES } from '../constants'
 import { CollisionCause } from '../global-types'
-import MusicPlayer from '../components/MusicPlayer'
+import { MusicPlayer } from '../components/MusicPlayer'
 
 export class DeathScene extends Phaser.Scene {
 	private userSettings?: GameSettings
@@ -54,7 +54,7 @@ export class DeathScene extends Phaser.Scene {
 
 		const buttonsConfig = List([
 			{
-				label: 'restart',
+				label: 'restart ' + this.deathCause,
 				cb: (() => {
 					if (this.callingScene === undefined) {
 						throw 'callingScene undefined in DeathScene restart'

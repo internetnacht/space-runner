@@ -1,10 +1,10 @@
-import MusicPlayer from '../components/MusicPlayer.ts'
-import GameSettings from '../components/GameSettings.ts'
+import { MusicPlayer } from '../components/MusicPlayer.ts'
+import { GameSettings } from '../components/GameSettings.ts'
 import { MEASURES, levels } from '../constants.ts'
 import { FancyClickButton } from '../components/buttons/FancyClickButton.ts'
-import ToggleButton from '../components/buttons/ToggleButton.ts'
+import { ToggleButton } from '../components/buttons/ToggleButton.ts'
 
-export default class WorldSelectionMenu extends Phaser.Scene {
+export class WorldSelectionMenu extends Phaser.Scene {
 	private userSettings?: GameSettings
 	private musicPlayer?: MusicPlayer
 

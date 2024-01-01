@@ -1,4 +1,4 @@
-export default abstract class Button {
+export abstract class Button {
 	protected scene: Phaser.Scene
 
 	protected constructor(scene: Phaser.Scene) {

@@ -2,7 +2,7 @@ import { CollisionCause } from '../../global-types'
 import { GameCharacter } from './GameCharacter'
 import { PlayerController } from './PlayerController'
 
-export default class Player extends GameCharacter {
+export class Player extends GameCharacter {
 	public constructor(
 		scene: Phaser.Scene,
 		deathCallback: (cause: CollisionCause) => void,

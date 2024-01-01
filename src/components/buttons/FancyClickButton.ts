@@ -1,6 +1,6 @@
 import { List } from 'immutable'
 import { MEASURES } from '../../constants'
-import Button from './Button'
+import { Button } from './Button'
 import { computeScrollFactor } from './button-utils'
 import { ButtonClickConfig } from './configs/ButtonClickConfig'
 import { ButtonConfig } from './configs/ButtonConfig'

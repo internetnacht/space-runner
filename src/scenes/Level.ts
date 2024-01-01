@@ -1,4 +1,4 @@
-import Player from '../components/characters/Player.ts'
+import { Player } from '../components/characters/Player.ts'
 import {
 	GLOBAL_ASSET_KEYS,
 	MEASURES,
@@ -6,10 +6,10 @@ import {
 	TILED_CUSTOM_CONSTANTS,
 	filePaths,
 } from '../constants.ts'
-import MusicPlayer from '../components/MusicPlayer.ts'
-import GameSettings from '../components/GameSettings.ts'
+import { MusicPlayer } from '../components/MusicPlayer.ts'
+import { GameSettings } from '../components/GameSettings.ts'
 import { typecheck } from '../utils.ts'
-import ChunkLoader from '../components/chunks/ChunkLoader.ts'
+import { ChunkLoader } from '../components/chunks/ChunkLoader.ts'
 import { MapMaster, MapMasterT } from '../tiled-types.ts'
 import { GameCharacter } from '../components/characters/GameCharacter.ts'
 import { MovementPathPoint } from '../components/map-components/MovementPathPoint.ts'
@@ -18,9 +18,9 @@ import { MovingPlatform } from '../components/map-components/MovingPlatform.ts'
 import { Platform } from '../components/map-components/Platform.ts'
 import { Point } from '../components/Point.ts'
 import { ChunkContext } from '../global-types.ts'
-import WigglingNPC from '../components/characters/WigglingNPC.ts'
+import { WigglingNPC } from '../components/characters/WigglingNPC.ts'
 
-export default class Level extends Phaser.Scene {
+export class Level extends Phaser.Scene {
 	private player?: Player
 	private npcs?: List<GameCharacter>
 	private movingPlatforms?: List<MovingPlatform>

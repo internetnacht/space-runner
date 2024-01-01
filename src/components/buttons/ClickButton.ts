@@ -1,11 +1,11 @@
 import { List } from 'immutable'
-import Button from './Button'
+import { Button } from './Button'
 import { ButtonLabelConfig } from './configs/ButtonLabelConfig'
 import { computeScrollFactor } from './button-utils'
 import { ButtonClickConfig } from './configs/ButtonClickConfig'
 import { ButtonConfig } from './configs/ButtonConfig'
 
-export default class ClickButton extends Button {
+export class ClickButton extends Button {
 	private readonly text: Phaser.GameObjects.Text
 
 	public constructor(

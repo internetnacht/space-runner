@@ -1,10 +1,10 @@
 import { List } from 'immutable'
-import GameSettings from '../components/GameSettings.js'
+import { GameSettings } from '../components/GameSettings.js'
 import { MEASURES } from '../constants.js'
-import ToggleButton from '../components/buttons/ToggleButton.js'
+import { ToggleButton } from '../components/buttons/ToggleButton.js'
 import { FancyClickButton } from '../components/buttons/FancyClickButton.js'
 
-export default class PauseMenu extends Phaser.Scene {
+export class PauseMenu extends Phaser.Scene {
 	private callingScene?: string
 	private userSettings?: GameSettings
 

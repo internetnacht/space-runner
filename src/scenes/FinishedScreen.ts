@@ -1,6 +1,6 @@
-import GameSettings from '../components/GameSettings'
+import { GameSettings } from '../components/GameSettings'
 import { FancyClickButton } from '../components/buttons/FancyClickButton'
-import MusicPlayer from '../components/MusicPlayer'
+import { MusicPlayer } from '../components/MusicPlayer'
 
 export class FinishedScreen extends Phaser.Scene {
 	private userSettings?: GameSettings

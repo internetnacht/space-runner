@@ -1,4 +1,4 @@
-export default class GameSettings {
+export class GameSettings {
 	private listeners: ((settings: Readonly<GameSettings>) => void)[]
 	private _musicIsOn: boolean
 

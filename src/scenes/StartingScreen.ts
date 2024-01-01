@@ -1,12 +1,12 @@
-import Player from '../components/characters/Player.ts'
+import { Player } from '../components/characters/Player.ts'
 import { GLOBAL_ASSET_KEYS, MEASURES, filePaths, levels } from '../constants.ts'
-import MusicPlayer from '../components/MusicPlayer.ts'
-import GameSettings from '../components/GameSettings.ts'
+import { MusicPlayer } from '../components/MusicPlayer.ts'
+import { GameSettings } from '../components/GameSettings.ts'
 import { loadButtonAssets } from '../components/buttons/button-utils.ts'
 import { FancyClickButton } from '../components/buttons/FancyClickButton.ts'
 import { MovingPlatform } from '../components/map-components/MovingPlatform.ts'
 
-class StartingScreen extends Phaser.Scene {
+export class StartingScreen extends Phaser.Scene {
 	private userSettings: GameSettings
 
 	constructor() {
@@ -64,5 +64,3 @@ class StartingScreen extends Phaser.Scene {
 		fancy.display()
 	}
 }
-
-export default StartingScreen

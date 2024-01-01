@@ -1,6 +1,6 @@
 import { Platform } from './components/map-components/Platform.ts'
 import { ChunkId } from './global-types.ts'
-import Level from './scenes/Level.ts'
+import { Level } from './scenes/Level.ts'
 import { List } from 'immutable'
 
 export const DEBUG = true

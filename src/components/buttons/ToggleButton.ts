@@ -1,10 +1,10 @@
 import { GLOBAL_ASSET_KEYS, MEASURES } from '../../constants'
-import Button from './Button'
+import { Button } from './Button'
 import { ButtonLabelConfig } from './configs/ButtonLabelConfig'
 import { ToggleButtonConfig } from './configs/ToggleButtonConfig'
 import { computeScrollFactor } from './button-utils'
 
-export default class ToggleButton extends Button {
+export class ToggleButton extends Button {
 	private readonly text: Phaser.GameObjects.Text
 	private readonly togglerOn: Phaser.GameObjects.Image
 	private readonly togglerOff: Phaser.GameObjects.Image
