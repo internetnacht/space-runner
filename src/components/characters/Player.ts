@@ -13,8 +13,4 @@ export default class Player extends GameCharacter {
 
 		this.setController(new PlayerController(this.sprite, this))
 	}
-
-	public update(scene: Phaser.Scene): void {
-		super.update(scene)
-	}
 }
