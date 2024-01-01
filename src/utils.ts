@@ -1,6 +1,7 @@
 import { Props, TypeC } from 'io-ts'
 import { Asset } from './global-types'
 import { isLeft } from 'fp-ts/lib/Either'
+import { TilemapEntityProperty, TilemapEntityPropertyT } from './tiled-types'
 
 /**
  * selecting the phaser loader by asset key doesn't work because some scope references are lost even when using .bind(this)
@@ -38,4 +39,31 @@ export function typecheck<P extends Props>(obj: unknown, type: TypeC<P>) {
 	}
 
 	return decoded.right
+}
+
+export function getLayerBoolProperty(layer: Phaser.Tilemaps.LayerData, propName: string): boolean {
+	return (
+		getLayerProperty(layer, propName)
+			.filter((prop) => prop.type === 'bool')
+			.filter((prop) => prop.value === true).length > 0
+	)
+}
+
+function getLayerProperty(
+	layer: Phaser.Tilemaps.LayerData,
+	propName: string
+): TilemapEntityPropertyT[] {
+	return layer.properties
+		.map((prop: any) => typecheck(prop, TilemapEntityProperty))
+		.filter((prop) => prop.name.toLowerCase() === propName.toLowerCase())
+}
+
+export function getLayerStringProperty(
+	layer: Phaser.Tilemaps.LayerData,
+	propName: string
+): string[] {
+	return getLayerProperty(layer, propName)
+		.filter((prop) => prop.type === 'string')
+		.map((prop) => prop.value)
+		.filter((v) => typeof v === 'string') as string[]
 }

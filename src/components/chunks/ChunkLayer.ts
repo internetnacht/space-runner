@@ -1,7 +1,6 @@
 import { DEBUG, TILED_CUSTOM_CONSTANTS } from '../../constants'
 import { ChunkContext } from '../../global-types'
-import { TilemapEntityProperty, TilemapEntityPropertyT } from '../../tiled-types'
-import { typecheck } from '../../utils'
+import { getLayerBoolProperty, getLayerStringProperty } from '../../utils'
 import { GameCharacter } from '../characters/GameCharacter'
 import { Point } from '../Point'
 
@@ -45,7 +44,8 @@ export class ChunkLayer {
 
 		this.layer = layer
 
-		const background = this.getLayerBoolProperty(
+		const background = getLayerBoolProperty(
+			this.layer.layer,
 			TILED_CUSTOM_CONSTANTS.layers.properties.background.name
 		)
 		if (!background) {
@@ -54,30 +54,13 @@ export class ChunkLayer {
 		}
 	}
 
-	private getLayerBoolProperty(propName: string): boolean {
-		return (
-			this.getLayerProperty(propName)
-				.filter((prop) => prop.type === 'bool')
-				.filter((prop) => prop.value === true).length > 0
-		)
-	}
-
-	private getLayerProperty(propName: string): TilemapEntityPropertyT[] {
-		return this.layer.layer.properties
-			.map((prop: any) => typecheck(prop, TilemapEntityProperty))
-			.filter((prop) => prop.name.toLowerCase() === propName.toLowerCase())
-	}
-
-	private getLayerStringProperty(propName: string): string[] {
-		return this.getLayerProperty(propName)
-			.filter((prop) => prop.type === 'string')
-			.map((prop) => prop.value)
-			.filter((v) => typeof v === 'string') as string[]
-	}
-
 	public addColliders() {
-		const kill = this.getLayerBoolProperty(TILED_CUSTOM_CONSTANTS.layers.properties.kill.name)
-		const finish = this.getLayerBoolProperty(
+		const kill = getLayerBoolProperty(
+			this.layer.layer,
+			TILED_CUSTOM_CONSTANTS.layers.properties.kill.name
+		)
+		const finish = getLayerBoolProperty(
+			this.layer.layer,
 			TILED_CUSTOM_CONSTANTS.layers.properties.finish.name
 		)
 		const teleportToPlace = this.getTeleportPlace()
@@ -86,6 +69,7 @@ export class ChunkLayer {
 			this.context.player.getCollider(),
 			this.layer,
 			(a, b) => {
+				// physics.add.collider doesn't add colliders but instead sets them, meaning you can't have multiple colliders on the same pair
 				if (kill) {
 					this.reactToKillCollision(a, b)
 				}
@@ -105,7 +89,8 @@ export class ChunkLayer {
 	}
 
 	private getTeleportPlace(): Point | null {
-		const teleportTarget = this.getLayerStringProperty(
+		const teleportTarget = getLayerStringProperty(
+			this.layer.layer,
 			TILED_CUSTOM_CONSTANTS.layers.properties.teleportToPlace.name
 		)[0]
 		if (teleportTarget === undefined) {
