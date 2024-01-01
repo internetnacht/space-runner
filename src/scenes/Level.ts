@@ -8,7 +8,7 @@ import {
 } from '../constants.ts'
 import { MusicPlayer } from '../components/MusicPlayer.ts'
 import { GameSettings } from '../components/GameSettings.ts'
-import { typecheck } from '../utils.ts'
+import { getLayerBoolProperty, typecheck } from '../utils.ts'
 import { ChunkLoader } from '../components/chunks/ChunkLoader.ts'
 import { MapMaster, MapMasterT } from '../tiled-types.ts'
 import { GameCharacter } from '../components/characters/GameCharacter.ts'
@@ -66,7 +66,7 @@ export class Level extends Phaser.Scene {
 		this.npcs = this.createNPCs(mapMaster)
 
 		this.chunkLoader = new ChunkLoader(mapMaster)
-		this.player = new Player(
+		const player = new Player(
 			this,
 			(cause) => {
 				this.scene.launch('DeathScene', {
@@ -87,6 +87,15 @@ export class Level extends Phaser.Scene {
 			},
 			spawnCoordinates
 		)
+		this.player = player
+
+		this.npcs
+			.filter((npc) => npc.lethal)
+			.forEach((npc) => {
+				this.physics.add.collider(npc.getCollider(), player.getCollider(), (a, _) =>
+					player.kill(a)
+				)
+			})
 
 		this.chunkContext = {
 			player: this.player,
@@ -236,7 +245,16 @@ export class Level extends Phaser.Scene {
 		)
 		const npcs = npcLayers
 			.map((layer) =>
-				layer.objects.map((obj) => new WigglingNPC(this, new Point(obj.x, obj.y)))
+				layer.objects.map(
+					(obj) =>
+						new WigglingNPC(
+							this,
+							new Point(obj.x, obj.y),
+							// todo unclean ts-ignore
+							//@ts-ignore
+							getLayerBoolProperty(layer, 'kill')
+						)
+				)
 			)
 			.flat()
 		return List(npcs)
