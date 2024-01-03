@@ -150,8 +150,6 @@ export class Level extends Phaser.Scene {
 		if (this.player === undefined) {
 			throw 'player is unexpectedly undefined'
 		}
-		this.player.update(this)
-		this.npcs?.forEach((npc) => npc.update(this))
 
 		if (this.chunkLoader === undefined) {
 			throw 'chunk loader is unexpectedly undefined'
@@ -159,10 +157,16 @@ export class Level extends Phaser.Scene {
 		if (this.chunkContext === undefined) {
 			throw 'chunk context is unexpectedly undefined'
 		}
-		this.chunkLoader.update(
-			new Point(this.player.getX(), this.player.getY()),
-			this.chunkContext
-		)
+		this.chunkLoader
+			.update(new Point(this.player.getX(), this.player.getY()), this.chunkContext)
+			.then(() => {
+				const currentChunk = this.chunkLoader?.getCurrentChunk()
+				if (currentChunk === undefined) {
+					throw 'chunkloader unexpectedly undefined'
+				}
+				this.player?.update(this, currentChunk || undefined)
+				this.npcs?.forEach((npc) => npc.update(this, currentChunk || undefined))
+			})
 
 		this.movingPlatforms?.forEach((platform) => platform.update())
 	}

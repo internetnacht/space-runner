@@ -38,14 +38,13 @@ export class ChunkLoader {
 	private async updateVisibleChunks(centerChunkCoordinates: Point, context: ChunkContext) {
 		const nextVisibleChunks = this.getLoadedChunkArea(centerChunkCoordinates)
 		if (DEBUG) {
-			console.log(nextVisibleChunks.toArray())
+			console.log(`nextvisiblechunks: ${JSON.stringify(nextVisibleChunks.toArray())}`)
 		}
 
 		const newVisibleChunks = nextVisibleChunks.filter(
-			(newVisibleChunkId) =>
-				this.currentlyLoadedChunks.find((loadedChunk) =>
-					loadedChunk.is(newVisibleChunkId)
-				) === undefined
+			(chunkId) =>
+				this.currentlyLoadedChunks.find((loadedChunk) => loadedChunk.is(chunkId)) ===
+				undefined
 		)
 
 		const unwantedChunks = this.currentlyLoadedChunks.filter(
@@ -59,9 +58,20 @@ export class ChunkLoader {
 			.map((chunk) => this.loadChunk(context, chunk))
 			.map((chunk) => this.createChunk(context, chunk))
 
-		unwantedChunks.forEach((chunk) => chunk.destroy())
+		const newChunks: Chunk[] = []
+		for (const prom of chunkCreationPromises) {
+			newChunks.push(await prom)
+		}
 
-		await Promise.all(chunkCreationPromises)
+		const stillVisibleOldChunks = this.currentlyLoadedChunks.filter(
+			(currentlyLoadedChunk) =>
+				nextVisibleChunks.find((nextVisibleChunkId) =>
+					currentlyLoadedChunk.is(nextVisibleChunkId)
+				) !== undefined
+		)
+
+		this.currentlyLoadedChunks = stillVisibleOldChunks.concat(newChunks)
+		unwantedChunks.forEach((chunk) => chunk.destroy())
 	}
 
 	private async loadChunk(context: ChunkContext, chunk: ChunkId): Promise<ChunkId> {
@@ -152,5 +162,23 @@ export class ChunkLoader {
 			chunkCoordinates.x < this.mapMaster.horizontalChunkAmount &&
 			chunkCoordinates.y < this.mapMaster.verticalChunkAmount
 		)
+	}
+
+	public getCurrentChunk(): Chunk | null {
+		if (this.currentChunkCoordinates === null) {
+			return null
+		}
+
+		const chunkId: ChunkId =
+			this.currentChunkCoordinates.x +
+			this.currentChunkCoordinates.y * this.mapMaster.horizontalChunkAmount
+		const currentChunk = this.currentlyLoadedChunks.filter((chunk) => chunk.is(chunkId))
+		if (currentChunk.size === 0) {
+			return null
+		} else if (currentChunk.size > 1) {
+			throw 'unexpected amount of current chunks: ' + currentChunk.size
+		}
+
+		return currentChunk.first()
 	}
 }

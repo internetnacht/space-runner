@@ -1,3 +1,4 @@
+import { List } from 'immutable'
 import { DEBUG, TILED_CUSTOM_CONSTANTS } from '../../constants'
 import { ChunkContext } from '../../global-types'
 import { getLayerBoolProperty, getLayerStringProperty } from '../../utils'
@@ -7,6 +8,7 @@ import { Point } from '../Point'
 export class ChunkLayer {
 	private readonly context: ChunkContext
 	private readonly layer: Phaser.Tilemaps.TilemapLayer
+	private readonly colliders: List<Phaser.Physics.Arcade.Collider>
 
 	public constructor(
 		context: ChunkContext,
@@ -50,11 +52,13 @@ export class ChunkLayer {
 		)
 		if (!background) {
 			this.layer.setCollisionByExclusion([])
-			this.addColliders()
+			this.colliders = this.createColliders()
+		} else {
+			this.colliders = List()
 		}
 	}
 
-	public addColliders() {
+	public createColliders(): List<Phaser.Physics.Arcade.Collider> {
 		const kill = getLayerBoolProperty(
 			this.layer.layer,
 			TILED_CUSTOM_CONSTANTS.layers.properties.kill.name
@@ -65,7 +69,7 @@ export class ChunkLayer {
 		)
 		const teleportToPlace = this.getTeleportPlace()
 
-		this.context.scene.physics.add.collider(
+		const playerCollider = this.context.scene.physics.add.collider(
 			this.context.player.getCollider(),
 			this.layer,
 			(a, b) => {
@@ -83,9 +87,11 @@ export class ChunkLayer {
 			(_, tile) => this.characterHitsTile(tile as Phaser.Tilemaps.Tile, this.context.player)
 		)
 
-		this.context.npcs.forEach((npc) => {
+		const npcsCollider = this.context.npcs.map((npc) =>
 			this.context.scene.physics.add.collider(npc.getCollider(), this.layer)
-		})
+		)
+
+		return npcsCollider.push(playerCollider)
 	}
 
 	private getTeleportPlace(): Point | null {
@@ -154,5 +160,12 @@ export class ChunkLayer {
 
 	public destroy() {
 		this.layer.destroy()
+		this.colliders.forEach((collider) =>
+			this.context.scene.physics.world.removeCollider(collider)
+		)
+	}
+
+	public getTileAt(position: Point): Phaser.Tilemaps.Tile {
+		return this.layer.getTileAt(position.x, position.y)
 	}
 }

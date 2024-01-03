@@ -151,4 +151,8 @@ export class Chunk {
 			layer.setDepth(MEASURES.maps.layerDepthOffset + index)
 		}
 	}
+
+	public getTilesAt(position: Point): List<Phaser.Tilemaps.Tile> {
+		return this.layers.map((layer) => layer.getTileAt(position))
+	}
 }

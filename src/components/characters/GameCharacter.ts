@@ -1,6 +1,7 @@
 import { SCENE_ASSET_KEYS, filePaths } from '../../constants'
 import { CollisionCause } from '../../global-types'
 import { Point } from '../Point'
+import { Chunk } from '../chunks/Chunk'
 import { GameCharacterController } from './GameCharacterController'
 
 type CharacterType = 'dude'
@@ -35,7 +36,7 @@ export class GameCharacter {
 		} else {
 			this.sprite = scene.physics.add.sprite(spawnPosition.x, spawnPosition.y, this.type)
 		}
-
+		this.sprite.setMaxVelocity(800)
 		this.sprite.setBounce(0.1)
 
 		this.addMovementAnimations(scene)
@@ -96,8 +97,8 @@ export class GameCharacter {
 		})
 	}
 
-	public update(scene: Phaser.Scene) {
-		this.controller?.act(scene)
+	public update(scene: Phaser.Scene, map?: Chunk) {
+		this.controller?.act(scene, map)
 	}
 
 	public getCollider(): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
