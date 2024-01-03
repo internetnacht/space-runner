@@ -117,7 +117,10 @@ export class Level extends Phaser.Scene {
 			List<GameCharacter>().push(this.player).concat(this.npcs)
 		)
 		this.setupCamera()
-		this.addBackgroundImage()
+		this.addBackgroundImage(
+			mapMaster.mapWidth * mapMaster.tileWidth,
+			mapMaster.mapHeight * mapMaster.chunkHeight
+		)
 		this.addPauseMenuCallbacks()
 
 		this.events.on('shutdown', () => {
@@ -178,18 +181,26 @@ export class Level extends Phaser.Scene {
 		this.player.attachToCamera(this.cameras.main)
 	}
 
-	private addBackgroundImage() {
+	private addBackgroundImage(mapWidth: number, mapHeight: number) {
 		const backgroundImage = this.add
 			.image(0, 0, GLOBAL_ASSET_KEYS.images.background)
-			.setOrigin(0, 0)
+			.setOrigin(0)
 			.setDepth(-1)
 
-		if (this.cameras.main === undefined) {
+		const mainCamera = this.cameras.main
+		if (mainCamera === undefined) {
 			throw 'camera is unexpectedly undefined'
 		}
-		this.cameras.main.on('followupdate', function (camera: Phaser.Cameras.Scene2D.BaseCamera) {
-			backgroundImage.x = camera.scrollX
-			backgroundImage.y = camera.scrollY
+		mainCamera.setBounds(0, 0, mapWidth, mapHeight)
+		mainCamera.on('followupdate', function (camera: Phaser.Cameras.Scene2D.BaseCamera) {
+			const horizontal = camera.scrollX / mapWidth
+			const vertical = camera.scrollY / mapHeight
+
+			const horizontalBackgroundOffset = -(backgroundImage.width - camera.width) * horizontal
+			const verticalBackgroundOffset = -(backgroundImage.height - camera.height) * vertical
+
+			backgroundImage.setX(camera.scrollX + horizontalBackgroundOffset)
+			backgroundImage.setY(camera.scrollY + verticalBackgroundOffset)
 		})
 	}
 
