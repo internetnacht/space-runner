@@ -39,7 +39,6 @@ export class MovementPathPoint {
 	}
 
 	public get next(): MovementPathPoint {
-		console.log('next!')
 		return this._next
 	}
 }
