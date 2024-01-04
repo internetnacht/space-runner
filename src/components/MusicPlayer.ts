@@ -1,6 +1,6 @@
 import { filePaths } from '../constants'
 import { Asset } from '../global-types'
-import { loadFile } from '../utils'
+import { loadFile } from '../utils/utils'
 import { GameSettings } from './GameSettings'
 
 type AudioKey = keyof typeof filePaths.audio

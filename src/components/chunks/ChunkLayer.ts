@@ -1,9 +1,10 @@
 import { List } from 'immutable'
 import { DEBUG, TILED_CUSTOM_CONSTANTS } from '../../constants'
 import { ChunkContext } from '../../global-types'
-import { getLayerBoolProperty, getLayerStringProperty } from '../../utils'
+import { getLayerBoolProperty, getLayerStringProperty } from '../../utils/utils'
 import { GameCharacter } from '../characters/GameCharacter'
-import { Point } from '../Point'
+import { PixelPoint } from '../../utils/points/PixelPoint'
+import { TilePoint } from '../../utils/points/TilePoint'
 
 export class ChunkLayer {
 	private readonly context: ChunkContext
@@ -16,7 +17,7 @@ export class ChunkLayer {
 			tilemap: Phaser.Tilemaps.Tilemap
 			name: string
 			tileset: Phaser.Tilemaps.Tileset
-			origin: Point
+			origin: PixelPoint
 		}
 	) {
 		this.context = context
@@ -94,7 +95,7 @@ export class ChunkLayer {
 		return npcsCollider.push(playerCollider)
 	}
 
-	private getTeleportPlace(): Point | null {
+	private getTeleportPlace(): PixelPoint | null {
 		const teleportTarget = getLayerStringProperty(
 			this.layer.layer,
 			TILED_CUSTOM_CONSTANTS.layers.properties.teleportToPlace.name
@@ -112,7 +113,7 @@ export class ChunkLayer {
 			return null
 		}
 
-		return new Point(targetObject.x, targetObject.y)
+		return new PixelPoint(targetObject.x, targetObject.y)
 	}
 
 	private characterHitsTile(tile: Phaser.Tilemaps.Tile, character: GameCharacter): boolean {
@@ -154,7 +155,7 @@ export class ChunkLayer {
 		}
 	}
 
-	public reactToTeleportToPlaceCollision(target: Point) {
+	public reactToTeleportToPlaceCollision(target: PixelPoint) {
 		this.context.player.teleportTo(target)
 	}
 
@@ -165,7 +166,7 @@ export class ChunkLayer {
 		)
 	}
 
-	public getTileAt(position: Point): Phaser.Tilemaps.Tile {
+	public getTileAt(position: TilePoint): Phaser.Tilemaps.Tile {
 		return this.layer.getTileAt(position.x, position.y)
 	}
 }

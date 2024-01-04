@@ -1,4 +1,5 @@
 import { CollisionCause } from '../../global-types'
+import { PixelPoint } from '../../utils/points/PixelPoint'
 import { GameCharacter } from './GameCharacter'
 import { PlayerController } from './PlayerController'
 
@@ -7,7 +8,7 @@ export class Player extends GameCharacter {
 		scene: Phaser.Scene,
 		deathCallback: (cause: CollisionCause) => void,
 		finishCallback: (cause: CollisionCause) => void,
-		spawnPosition?: { x: number; y: number }
+		spawnPosition?: PixelPoint
 	) {
 		super(scene, spawnPosition, 'dude', deathCallback, finishCallback)
 

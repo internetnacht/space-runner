@@ -4,16 +4,18 @@ import { ChunkLayer } from './ChunkLayer'
 import { DEBUG, MEASURES, SCENE_ASSET_KEYS, TILED_TILESET_NAME } from '../../constants'
 import { MapChunkT } from '../../tiled-types'
 import { ChunkOutOfMapError } from '../../errors/ChunkOutOfMapError'
-import { Point } from '../Point'
+import { PixelPoint } from '../../utils/points/PixelPoint'
+import { ChunkPoint } from '../../utils/points/ChunkPoint'
+import { TilePoint } from '../../utils/points/TilePoint'
 
 export class Chunk {
 	private readonly context: ChunkContext
-	private readonly origin: Point
+	private readonly origin: PixelPoint
 	private readonly id: ChunkId
 	private readonly tilemap: Phaser.Tilemaps.Tilemap
 	private readonly layers: List<ChunkLayer>
 
-	public constructor(context: ChunkContext, chunkJSON: Readonly<MapChunkT>, origin: Point) {
+	public constructor(context: ChunkContext, chunkJSON: Readonly<MapChunkT>, origin: PixelPoint) {
 		this.context = context
 		this.origin = origin
 		this.id = chunkJSON.id
@@ -30,21 +32,21 @@ export class Chunk {
 			chunkWidth: number
 			chunkHeight: number
 		}
-	): Point {
+	): PixelPoint {
 		const chunkX = id % chunkMeasures.horizontalChunkAmount
 		const chunkY = Math.floor(id / chunkMeasures.horizontalChunkAmount)
 
 		const offsetX = chunkX * chunkMeasures.chunkWidth * MEASURES.tiles.width
 		const offsetY = chunkY * chunkMeasures.chunkHeight * MEASURES.tiles.height
 
-		return new Point(offsetX, offsetY)
+		return new PixelPoint(offsetX, offsetY)
 	}
 
 	/**
 	 * @throws ChunkOutOfMapError
 	 */
 	public static computeChunkId(
-		point: Point,
+		point: PixelPoint,
 		measures: { mapWidth: number; mapHeight: number; chunkWidth: number; chunkHeight: number }
 	): number {
 		if (
@@ -63,18 +65,18 @@ export class Chunk {
 	}
 
 	public static computeChunkCoordinates(
-		point: Point,
+		point: PixelPoint,
 		measures: {
 			chunkWidth: number
 			chunkHeight: number
 		}
-	): Point {
+	): ChunkPoint {
 		const tileX = Math.floor(point.x / MEASURES.tiles.width)
 		const tileY = Math.floor(point.y / MEASURES.tiles.height)
 		const chunkX = Math.floor(tileX / measures.chunkWidth)
 		const chunkY = Math.floor(tileY / measures.chunkHeight)
 
-		return new Point(chunkX, chunkY)
+		return new ChunkPoint(chunkX, chunkY)
 	}
 
 	public is(id: ChunkId): boolean {
@@ -152,7 +154,16 @@ export class Chunk {
 		}
 	}
 
-	public getTilesAt(position: Point): List<Phaser.Tilemaps.Tile> {
-		return this.layers.map((layer) => layer.getTileAt(position))
+	public getTilesAt(position: TilePoint): List<Phaser.Tilemaps.Tile> {
+		return this.layers.map((layer) => layer.getTileAt(position)).filter((tile) => tile !== null)
+	}
+
+	/**
+	 * @param position position in pixel coordinates
+	 *
+	 * @return position pixel coordinates relative to this chunk's origin (can be outside of this chunk)
+	 */
+	public positionToChunkRelativeCoordinates(position: PixelPoint): PixelPoint {
+		return new PixelPoint(position.x - this.origin.x, position.y - this.origin.y)
 	}
 }

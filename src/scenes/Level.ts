@@ -8,17 +8,17 @@ import {
 } from '../constants.ts'
 import { MusicPlayer } from '../components/MusicPlayer.ts'
 import { GameSettings } from '../components/GameSettings.ts'
-import { getLayerBoolProperty, typecheck } from '../utils.ts'
-import { ChunkLoader } from '../components/chunks/ChunkLoader.ts'
+import { getLayerBoolProperty, typecheck } from '../utils/utils.ts'
+import { TiledMap } from '../components/chunks/TiledMap.ts'
 import { MapMaster, MapMasterT } from '../tiled-types.ts'
 import { GameCharacter } from '../components/characters/GameCharacter.ts'
 import { MovementPathPoint } from '../components/map-components/MovementPathPoint.ts'
 import { List } from 'immutable'
 import { MovingPlatform } from '../components/map-components/MovingPlatform.ts'
 import { Platform } from '../components/map-components/Platform.ts'
-import { Point } from '../components/Point.ts'
 import { ChunkContext } from '../global-types.ts'
-import { WigglingNPC } from '../components/characters/WigglingNPC.ts'
+import { EdgeToEdgeNPC } from '../components/characters/EdgeToEdgeNPC.ts'
+import { PixelPoint } from '../utils/points/PixelPoint.ts'
 
 export class Level extends Phaser.Scene {
 	private player?: Player
@@ -26,7 +26,7 @@ export class Level extends Phaser.Scene {
 	private movingPlatforms?: List<MovingPlatform>
 	private readonly _id: string
 	private userSettings?: GameSettings
-	private chunkLoader?: ChunkLoader
+	private tiledMap?: TiledMap
 	private chunkContext?: ChunkContext
 
 	public get id(): string {
@@ -65,7 +65,7 @@ export class Level extends Phaser.Scene {
 		const spawnCoordinates = this.extractSpawnCoordinates(mapMaster)
 		this.npcs = this.createNPCs(mapMaster)
 
-		this.chunkLoader = new ChunkLoader(mapMaster)
+		this.tiledMap = new TiledMap(mapMaster)
 		const player = new Player(
 			this,
 			(cause) => {
@@ -105,12 +105,10 @@ export class Level extends Phaser.Scene {
 			globalLayers: mapMaster.globalLayers,
 		}
 
-		this.chunkLoader
-			.update(new Point(this.player.getX(), this.player.getY()), this.chunkContext)
-			.then(() => {
-				this.player?.unfreeze()
-				this.npcs?.forEach((npc) => npc.unfreeze())
-			})
+		this.tiledMap.update(this.player.getPosition(), this.chunkContext).then(() => {
+			this.player?.unfreeze()
+			this.npcs?.forEach((npc) => npc.unfreeze())
+		})
 
 		this.movingPlatforms = this.addMovingPlatforms(
 			mapMaster,
@@ -129,7 +127,7 @@ export class Level extends Phaser.Scene {
 		})
 	}
 
-	private extractSpawnCoordinates(mapMaster: MapMasterT): { x: number; y: number } {
+	private extractSpawnCoordinates(mapMaster: MapMasterT): PixelPoint {
 		const defaultSpawn = MEASURES.player.spawn.default
 		const spawnLayer = mapMaster.globalLayers.find(
 			(layer) =>
@@ -137,13 +135,13 @@ export class Level extends Phaser.Scene {
 		)
 
 		if (spawnLayer === undefined) {
-			return { x: defaultSpawn.x, y: defaultSpawn.y }
+			return new PixelPoint(defaultSpawn.x, defaultSpawn.y)
 		} else {
 			const spawnObj = spawnLayer.objects[0]
 			if (spawnObj === undefined) {
-				return { x: defaultSpawn.x, y: defaultSpawn.y }
+				return new PixelPoint(defaultSpawn.x, defaultSpawn.y)
 			} else {
-				return { x: spawnObj.x, y: spawnObj.y }
+				return new PixelPoint(spawnObj.x, spawnObj.y)
 			}
 		}
 	}
@@ -154,22 +152,31 @@ export class Level extends Phaser.Scene {
 			throw 'player is unexpectedly undefined'
 		}
 
-		if (this.chunkLoader === undefined) {
+		if (this.tiledMap === undefined) {
 			throw 'chunk loader is unexpectedly undefined'
 		}
 		if (this.chunkContext === undefined) {
 			throw 'chunk context is unexpectedly undefined'
 		}
-		this.chunkLoader
-			.update(new Point(this.player.getX(), this.player.getY()), this.chunkContext)
-			.then(() => {
-				const currentChunk = this.chunkLoader?.getCurrentChunk()
-				if (currentChunk === undefined) {
-					throw 'chunkloader unexpectedly undefined'
-				}
-				this.player?.update(this, currentChunk || undefined)
-				this.npcs?.forEach((npc) => npc.update(this, currentChunk || undefined))
-			})
+
+		// freeze npcs that slipped out of loaded area
+		this.npcs
+			?.filter((npc) => !npc.isFrozen())
+			.filter((npc) => this.tiledMap?.getLoadedChunkAt(npc.getPosition()) === null)
+			.forEach((npc) => npc.freeze())
+
+		// unfreeze npcs that entered loaded area
+		this.npcs
+			?.filter((npc) => npc.isFrozen())
+			.filter((npc) => this.tiledMap?.getLoadedChunkAt(npc.getPosition()) !== null)
+			.forEach((npc) => npc.unfreeze())
+
+		this.tiledMap.update(this.player.getPosition(), this.chunkContext).then(() => {
+			this.player?.update(this, this.tiledMap)
+			this.npcs
+				?.filter((npc) => !npc.isFrozen())
+				.forEach((npc) => npc.update(this, this.tiledMap))
+		})
 
 		this.movingPlatforms?.forEach((platform) => platform.update())
 	}
@@ -227,7 +234,7 @@ export class Level extends Phaser.Scene {
 			.map((layer) =>
 				List(
 					layer.objects.map((obj) => {
-						return new Point(obj.x, obj.y)
+						return new PixelPoint(obj.x, obj.y)
 					})
 				)
 			)
@@ -262,12 +269,14 @@ export class Level extends Phaser.Scene {
 			.map((layer) =>
 				layer.objects.map(
 					(obj) =>
-						new WigglingNPC(
+						new EdgeToEdgeNPC(
 							this,
-							new Point(obj.x, obj.y),
+							new PixelPoint(obj.x, obj.y),
 							// todo unclean ts-ignore
 							//@ts-ignore
-							getLayerBoolProperty(layer, 'kill')
+							layer.properties === undefined
+								? false
+								: getLayerBoolProperty(layer, 'kill')
 						)
 				)
 			)

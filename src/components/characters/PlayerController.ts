@@ -29,7 +29,7 @@ export class PlayerController implements GameCharacterController {
 			throw 'keyboard plugin is null'
 		}
 		const cursors = keyboard.createCursorKeys()
-		const speed = DEBUG ? 160 * 2 : 160
+		const speed = DEBUG ? 220 * 2 : 220
 
 		this.down = cursors.down.isDown
 
@@ -43,11 +43,11 @@ export class PlayerController implements GameCharacterController {
 
 		if (cursors.up.isDown) {
 			if (DEBUG || this.body.body.onFloor()) {
-				this.body.setVelocityY(-350)
+				this.body.setVelocityY(-400)
 			} else {
 				const currentVelocity = this.body.body.velocity.y
 				if (currentVelocity < 0) {
-					this.body.setVelocityY(currentVelocity - 6)
+					this.body.setVelocityY(currentVelocity - 7)
 				}
 			}
 		}

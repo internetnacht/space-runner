@@ -1,9 +1,10 @@
 import { SCENE_ASSET_KEYS } from '../../constants'
-import { getLayerBoolProperty } from '../../utils'
-import { Point } from '../Point'
-import { Chunk } from '../chunks/Chunk'
+import { getLayerBoolProperty } from '../../utils/utils'
+import { PixelPoint } from '../../utils/points/PixelPoint'
+import { TiledMap } from '../chunks/TiledMap'
 import { GameCharacter } from './GameCharacter'
 import { GameCharacterController } from './GameCharacterController'
+import { TilePoint } from '../../utils/points/TilePoint'
 
 export class EdgeToEdgeController implements GameCharacterController {
 	private direction = true
@@ -14,36 +15,51 @@ export class EdgeToEdgeController implements GameCharacterController {
 		body: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
 		character: GameCharacter
 	) {
-		this.body = body
+		this.body = body.setOrigin(0)
 		this.character = character
 	}
 
-	public act(_: Phaser.Scene, map: Chunk) {
+	public act(_: Phaser.Scene, map?: TiledMap) {
+		if (map === undefined) {
+			return
+		}
+
 		if (this.hasSpace(map)) {
+			console.log('has space')
 			this.move()
 		} else {
+			console.log('has no space')
 			this.direction = this.changeDirection(this.direction)
 			this.move()
 		}
 	}
 
-	private hasSpace(map: Chunk): boolean {
-		const bodyPosition = new Point(this.body.x, this.body.y).toTileCoordinates()
+	private hasSpace(map: TiledMap): boolean {
+		const bodyPosition = new PixelPoint(this.body.x, this.body.y)
+		const bodyTilesPosition = bodyPosition.toTileCoordinates()
 
-		const destination = (() => {
+		const destinationHeadLevel = (() => {
 			if (this.direction) {
-				return bodyPosition.toLeft()
+				return bodyTilesPosition.toLeft()
 			} else {
-				return bodyPosition.toRight()
+				return bodyTilesPosition.toRight()
 			}
 		})()
 
-		const destinationTiles = map.getTilesAt(destination)
+		const a = !this.tilePositionIsSolid(map, destinationHeadLevel)
+		const b = !this.tilePositionIsSolid(map, destinationHeadLevel.toBottom())
+		const c = this.tilePositionIsSolid(map, destinationHeadLevel.toBottom().toBottom())
+
+		return a && b && c
+	}
+
+	private tilePositionIsSolid(map: TiledMap, position: TilePoint): boolean {
+		const destinationTiles = map.getTilesAt(position)
 
 		return (
 			destinationTiles
 				.map((tile) => tile.layer)
-				.find((layer) => getLayerBoolProperty(layer, 'collide')) !== undefined
+				.find((layer) => !getLayerBoolProperty(layer, 'background')) !== undefined
 		)
 	}
 

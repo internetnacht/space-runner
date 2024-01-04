@@ -1,7 +1,7 @@
 import { Props, TypeC } from 'io-ts'
-import { Asset } from './global-types'
+import { Asset } from '../global-types'
 import { isLeft } from 'fp-ts/lib/Either'
-import { TilemapEntityProperty, TilemapEntityPropertyT } from './tiled-types'
+import { TilemapEntityProperty, TilemapEntityPropertyT } from '../tiled-types'
 
 /**
  * selecting the phaser loader by asset key doesn't work because some scope references are lost even when using .bind(this)

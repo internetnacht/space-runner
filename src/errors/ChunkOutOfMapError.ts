@@ -1,4 +1,4 @@
-import { Point } from '../components/Point'
+import { Point } from '../utils/points/Point'
 
 export class ChunkOutOfMapError extends Error {
 	public constructor(point: Point) {

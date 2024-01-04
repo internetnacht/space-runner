@@ -1,13 +1,13 @@
 import { List } from 'immutable'
-import { Point } from '../Point'
+import { PixelPoint } from '../../utils/points/PixelPoint'
 
 export class MovementPathPoint {
 	private _next: MovementPathPoint
-	public readonly point: Point
+	public readonly point: PixelPoint
 
 	// that's as declarative and clean as a circular linked list creation will get
 	// mutable variable could be made constant but this would make this function O(n^2) instead of O(n)
-	public static constructCircularLinkedList(points: List<Point>): MovementPathPoint {
+	public static constructCircularLinkedList(points: List<PixelPoint>): MovementPathPoint {
 		const startPoint = points.first()
 		if (startPoint === undefined) {
 			throw 'point list must be non-empty'
@@ -29,7 +29,7 @@ export class MovementPathPoint {
 		return start
 	}
 
-	private constructor(point: Point, next?: MovementPathPoint) {
+	private constructor(point: PixelPoint, next?: MovementPathPoint) {
 		this.point = point
 		if (next !== undefined) {
 			this._next = next

@@ -1,5 +1,5 @@
 import { DEBUG, SCENE_ASSET_KEYS, filePaths } from '../../constants'
-import { Point } from '../Point'
+import { PixelPoint } from '../../utils/points/PixelPoint'
 import { MovementPathPoint } from './MovementPathPoint'
 import { Platform } from './Platform'
 
@@ -85,15 +85,15 @@ export class MovingPlatform {
 		return this.computeAxisDistancesSum(this.position, this.nextMovementPoint.point)
 	}
 
-	private computeAxisDistancesSum(a: Point, b: Point) {
+	private computeAxisDistancesSum(a: PixelPoint, b: PixelPoint) {
 		const deltaX = Math.abs(a.x - b.x)
 		const deltaY = Math.abs(a.y - b.y)
 
 		return deltaX + deltaY
 	}
 
-	private get position(): Point {
-		return new Point(this.body.x, this.body.y)
+	private get position(): PixelPoint {
+		return new PixelPoint(this.body.x, this.body.y)
 	}
 
 	private updateVelocity() {

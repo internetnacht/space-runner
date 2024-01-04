@@ -1,7 +1,7 @@
 import { SCENE_ASSET_KEYS, filePaths } from '../../constants'
 import { CollisionCause } from '../../global-types'
-import { Point } from '../Point'
-import { Chunk } from '../chunks/Chunk'
+import { PixelPoint } from '../../utils/points/PixelPoint'
+import { TiledMap } from '../chunks/TiledMap'
 import { GameCharacterController } from './GameCharacterController'
 
 type CharacterType = 'dude'
@@ -20,7 +20,7 @@ export class GameCharacter {
 
 	public constructor(
 		scene: Phaser.Scene,
-		spawnPosition?: { x: number; y: number },
+		spawnPosition?: PixelPoint,
 		type: CharacterType = 'dude',
 		deathCallback: (cause: CollisionCause) => void = () => {},
 		finishCallback: (cause: CollisionCause) => void = () => {},
@@ -36,6 +36,7 @@ export class GameCharacter {
 		} else {
 			this.sprite = scene.physics.add.sprite(spawnPosition.x, spawnPosition.y, this.type)
 		}
+		this.sprite.setOrigin(0)
 		this.sprite.setMaxVelocity(800)
 		this.sprite.setBounce(0.1)
 
@@ -59,7 +60,7 @@ export class GameCharacter {
 		this.controller = controller
 	}
 
-	public teleportTo(position: Point) {
+	public teleportTo(position: PixelPoint) {
 		this.sprite.setPosition(position.x, position.y)
 	}
 
@@ -97,7 +98,7 @@ export class GameCharacter {
 		})
 	}
 
-	public update(scene: Phaser.Scene, map?: Chunk) {
+	public update(scene: Phaser.Scene, map?: TiledMap) {
 		this.controller?.act(scene, map)
 	}
 
@@ -135,5 +136,13 @@ export class GameCharacter {
 	public unfreeze() {
 		this.sprite.body.setImmovable(false)
 		this.sprite.body.setAllowGravity()
+	}
+
+	public isFrozen(): boolean {
+		return this.sprite.body.immovable
+	}
+
+	public getPosition(): PixelPoint {
+		return new PixelPoint(this.sprite.x, this.sprite.y)
 	}
 }

@@ -1,6 +1,6 @@
-import { Chunk } from '../chunks/Chunk'
+import { TiledMap } from '../chunks/TiledMap'
 
 export interface GameCharacterController {
-	act(scene: Phaser.Scene, map?: Chunk): void
+	act(scene: Phaser.Scene, map?: TiledMap): void
 	movesDown(): boolean
 }

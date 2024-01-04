@@ -1,9 +1,9 @@
-import { Point } from '../Point'
+import { PixelPoint } from '../../utils/points/PixelPoint'
 import { EdgeToEdgeController } from './EdgeToEdgeController'
 import { GameCharacter } from './GameCharacter'
 
 export class EdgeToEdgeNPC extends GameCharacter {
-	public constructor(scene: Phaser.Scene, spawnPosition: Point, lethal = false) {
+	public constructor(scene: Phaser.Scene, spawnPosition: PixelPoint, lethal = false) {
 		super(
 			scene,
 			spawnPosition,

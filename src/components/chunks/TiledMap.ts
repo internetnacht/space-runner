@@ -1,13 +1,15 @@
 import { List } from 'immutable'
 import { DEBUG, SCENE_ASSET_KEYS, filePaths } from '../../constants'
 import { ChunkContext, ChunkId } from '../../global-types'
-import { loadFile, typecheck } from '../../utils'
+import { loadFile, typecheck } from '../../utils/utils'
 import { MapChunk, MapChunkT, MapMasterT } from '../../tiled-types'
 import { Chunk } from './Chunk'
-import { Point } from '../Point'
+import { PixelPoint } from '../../utils/points/PixelPoint'
+import { ChunkPoint } from '../../utils/points/ChunkPoint'
+import { TilePoint } from '../../utils/points/TilePoint'
 
-export class ChunkLoader {
-	private currentChunkCoordinates: Point | null
+export class TiledMap {
+	private currentChunkCoordinates: ChunkPoint | null
 	private currentlyLoadedChunks: List<Chunk>
 	private readonly mapMaster: MapMasterT
 
@@ -17,7 +19,7 @@ export class ChunkLoader {
 		this.currentlyLoadedChunks = List()
 	}
 
-	public async update(position: Point, context: ChunkContext) {
+	public async update(position: PixelPoint, context: ChunkContext) {
 		const chunkCoordinates = Chunk.computeChunkCoordinates(position, {
 			//smaller border chunks don't cause problems because they're at the border -> their id stays the same, just the map ends sooner than normal
 			chunkWidth: this.mapMaster.chunkWidth,
@@ -35,7 +37,7 @@ export class ChunkLoader {
 		await this.updateVisibleChunks(chunkCoordinates, context)
 	}
 
-	private async updateVisibleChunks(centerChunkCoordinates: Point, context: ChunkContext) {
+	private async updateVisibleChunks(centerChunkCoordinates: ChunkPoint, context: ChunkContext) {
 		const nextVisibleChunks = this.getLoadedChunkArea(centerChunkCoordinates)
 		if (DEBUG) {
 			console.log(`nextvisiblechunks: ${JSON.stringify(nextVisibleChunks.toArray())}`)
@@ -122,7 +124,7 @@ export class ChunkLoader {
 		return new Chunk(context, chunkJSON, chunkOrigin)
 	}
 
-	private getLoadedChunkArea(centerChunkCoordinates: Point): List<ChunkId> {
+	private getLoadedChunkArea(centerChunkCoordinates: ChunkPoint): List<ChunkId> {
 		/**
 		 * smaller chunks at the bottom and right border are no problem because chunk coordinates point to the top left chunk corner
 		 */
@@ -137,7 +139,7 @@ export class ChunkLoader {
 			const surroundingX = centerChunkCoordinates.x + hori
 			const surroundingY = centerChunkCoordinates.y + verti
 
-			if (this.chunkCoordinatesAreValid(new Point(surroundingX, surroundingY))) {
+			if (this.chunkCoordinatesAreValid(new ChunkPoint(surroundingX, surroundingY))) {
 				surrounding.push(surroundingY * this.mapMaster.horizontalChunkAmount + surroundingX)
 			}
 		}
@@ -155,7 +157,7 @@ export class ChunkLoader {
 		return List(surrounding)
 	}
 
-	private chunkCoordinatesAreValid(chunkCoordinates: Point): boolean {
+	private chunkCoordinatesAreValid(chunkCoordinates: ChunkPoint): boolean {
 		return (
 			chunkCoordinates.x >= 0 &&
 			chunkCoordinates.y >= 0 &&
@@ -164,14 +166,20 @@ export class ChunkLoader {
 		)
 	}
 
-	public getCurrentChunk(): Chunk | null {
-		if (this.currentChunkCoordinates === null) {
-			return null
-		}
+	/**
+	 * @param position
+	 *
+	 * @return chunk at given position or null if it doesn't exist or isn't loaded right now
+	 */
+	public getLoadedChunkAt(position: PixelPoint): Chunk | null {
+		const chunkCoordinates = Chunk.computeChunkCoordinates(position, {
+			chunkWidth: this.mapMaster.chunkWidth,
+			chunkHeight: this.mapMaster.chunkHeight,
+		})
 
 		const chunkId: ChunkId =
-			this.currentChunkCoordinates.x +
-			this.currentChunkCoordinates.y * this.mapMaster.horizontalChunkAmount
+			chunkCoordinates.x + chunkCoordinates.y * this.mapMaster.horizontalChunkAmount
+
 		const currentChunk = this.currentlyLoadedChunks.filter((chunk) => chunk.is(chunkId))
 		if (currentChunk.size === 0) {
 			return null
@@ -180,5 +188,18 @@ export class ChunkLoader {
 		}
 
 		return currentChunk.first()
+	}
+
+	public getTilesAt(position: TilePoint): List<Phaser.Tilemaps.Tile> {
+		const chunk = this.getLoadedChunkAt(position.toPixelCoordinates())
+
+		if (chunk === null) {
+			return List()
+		}
+
+		const chunkRelativeCoordinates = chunk.positionToChunkRelativeCoordinates(
+			position.toPixelCoordinates()
+		)
+		return chunk.getTilesAt(chunkRelativeCoordinates.toTileCoordinates())
 	}
 }
