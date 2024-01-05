@@ -40,8 +40,8 @@ export const MEASURES = Object.freeze({
 		},
 	},
 	tiles: {
-		width: 16,
-		height: 16,
+		width: 32,
+		height: 32,
 	},
 	maps: {
 		layerDepthOffset: 10,
@@ -59,11 +59,11 @@ export const MEASURES = Object.freeze({
 export const filePaths = Object.freeze({
 	sprites: {
 		dude: 'sprites/dude.png',
-		sheet: 'sprites/spritesheet.png',
+		sheet: 'sprites/Sprite_sheet2024.png',
 		platform: (type: Platform) => 'sprites/platforms/' + type + '.png',
 	},
 	images: {
-		background: 'images/background.png',
+		background: 'images/background.jpeg',
 		buttons: {
 			toggle: {
 				on: 'images/button-toggle-on.png',
@@ -168,4 +168,4 @@ export type PHASER_FILE_TYPES = keyof typeof PHASER_FILE_TYPE_TO_LOADER
 const levelList = JSON.parse(import.meta.env.VITE_LEVELS) as string[]
 export const levels = List(levelList.map((level) => new Level(level)))
 
-export const TILED_TILESET_NAME = 'spritesheet'
+export const TILED_TILESET_NAME = 'Sprite_sheet2024'
