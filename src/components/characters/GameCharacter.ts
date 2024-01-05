@@ -61,6 +61,7 @@ export class GameCharacter {
 	}
 
 	public teleportTo(position: PixelPoint) {
+		this.sprite.setVelocity(0)
 		this.sprite.setPosition(position.x, position.y)
 	}
 
