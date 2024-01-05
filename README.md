@@ -3,23 +3,18 @@
 > Jump 'n' run Phaser 3 game with modern frontend tooling using Vite.
 
 ## roadmap
- * map chunk loading
- * fancier world select menu
- * music on/off in world select
- * moving plattforms in map
+ * see: https://github.com/orgs/internetnacht/projects/2
  * dying mechanic
   * checkpoints
   * lifes per map
- * objects that kill you
- * maybe: be able to hold on to edges and jump over them
- * maybe: be able to hold on to some walls and jump from them
- * maybe: enemies
- * todo
  * loading/waiting screen on level start to get into the mood
- * Schiebeleistenbutton
- * separate rooms -> some kind of portal objects
-  * manage level endings with this technique
+ * make music not annoying
+   * music fading in/out
+
+### nice to have
  * set lights in Tiled
+ * reduce file loads (Level file loads that are independent of Level move to start screen)
+ * remove need to manually destruct objects
 
 ### code todo
  * general code cleaning
