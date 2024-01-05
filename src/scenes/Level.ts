@@ -276,7 +276,9 @@ export class Level extends Phaser.Scene {
 							//@ts-ignore
 							layer.properties === undefined
 								? false
-								: getLayerBoolProperty(layer, 'kill')
+								: // todo unclean ts-ignore
+								  //@ts-ignore
+								  getLayerBoolProperty(layer, 'kill')
 						)
 				)
 			)
