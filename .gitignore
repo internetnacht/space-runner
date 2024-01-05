@@ -1,4 +1,6 @@
 assets/maps/*
+!assets/maps/.gitkeep
+
 .env
 docs/*
 !docs/*.tex
