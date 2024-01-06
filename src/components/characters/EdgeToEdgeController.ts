@@ -36,7 +36,7 @@ export class EdgeToEdgeController implements GameCharacterController {
 
 	private hasSpace(map: TiledMap): boolean {
 		const bodyPosition = new PixelPoint(this.body.x, this.body.y)
-		const bodyTilesPosition = bodyPosition.toTileCoordinates()
+		const bodyTilesPosition = bodyPosition.toTilePoint()
 
 		const destinationHeadLevel = (() => {
 			if (this.direction) {

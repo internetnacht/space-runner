@@ -181,15 +181,15 @@ export class TiledMap {
 	}
 
 	public getTilesAt(position: TilePoint): List<Phaser.Tilemaps.Tile> {
-		const chunk = this.getLoadedChunkAt(position.toPixelCoordinates())
+		const chunk = this.getLoadedChunkAt(position.toPixelPoint())
 
 		if (chunk === null) {
 			return List()
 		}
 
 		const chunkRelativeCoordinates = chunk.positionToChunkRelativeCoordinates(
-			position.toPixelCoordinates()
+			position.toPixelPoint()
 		)
-		return chunk.getTilesAt(chunkRelativeCoordinates.toTileCoordinates())
+		return chunk.getTilesAt(chunkRelativeCoordinates.toTilePoint())
 	}
 }
