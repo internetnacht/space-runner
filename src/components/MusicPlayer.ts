@@ -1,7 +1,7 @@
 import { filePaths } from '../constants'
-import { Asset } from '../Asset'
-import { loadFile } from '../utils/utils'
+import { AssetSpecifier } from '../Asset'
 import { GameSettings } from './GameSettings'
+import { AudioAsset } from '../AudioAsset'
 
 type AudioKey = keyof typeof filePaths.audio
 
@@ -48,23 +48,10 @@ export class MusicPlayer {
 		this.scene.sound.stopByKey(audio)
 	}
 
-	public async loadAudio(audio: AudioKey): Promise<Asset> {
-		const asset: Asset = {
-			key: audio,
-			type: 'audio',
-			filePath: filePaths.audio[audio],
-		}
+	public async loadAudio(audio: AudioKey): Promise<AssetSpecifier> {
+		const asset = new AudioAsset(audio, filePaths.audio[audio])
 
-		if (this.scene.load.cacheManager.audio.has(audio)) {
-			return new Promise((resolve) => resolve(asset))
-		}
-
-		return loadFile(
-			asset,
-			this.scene.load,
-			(key) => this.scene.load.audio(key, filePaths.audio[audio]),
-			(key) => this.scene.cache.audio.get(key) !== undefined
-		)
+		return asset.load(this.scene)
 	}
 
 	public pause() {

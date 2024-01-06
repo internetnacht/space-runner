@@ -2,12 +2,14 @@ import { List } from 'immutable'
 import { DEBUG, SCENE_ASSET_KEYS, filePaths } from '../../constants'
 import { ChunkId } from './Chunk'
 import { ChunkContext } from './ChunkContext'
-import { loadFile, typecheck } from '../../utils/utils'
+import { typecheck } from '../../utils/utils'
 import { MapChunk, MapChunkT, MapMasterT } from '../../tiled-types'
 import { Chunk } from './Chunk'
 import { PixelPoint } from '../../utils/points/PixelPoint'
 import { ChunkPoint } from '../../utils/points/ChunkPoint'
 import { TilePoint } from '../../utils/points/TilePoint'
+import { TilemapJSONAsset } from '../../TilemapJSONAsset'
+import { JSONAsset } from '../../JSONAsset'
 
 export class TiledMap {
 	private currentChunkCoordinates: ChunkPoint | null
@@ -80,30 +82,17 @@ export class TiledMap {
 	private async loadChunk(context: ChunkContext, chunk: ChunkId): Promise<ChunkId> {
 		const chunkFilePath = filePaths.maps.chunk(context.worldSceneKey, chunk)
 
-		const chunkMapProm = loadFile(
-			{
-				key: SCENE_ASSET_KEYS.maps.chunk(context.worldSceneKey, chunk),
-				type: 'tilemapJSON',
-				filePath: chunkFilePath,
-			},
-			context.scene.load,
-			(key) => context.scene.load.tilemapTiledJSON(key, chunkFilePath),
-			(key) => context.scene.cache.tilemap.get(key) !== undefined
+		const chunkMap = new TilemapJSONAsset(
+			SCENE_ASSET_KEYS.maps.chunk(context.worldSceneKey, chunk),
+			chunkFilePath
+		)
+		const chunkJSON = new JSONAsset(
+			SCENE_ASSET_KEYS.maps.chunkJSON(context.worldSceneKey, chunk),
+			chunkFilePath
 		)
 
-		const chunkJSONProm = loadFile(
-			{
-				key: SCENE_ASSET_KEYS.maps.chunkJSON(context.worldSceneKey, chunk),
-				type: 'json',
-				filePath: chunkFilePath,
-			},
-			context.scene.load,
-			(key) => context.scene.load.json(key, chunkFilePath),
-			(key) => context.scene.cache.json.get(key) !== undefined
-		)
-
-		await chunkJSONProm
-		await chunkMapProm
+		await chunkMap.load(context.scene)
+		await chunkJSON.load(context.scene)
 
 		return chunk
 	}
