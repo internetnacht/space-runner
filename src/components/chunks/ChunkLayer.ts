@@ -99,8 +99,8 @@ export class ChunkLayer {
 		const teleportTarget = getLayerStringProperty(
 			this.layer.layer,
 			TILED_CUSTOM_CONSTANTS.layers.properties.teleportToPlace.name
-		)[0]
-		if (teleportTarget === undefined) {
+		)
+		if (teleportTarget === null) {
 			return null
 		}
 		const targetLayer = this.context.globalLayers.find((layer) => layer.name === teleportTarget)
