@@ -1,6 +1,7 @@
 import { List } from 'immutable'
 import { DEBUG, SCENE_ASSET_KEYS, filePaths } from '../../constants'
-import { ChunkContext, ChunkId } from '../../global-types'
+import { ChunkId } from './Chunk'
+import { ChunkContext } from './ChunkContext'
 import { loadFile, typecheck } from '../../utils/utils'
 import { MapChunk, MapChunkT, MapMasterT } from '../../tiled-types'
 import { Chunk } from './Chunk'

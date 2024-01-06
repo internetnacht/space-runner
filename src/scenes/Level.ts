@@ -16,7 +16,7 @@ import { MovementPathPoint } from '../components/map-components/MovementPathPoin
 import { List } from 'immutable'
 import { MovingPlatform } from '../components/map-components/MovingPlatform.ts'
 import { Platform } from '../components/map-components/Platform.ts'
-import { ChunkContext } from '../global-types.ts'
+import { ChunkContext } from '../components/chunks/ChunkContext.ts'
 import { EdgeToEdgeNPC } from '../components/characters/EdgeToEdgeNPC.ts'
 import { PixelPoint } from '../utils/points/PixelPoint.ts'
 

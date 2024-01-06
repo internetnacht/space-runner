@@ -1,5 +1,5 @@
 import { Platform } from './components/map-components/Platform.ts'
-import { ChunkId } from './global-types.ts'
+import { ChunkId } from './components/chunks/Chunk.ts'
 import { Level } from './scenes/Level.ts'
 import { List } from 'immutable'
 

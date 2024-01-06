@@ -1,5 +1,5 @@
 import { Props, TypeC } from 'io-ts'
-import { Asset } from '../global-types'
+import { Asset } from '../Asset'
 import { isLeft } from 'fp-ts/lib/Either'
 import { TilemapEntityProperty, TilemapEntityPropertyT } from '../tiled-types'
 

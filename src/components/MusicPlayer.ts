@@ -1,5 +1,5 @@
 import { filePaths } from '../constants'
-import { Asset } from '../global-types'
+import { Asset } from '../Asset'
 import { loadFile } from '../utils/utils'
 import { GameSettings } from './GameSettings'
 

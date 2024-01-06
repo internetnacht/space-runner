@@ -1,6 +1,6 @@
 import { List } from 'immutable'
 import { DEBUG, TILED_CUSTOM_CONSTANTS } from '../../constants'
-import { ChunkContext } from '../../global-types'
+import { ChunkContext } from './ChunkContext'
 import { getLayerBoolProperty, getLayerStringProperty } from '../../utils/utils'
 import { GameCharacter } from '../characters/GameCharacter'
 import { PixelPoint } from '../../utils/points/PixelPoint'
@@ -121,6 +121,7 @@ export class ChunkLayer {
 			return true
 		}
 
+		// tile.setCollision(true, ...) might be useful here
 		if (character.getBottom() > tile.layer.tilemapLayer.y + tile.pixelY) {
 			return false
 		} else if (character.isMovingDown()) {

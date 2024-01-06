@@ -1,5 +1,5 @@
 import { List } from 'immutable'
-import { ChunkContext, ChunkId } from '../../global-types'
+import { ChunkContext } from './ChunkContext'
 import { ChunkLayer } from './ChunkLayer'
 import { DEBUG, MEASURES, SCENE_ASSET_KEYS, TILED_TILESET_NAME } from '../../constants'
 import { MapChunkT } from '../../tiled-types'
@@ -7,6 +7,8 @@ import { ChunkOutOfMapError } from '../../errors/ChunkOutOfMapError'
 import { PixelPoint } from '../../utils/points/PixelPoint'
 import { ChunkPoint } from '../../utils/points/ChunkPoint'
 import { TilePoint } from '../../utils/points/TilePoint'
+
+export type ChunkId = number
 
 export class Chunk {
 	private readonly context: ChunkContext
