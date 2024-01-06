@@ -8,8 +8,8 @@ import { Chunk } from './Chunk'
 import { PixelPoint } from '../../utils/points/PixelPoint'
 import { ChunkPoint } from '../../utils/points/ChunkPoint'
 import { TilePoint } from '../../utils/points/TilePoint'
-import { TilemapJSONAsset } from '../../TilemapJSONAsset'
-import { JSONAsset } from '../../JSONAsset'
+import { TilemapJSONAsset } from '../../assets/TilemapJSONAsset'
+import { JSONAsset } from '../../assets/JSONAsset'
 
 export class TiledMap {
 	private currentChunkCoordinates: ChunkPoint | null

@@ -1,7 +1,7 @@
 import { filePaths } from '../constants'
-import { AssetSpecifier } from '../Asset'
+import { AssetSpecifier } from '../assets/Asset'
 import { GameSettings } from './GameSettings'
-import { AudioAsset } from '../AudioAsset'
+import { AudioAsset } from '../assets/AudioAsset'
 
 type AudioKey = keyof typeof filePaths.audio
 

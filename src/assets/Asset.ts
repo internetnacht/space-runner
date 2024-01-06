@@ -1,4 +1,4 @@
-import { PHASER_FILE_TYPES } from './constants'
+import { PHASER_FILE_TYPES } from '../constants'
 
 export interface AssetSpecifier {
 	/** see {@link Asset.key} */
