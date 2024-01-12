@@ -1,4 +1,4 @@
-import { SCENE_ASSET_KEYS, filePaths } from '../../constants'
+import { MEASURES, SCENE_ASSET_KEYS, filePaths } from '../../constants'
 import { CollisionCause } from '../../global-types'
 import { PixelPoint } from '../../utils/points/PixelPoint'
 import { TiledMap } from '../chunks/TiledMap'
@@ -109,6 +109,10 @@ export class GameCharacter {
 
 	public attachToCamera(camera: Phaser.Cameras.Scene2D.Camera) {
 		camera.startFollow(this.sprite)
+		camera.setFollowOffset(
+			0,
+			MEASURES.window.height / 2 - MEASURES.camera.offset.y.tile * MEASURES.tiles.height
+		)
 	}
 
 	public shutdown() {}

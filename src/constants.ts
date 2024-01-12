@@ -54,6 +54,13 @@ export const MEASURES = Object.freeze({
 			},
 		},
 	},
+	camera: {
+		offset: {
+			y: {
+				tile: 5,
+			},
+		},
+	},
 })
 
 export const filePaths = Object.freeze({
