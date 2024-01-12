@@ -3,7 +3,7 @@ import { ChunkId } from './components/chunks/Chunk.ts'
 import { Level } from './scenes/Level.ts'
 import { List } from 'immutable'
 
-export const DEBUG = true
+export const DEBUG = false
 
 export const MEASURES = Object.freeze({
 	window: {
