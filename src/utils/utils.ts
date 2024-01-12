@@ -64,7 +64,7 @@ function getLayerProperty(
 ): TilemapEntityPropertyT[] {
 	return layer.properties
 		.map((prop: any) => typecheck(prop, TilemapEntityProperty))
-		.filter((prop) => prop.name.toLowerCase() === propName.toLowerCase())
+		.filter((prop) => prop.name.toLowerCase().trim() === propName.toLowerCase().trim())
 }
 
 /**
@@ -75,8 +75,7 @@ function getLayerProperty(
  *
  * @returns The value of the property or null if it's not set.
  *
- * @throws {@link InternalGameError}
- * Throws if more than one identical properties are found or if the property value is not a string.
+ * @throws {@link InternalGameError} Throws if more than one identical properties are found or if the property value is not a string.
  */
 export function getLayerStringProperty(
 	layer: Phaser.Tilemaps.LayerData,

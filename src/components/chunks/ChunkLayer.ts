@@ -103,6 +103,7 @@ export class ChunkLayer {
 		if (teleportTarget === null) {
 			return null
 		}
+
 		const targetLayer = this.context.globalLayers.find((layer) => layer.name === teleportTarget)
 		if (targetLayer === undefined) {
 			return null
@@ -149,7 +150,7 @@ export class ChunkLayer {
 		this.layer.setDepth(depth)
 
 		if (
-			this.layer.layer.name.toLowerCase() ===
+			this.layer.layer.name.toLowerCase().trim() ===
 			TILED_CUSTOM_CONSTANTS.layers.player.name.toLowerCase()
 		) {
 			this.context.player.setDisplayDepth(depth)

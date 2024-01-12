@@ -131,7 +131,8 @@ export class Level extends Phaser.Scene {
 		const defaultSpawn = MEASURES.player.spawn.default
 		const spawnLayer = mapMaster.globalLayers.find(
 			(layer) =>
-				layer.name.toLowerCase() === TILED_CUSTOM_CONSTANTS.layers.spawn.name.toLowerCase()
+				layer.name.toLowerCase().trim() ===
+				TILED_CUSTOM_CONSTANTS.layers.spawn.name.toLowerCase()
 		)
 
 		if (spawnLayer === undefined) {
@@ -263,6 +264,7 @@ export class Level extends Phaser.Scene {
 		const npcLayers = mapMaster.globalLayers.filter((layer) =>
 			layer.name
 				.toLowerCase()
+				.trim()
 				.startsWith(TILED_CUSTOM_CONSTANTS.layers.npc.name.toLowerCase())
 		)
 		const npcs = npcLayers
