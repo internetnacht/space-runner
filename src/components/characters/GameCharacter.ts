@@ -1,4 +1,4 @@
-import { MEASURES, SCENE_ASSET_KEYS, filePaths } from '../../constants'
+import { SCENE_ASSET_KEYS, filePaths } from '../../constants'
 import { CollisionCause } from '../../global-types'
 import { PixelPoint } from '../../utils/points/PixelPoint'
 import { TiledMap } from '../chunks/TiledMap'
@@ -15,7 +15,10 @@ export class GameCharacter {
 	protected readonly finishCallback: (target: CollisionCause) => void
 
 	public static loadAssets(scene: Phaser.Scene) {
-		scene.load.spritesheet('dude', filePaths.sprites.dude, { frameWidth: 32, frameHeight: 48 })
+		scene.load.spritesheet('dude', filePaths.sprites.stacey, {
+			frameWidth: 64,
+			frameHeight: 96,
+		})
 	}
 
 	public constructor(
@@ -68,20 +71,20 @@ export class GameCharacter {
 	private addMovementAnimations(scene: Phaser.Scene) {
 		scene.anims.create({
 			key: SCENE_ASSET_KEYS.animations.character.moving.left(this.type),
-			frames: scene.anims.generateFrameNumbers(this.type, { start: 0, end: 3 }),
+			frames: scene.anims.generateFrameNumbers(this.type, { start: 6, end: 8 }),
 			frameRate: 10,
 			repeat: -1,
 		})
 
 		scene.anims.create({
 			key: SCENE_ASSET_KEYS.animations.character.moving.jumping.left(this.type),
-			frames: [{ key: this.type, frame: 1 }],
+			frames: [{ key: this.type, frame: 6 }],
 			frameRate: 20,
 		})
 
 		scene.anims.create({
 			key: SCENE_ASSET_KEYS.animations.character.moving.jumping.right(this.type),
-			frames: [{ key: this.type, frame: 6 }],
+			frames: [{ key: this.type, frame: 2 }],
 			frameRate: 20,
 		})
 
@@ -93,7 +96,7 @@ export class GameCharacter {
 
 		scene.anims.create({
 			key: SCENE_ASSET_KEYS.animations.character.moving.right(this.type),
-			frames: scene.anims.generateFrameNumbers(this.type, { start: 5, end: 8 }),
+			frames: scene.anims.generateFrameNumbers(this.type, { start: 0, end: 2 }),
 			frameRate: 10,
 			repeat: -1,
 		})
@@ -109,10 +112,6 @@ export class GameCharacter {
 
 	public attachToCamera(camera: Phaser.Cameras.Scene2D.Camera) {
 		camera.startFollow(this.sprite)
-		camera.setFollowOffset(
-			0,
-			MEASURES.window.height / 2 - MEASURES.camera.offset.y.tile * MEASURES.tiles.height
-		)
 	}
 
 	public shutdown() {}

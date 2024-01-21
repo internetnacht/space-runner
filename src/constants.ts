@@ -54,17 +54,11 @@ export const MEASURES = Object.freeze({
 			},
 		},
 	},
-	camera: {
-		offset: {
-			y: {
-				tile: 5,
-			},
-		},
-	},
 })
 
 export const filePaths = Object.freeze({
 	sprites: {
+		stacey: 'sprites/stacey.png',
 		dude: 'sprites/dude.png',
 		sheet: 'sprites/Sprite_sheet2024.png',
 		platform: (type: Platform) => 'sprites/platforms/' + type + '.png',

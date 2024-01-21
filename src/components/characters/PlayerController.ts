@@ -24,12 +24,17 @@ export class PlayerController implements GameCharacterController {
 	}
 
 	private move(scene: Phaser.Scene) {
+		const jumpSpeed = 700
+		const jumpPush = 7
+
+		const horizontalSpeed = 360
+
 		const keyboard = scene.input.keyboard
 		if (keyboard === null) {
 			throw 'keyboard plugin is null'
 		}
 		const cursors = keyboard.createCursorKeys()
-		const speed = DEBUG ? 220 * 2 : 220
+		const speed = DEBUG ? horizontalSpeed * 2 : horizontalSpeed
 
 		this.down = cursors.down.isDown
 
@@ -43,11 +48,11 @@ export class PlayerController implements GameCharacterController {
 
 		if (cursors.up.isDown) {
 			if (DEBUG || this.body.body.onFloor()) {
-				this.body.setVelocityY(-400)
+				this.body.setVelocityY(-jumpSpeed)
 			} else {
 				const currentVelocity = this.body.body.velocity.y
 				if (currentVelocity < 0) {
-					this.body.setVelocityY(currentVelocity - 7)
+					this.body.setVelocityY(currentVelocity - jumpPush)
 				}
 			}
 		}
