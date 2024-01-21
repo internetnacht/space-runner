@@ -5,6 +5,8 @@ import { getLayerBoolProperty, getLayerStringProperty } from '../../utils/utils'
 import { GameCharacter } from '../characters/GameCharacter'
 import { PixelPoint } from '../../utils/points/PixelPoint'
 import { TilePoint } from '../../utils/points/TilePoint'
+import { TileCheckpoint } from '../../utils/checkpoints/TileCheckpoint'
+import { InternalGameError } from '../../errors/InternalGameError'
 
 export class ChunkLayer {
 	private readonly context: ChunkContext
@@ -53,13 +55,13 @@ export class ChunkLayer {
 		)
 		if (!background) {
 			this.layer.setCollisionByExclusion([])
-			this.colliders = this.createColliders()
+			this.colliders = this.createColliders(config.origin)
 		} else {
 			this.colliders = List()
 		}
 	}
 
-	public createColliders(): List<Phaser.Physics.Arcade.Collider> {
+	public createColliders(origin: PixelPoint): List<Phaser.Physics.Arcade.Collider> {
 		const kill = getLayerBoolProperty(
 			this.layer.layer,
 			TILED_CUSTOM_CONSTANTS.layers.properties.kill.name
@@ -69,6 +71,8 @@ export class ChunkLayer {
 			TILED_CUSTOM_CONSTANTS.layers.properties.finish.name
 		)
 		const teleportToPlace = this.getTeleportPlace()
+
+		const hasCheckpoints = this.hasCheckpoints()
 
 		const playerCollider = this.context.scene.physics.add.collider(
 			this.context.player.getCollider(),
@@ -83,6 +87,16 @@ export class ChunkLayer {
 				}
 				if (teleportToPlace !== null) {
 					this.reactToTeleportToPlaceCollision(teleportToPlace)
+				}
+				if (hasCheckpoints) {
+					if (!(b instanceof Phaser.Tilemaps.Tile)) {
+						throw new InternalGameError('collision party has unexpected type: ' + b)
+					}
+					const tileOrigin = origin.toTilePoint()
+					this.context.player.checkpoint = new TileCheckpoint(
+						tileOrigin.x + b.x,
+						tileOrigin.y + b.y
+					)
 				}
 			},
 			(_, tile) => this.characterHitsTile(tile as Phaser.Tilemaps.Tile, this.context.player)
@@ -170,5 +184,11 @@ export class ChunkLayer {
 
 	public getTileAt(position: TilePoint): Phaser.Tilemaps.Tile {
 		return this.layer.getTileAt(position.x, position.y)
+	}
+
+	public hasCheckpoints(): boolean {
+		return this.layer.layer.name
+			.toLowerCase()
+			.startsWith(TILED_CUSTOM_CONSTANTS.layers.checkpoint.name.toLowerCase())
 	}
 }

@@ -138,6 +138,9 @@ export const TILED_CUSTOM_CONSTANTS = Object.freeze({
 		npc: {
 			name: 'npc',
 		},
+		checkpoint: {
+			name: 'checkpoint',
+		},
 		properties: {
 			background: {
 				name: 'background',

@@ -254,4 +254,12 @@ A point only determines the spawn location of an NPC. After spawning they behave
 
 To set enemies, i.e. NPCs that kill on contact, add the custom `kill` property to the layer.
 
+\subsection{checkpoint*}
+\begin{itemize}
+	\item Name: checkpoint\textit{write whatever you want here, only the "checkpoint" prefix is important}
+	\item Type: tile layer
+\end{itemize}
+
+On collision the colliding tile is set as the current checkpoint of the player. If the player dies, he or she gets teleported back to his/her current checkpoint.
+
 \end{document}

@@ -68,15 +68,7 @@ export class Level extends Phaser.Scene {
 		this.tiledMap = new TiledMap(mapMaster)
 		const player = new Player(
 			this,
-			(cause) => {
-				this.scene.launch('DeathScene', {
-					userSettings: this.userSettings,
-					callingScene: this._id,
-					deathCause: cause,
-					musicplayer,
-				})
-				this.scene.pause()
-			},
+			//todo this belongs in Player
 			() => {
 				this.scene.launch('FinishedScreen', {
 					userSettings: this.userSettings,

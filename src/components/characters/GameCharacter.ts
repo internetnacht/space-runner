@@ -1,5 +1,7 @@
 import { SCENE_ASSET_KEYS, filePaths } from '../../constants'
 import { CollisionCause } from '../../global-types'
+import { Checkpoint } from '../../utils/checkpoints/Checkpoint'
+import { TileCheckpoint } from '../../utils/checkpoints/TileCheckpoint'
 import { PixelPoint } from '../../utils/points/PixelPoint'
 import { TiledMap } from '../chunks/TiledMap'
 import { GameCharacterController } from './GameCharacterController'
@@ -13,6 +15,7 @@ export class GameCharacter {
 	protected controller?: GameCharacterController
 	protected readonly deathCallback: (cause: CollisionCause) => void
 	protected readonly finishCallback: (target: CollisionCause) => void
+	protected activeCheckpoint: Checkpoint
 
 	public static loadAssets(scene: Phaser.Scene) {
 		scene.load.spritesheet('dude', filePaths.sprites.stacey, {
@@ -36,8 +39,11 @@ export class GameCharacter {
 
 		if (spawnPosition === undefined) {
 			this.sprite = scene.physics.add.sprite(0, 0, this.type)
+			this.activeCheckpoint = new TileCheckpoint(0, 0)
 		} else {
 			this.sprite = scene.physics.add.sprite(spawnPosition.x, spawnPosition.y, this.type)
+			const tileSpawn = spawnPosition.toTilePoint()
+			this.activeCheckpoint = new TileCheckpoint(tileSpawn.x, tileSpawn.y)
 		}
 		this.sprite.setOrigin(0)
 		this.sprite.setMaxVelocity(800)
@@ -148,5 +154,9 @@ export class GameCharacter {
 
 	public getPosition(): PixelPoint {
 		return new PixelPoint(this.sprite.x, this.sprite.y)
+	}
+
+	set checkpoint(checkpoint: Checkpoint) {
+		this.activeCheckpoint = checkpoint
 	}
 }

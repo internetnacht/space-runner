@@ -6,11 +6,18 @@ import { PlayerController } from './PlayerController'
 export class Player extends GameCharacter {
 	public constructor(
 		scene: Phaser.Scene,
-		deathCallback: (cause: CollisionCause) => void,
 		finishCallback: (cause: CollisionCause) => void,
 		spawnPosition?: PixelPoint
 	) {
-		super(scene, spawnPosition, 'dude', deathCallback, finishCallback)
+		super(
+			scene,
+			spawnPosition,
+			'dude',
+			(_) => {
+				this.teleportTo(this.activeCheckpoint.toPixelPoint())
+			},
+			finishCallback
+		)
 
 		this.setController(new PlayerController(this.sprite, this))
 	}
