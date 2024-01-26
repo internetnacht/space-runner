@@ -138,9 +138,6 @@ export const TILED_CUSTOM_CONSTANTS = Object.freeze({
 		npc: {
 			name: 'npc',
 		},
-		checkpoint: {
-			name: 'checkpoint',
-		},
 		properties: {
 			background: {
 				name: 'background',
@@ -156,6 +153,9 @@ export const TILED_CUSTOM_CONSTANTS = Object.freeze({
 			},
 			unlockTask: {
 				name: 'unlockTask',
+			},
+			checkpoint: {
+				name: 'checkpoint',
 			},
 		},
 		platforms: {

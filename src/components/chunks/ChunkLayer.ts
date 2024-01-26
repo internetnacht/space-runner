@@ -72,7 +72,10 @@ export class ChunkLayer {
 		)
 		const teleportToPlace = this.getTeleportPlace()
 
-		const hasCheckpoints = this.hasCheckpoints()
+		const hasCheckpoints = getLayerBoolProperty(
+			this.layer.layer,
+			TILED_CUSTOM_CONSTANTS.layers.properties.checkpoint.name
+		)
 
 		const taskUnlocker = getLayerBoolProperty(
 			this.layer.layer,
@@ -206,11 +209,5 @@ export class ChunkLayer {
 
 	public getTileAt(position: TilePoint): Phaser.Tilemaps.Tile {
 		return this.layer.getTileAt(position.x, position.y)
-	}
-
-	public hasCheckpoints(): boolean {
-		return this.layer.layer.name
-			.toLowerCase()
-			.startsWith(TILED_CUSTOM_CONSTANTS.layers.checkpoint.name.toLowerCase())
 	}
 }
