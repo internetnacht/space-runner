@@ -21,6 +21,8 @@ import { EdgeToEdgeNPC } from '../components/characters/EdgeToEdgeNPC.ts'
 import { PixelPoint } from '../utils/points/PixelPoint.ts'
 import { TaskUnlocker } from '../auth/TaskUnlocker.ts'
 import { InternalGameError } from '../errors/InternalGameError.ts'
+import { StdControls } from '../components/controls/StdControls.ts'
+import { IdleControls } from '../components/controls/IdleControls.ts'
 
 export class Level extends Phaser.Scene {
 	private player?: Player
@@ -81,6 +83,7 @@ export class Level extends Phaser.Scene {
 		const player = new Player(
 			this,
 			map,
+			new StdControls(this),
 			//todo this belongs in Player
 			() => {
 				this.scene.launch('FinishedScreen', {
@@ -280,6 +283,7 @@ export class Level extends Phaser.Scene {
 						new EdgeToEdgeNPC(
 							this,
 							map,
+							new IdleControls(),
 							new PixelPoint(obj.x, obj.y),
 							// todo unclean ts-ignore
 							//@ts-ignore

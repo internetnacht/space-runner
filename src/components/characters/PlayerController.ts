@@ -1,4 +1,5 @@
 import { DEBUG, SCENE_ASSET_KEYS } from '../../constants'
+import { Controls } from '../controls/Controls'
 import { GameCharacter } from './GameCharacter'
 import { GameCharacterController } from './GameCharacterController'
 
@@ -15,38 +16,33 @@ export class PlayerController implements GameCharacterController {
 		this.character = character
 	}
 
-	public act(scene: Phaser.Scene) {
-		this.move(scene)
+	public act(scene: Phaser.Scene, controls: Controls) {
+		this.move(scene, controls)
 	}
 
 	public movesDown(): boolean {
 		return this.down
 	}
 
-	private move(scene: Phaser.Scene) {
+	private move(_: Phaser.Scene, controls: Controls) {
 		const jumpSpeed = 700
 		const jumpPush = 7
 
 		const horizontalSpeed = 300
 
-		const keyboard = scene.input.keyboard
-		if (keyboard === null) {
-			throw 'keyboard plugin is null'
-		}
-		const cursors = keyboard.createCursorKeys()
 		const speed = DEBUG ? horizontalSpeed * 2 : horizontalSpeed
 
-		this.down = cursors.down.isDown
+		this.down = controls.bottomDown()
 
-		if (cursors.left.isDown) {
+		if (controls.leftDown()) {
 			this.moveSideWays(-speed, 'left')
-		} else if (cursors.right.isDown) {
+		} else if (controls.rightDown()) {
 			this.moveSideWays(speed, 'right')
 		} else {
 			this.moveSideWays(0, 'turn')
 		}
 
-		if (cursors.up.isDown) {
+		if (controls.upDown()) {
 			if (DEBUG || this.body.body.onFloor()) {
 				this.body.setVelocityY(-jumpSpeed)
 			} else {

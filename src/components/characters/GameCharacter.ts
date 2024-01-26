@@ -3,6 +3,7 @@ import { CollisionCause } from '../../global-types'
 import { Checkpoint } from '../../utils/checkpoints/Checkpoint'
 import { TileCheckpoint } from '../../utils/checkpoints/TileCheckpoint'
 import { PixelPoint } from '../../utils/points/PixelPoint'
+import { Controls } from '../controls/Controls'
 import { TiledMap } from '../chunks/TiledMap'
 import { GameCharacterController } from './GameCharacterController'
 
@@ -17,6 +18,7 @@ export class GameCharacter {
 	protected readonly finishCallback: (target: CollisionCause) => void
 	protected activeCheckpoint: Checkpoint
 	protected map: TiledMap
+	protected readonly controls
 
 	public static loadAssets(scene: Phaser.Scene) {
 		scene.load.spritesheet('dude', filePaths.sprites.stacey, {
@@ -28,6 +30,7 @@ export class GameCharacter {
 	public constructor(
 		scene: Phaser.Scene,
 		map: TiledMap,
+		controls: Controls,
 		spawnPosition?: PixelPoint,
 		type: CharacterType = 'dude',
 		deathCallback: (cause: CollisionCause) => void = () => {},
@@ -36,6 +39,7 @@ export class GameCharacter {
 	) {
 		this.map = map
 		this.type = type
+		this.controls = controls
 		this.deathCallback = deathCallback
 		this.finishCallback = finishCallback
 		this.lethal = lethal
@@ -114,7 +118,7 @@ export class GameCharacter {
 	}
 
 	public update(scene: Phaser.Scene, map?: TiledMap) {
-		this.controller?.act(scene, map)
+		this.controller?.act(scene, this.controls, map)
 	}
 
 	public getCollider(): Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {

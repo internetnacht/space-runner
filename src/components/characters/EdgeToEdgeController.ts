@@ -5,6 +5,7 @@ import { TiledMap } from '../chunks/TiledMap'
 import { GameCharacter } from './GameCharacter'
 import { GameCharacterController } from './GameCharacterController'
 import { TilePoint } from '../../utils/points/TilePoint'
+import { Controls } from '../controls/Controls'
 
 export class EdgeToEdgeController implements GameCharacterController {
 	private direction = true
@@ -19,7 +20,7 @@ export class EdgeToEdgeController implements GameCharacterController {
 		this.character = character
 	}
 
-	public act(_: Phaser.Scene, map?: TiledMap) {
+	public act(_: Phaser.Scene, __: Controls, map?: TiledMap) {
 		if (map === undefined) {
 			return
 		}
