@@ -100,11 +100,21 @@ export class ChunkLayer {
 					if (!(b instanceof Phaser.Tilemaps.Tile)) {
 						throw new InternalGameError('collision party has unexpected type: ' + b)
 					}
+					const tile = b
 					const tileOrigin = origin.toTilePoint()
 					this.context.player.checkpoint = new TileCheckpoint(
-						tileOrigin.x + b.x,
-						tileOrigin.y + b.y
+						tileOrigin.x + tile.x,
+						tileOrigin.y + tile.y
 					)
+
+					const marker = this.context.scene.add.circle(
+						tile.layer.tilemapLayer.x + tile.pixelX + tile.width / 2,
+						tile.layer.tilemapLayer.y + tile.pixelY + tile.height / 2,
+						64,
+						0xe42c82,
+						0.5
+					)
+					this.context.scene.time.delayedCall(256, () => marker.destroy())
 				}
 				if (taskUnlocker) {
 					const unlocker = taskUnlockers.find(
