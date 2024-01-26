@@ -31,4 +31,6 @@ const config = {
 	},
 }
 
+document.getElementsByTagName('body')[0].style.margin = 0 + 'px'
+
 export default new Phaser.Game(config)
