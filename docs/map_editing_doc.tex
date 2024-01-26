@@ -196,6 +196,24 @@ When the player hits anything in this layer, he/she gets teleported to the first
 
 On contact the level is finished. The contents of these layers are what the player tries to reach.
 
+\subsection{unlocktask}
+\begin{itemize}
+	\item Name: unlocktask
+	\item Type: bool
+	\item Meant for: tile layers
+\end{itemize}
+
+On contact the player unlocks a task. Each level finish and unlocktask layer unlocks a different task. Therefore the total amount of levels and unlocktask layers (across all levels!) should be exactly the amount of tasks that are supposed to be distributed via the game (probably 28).
+
+\subsection{checkpoint*}
+\begin{itemize}
+	\item Name: checkpoint
+	\item Type: bool
+	\item Meant for: tile layers
+\end{itemize}
+On collision the colliding tile is set as the current checkpoint of the player. If the player dies, he or she gets teleported back to his/her current checkpoint.
+
+
 \subsection{visual examples}
 
 \erklaerbild
@@ -253,13 +271,5 @@ Points with an invalid type (including no type) will be ignored.
 A point only determines the spawn location of an NPC. After spawning they behave on their own. If an npc dies, it respawns at its spawn location.
 
 To set enemies, i.e. NPCs that kill on contact, add the custom `kill` property to the layer.
-
-\subsection{checkpoint*}
-\begin{itemize}
-	\item Name: checkpoint\textit{write whatever you want here, only the "checkpoint" prefix is important}
-	\item Type: tile layer
-\end{itemize}
-
-On collision the colliding tile is set as the current checkpoint of the player. If the player dies, he or she gets teleported back to his/her current checkpoint.
 
 \end{document}
