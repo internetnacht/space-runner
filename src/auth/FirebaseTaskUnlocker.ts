@@ -35,12 +35,12 @@ export class FirebaseTaskUnlocker implements TaskUnlocker {
 			appId: import.meta.env.VITE_FIREBASE_APP_ID,
 			measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 		}
-		initializeApp(config)
-		const tasks = await this.getAllTasks()
 		const token = import.meta.env.VITE_SPIELFELD_TOKEN
-
+		initializeApp(config)
 		const auth = getAuth()
 		await signInWithCustomToken(auth, token)
+
+		const tasks = await this.getAllTasks()
 
 		const unlocker = new FirebaseTaskUnlocker(tasks)
 
