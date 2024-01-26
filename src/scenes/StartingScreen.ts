@@ -57,6 +57,7 @@ export class StartingScreen extends Phaser.Scene {
 			clickCallback: () => {
 				this.scene.start('WorldSelectionMenu', {
 					userSettings: this.userSettings,
+					taskUnlocker: FirebaseTaskUnlocker.instance,
 					musicPlayer,
 				})
 			},
@@ -64,7 +65,6 @@ export class StartingScreen extends Phaser.Scene {
 		fancy.center()
 
 		FirebaseTaskUnlocker.setup().then(() => {
-			this.userSettings.taskUnlocker = FirebaseTaskUnlocker.instance
 			fancy.display()
 		})
 	}

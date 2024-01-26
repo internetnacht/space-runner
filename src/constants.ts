@@ -154,6 +154,9 @@ export const TILED_CUSTOM_CONSTANTS = Object.freeze({
 			teleportToPlace: {
 				name: 'teleportToPlace',
 			},
+			unlockTask: {
+				name: 'unlockTask',
+			},
 		},
 		platforms: {
 			tileIds: [331, 332, 333],
@@ -171,5 +174,11 @@ export type PHASER_FILE_TYPES = keyof typeof PHASER_FILE_TYPE_TO_LOADER
 
 const levelList = JSON.parse(import.meta.env.VITE_LEVELS) as string[]
 export const levels = List(levelList.map((level) => new Level(level)))
+
+export const taskUnlockers = JSON.parse(import.meta.env.VITE_TASK_UNLOCKERS) as [
+	string,
+	string,
+	number,
+][]
 
 export const TILED_TILESET_NAME = 'Sprite_sheet2024'

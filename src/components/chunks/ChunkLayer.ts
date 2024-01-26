@@ -1,5 +1,5 @@
 import { List } from 'immutable'
-import { DEBUG, TILED_CUSTOM_CONSTANTS } from '../../constants'
+import { DEBUG, TILED_CUSTOM_CONSTANTS, taskUnlockers } from '../../constants'
 import { ChunkContext } from './ChunkContext'
 import { getLayerBoolProperty, getLayerStringProperty } from '../../utils/utils'
 import { GameCharacter } from '../characters/GameCharacter'
@@ -74,6 +74,11 @@ export class ChunkLayer {
 
 		const hasCheckpoints = this.hasCheckpoints()
 
+		const taskUnlocker = getLayerBoolProperty(
+			this.layer.layer,
+			TILED_CUSTOM_CONSTANTS.layers.properties.unlockTask.name
+		)
+
 		const playerCollider = this.context.scene.physics.add.collider(
 			this.context.player.getCollider(),
 			this.layer,
@@ -97,6 +102,23 @@ export class ChunkLayer {
 						tileOrigin.x + b.x,
 						tileOrigin.y + b.y
 					)
+				}
+				if (taskUnlocker) {
+					const unlocker = taskUnlockers.find(
+						(unlocker) =>
+							unlocker[0] === this.context.worldSceneKey &&
+							unlocker[1] === this.layer.layer.name
+					)
+
+					if (unlocker === undefined) {
+						throw new InternalGameError(
+							`couldnt find unlocker of layer ${this.layer.layer.name} in level ${this.context.worldSceneKey}`
+						)
+					}
+
+					const taskId = String(unlocker[2])
+
+					this.context.taskUnlocker.unlock(taskId)
 				}
 			},
 			(_, tile) => this.characterHitsTile(tile as Phaser.Tilemaps.Tile, this.context.player)

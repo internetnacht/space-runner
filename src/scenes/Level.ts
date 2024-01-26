@@ -19,6 +19,8 @@ import { Platform } from '../components/map-components/Platform.ts'
 import { ChunkContext } from '../components/chunks/ChunkContext.ts'
 import { EdgeToEdgeNPC } from '../components/characters/EdgeToEdgeNPC.ts'
 import { PixelPoint } from '../utils/points/PixelPoint.ts'
+import { TaskUnlocker } from '../auth/TaskUnlocker.ts'
+import { InternalGameError } from '../errors/InternalGameError.ts'
 
 export class Level extends Phaser.Scene {
 	private player?: Player
@@ -28,6 +30,7 @@ export class Level extends Phaser.Scene {
 	private userSettings?: GameSettings
 	private tiledMap?: TiledMap
 	private chunkContext?: ChunkContext
+	private taskUnlocker?: TaskUnlocker
 
 	public get id(): string {
 		return this._id
@@ -45,6 +48,10 @@ export class Level extends Phaser.Scene {
 		if (data.userSettings instanceof GameSettings) {
 			this.userSettings = data.userSettings
 		}
+
+		if (data.taskUnlocker !== undefined) {
+			this.taskUnlocker = data.taskUnlocker as TaskUnlocker
+		}
 	}
 
 	public preload() {
@@ -54,7 +61,9 @@ export class Level extends Phaser.Scene {
 	}
 
 	public create() {
-		console.log(this.userSettings?.taskUnlocker)
+		if (this.taskUnlocker === undefined) {
+			throw new InternalGameError('task unlocker undefined')
+		}
 
 		const musicplayer = new MusicPlayer(this, this.userSettings)
 		musicplayer.loop('audio-background')
@@ -99,6 +108,7 @@ export class Level extends Phaser.Scene {
 			scene: this,
 			worldSceneKey: this._id,
 			globalLayers: mapMaster.globalLayers,
+			taskUnlocker: this.taskUnlocker,
 		}
 
 		this.tiledMap.update(this.player.getPosition(), this.chunkContext).then(() => {

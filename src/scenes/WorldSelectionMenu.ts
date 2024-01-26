@@ -3,10 +3,12 @@ import { GameSettings } from '../components/GameSettings.ts'
 import { MEASURES, levels } from '../constants.ts'
 import { FancyClickButton } from '../components/buttons/FancyClickButton.ts'
 import { ToggleButton } from '../components/buttons/ToggleButton.ts'
+import { TaskUnlocker } from '../auth/TaskUnlocker.ts'
 
 export class WorldSelectionMenu extends Phaser.Scene {
 	private userSettings?: GameSettings
 	private musicPlayer?: MusicPlayer
+	private taskUnlocker?: TaskUnlocker
 
 	public constructor() {
 		super({
@@ -27,6 +29,8 @@ export class WorldSelectionMenu extends Phaser.Scene {
 			this.musicPlayer = new MusicPlayer(this, this.userSettings)
 			this.musicPlayer.loop('audio-starting-screen')
 		}
+
+		this.taskUnlocker = data.taskUnlocker as TaskUnlocker | undefined
 	}
 
 	public create() {
@@ -46,6 +50,7 @@ export class WorldSelectionMenu extends Phaser.Scene {
 						cb: () => {
 							this.scene.start(level, {
 								userSettings: this.userSettings?.clone(),
+								taskUnlocker: this.taskUnlocker,
 							})
 						},
 					}
