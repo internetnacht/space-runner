@@ -54,6 +54,8 @@ export class Level extends Phaser.Scene {
 	}
 
 	public create() {
+		console.log(this.userSettings?.taskUnlocker)
+
 		const musicplayer = new MusicPlayer(this, this.userSettings)
 		musicplayer.loop('audio-background')
 
@@ -63,11 +65,13 @@ export class Level extends Phaser.Scene {
 		)
 
 		const spawnCoordinates = this.extractSpawnCoordinates(mapMaster)
-		this.npcs = this.createNPCs(mapMaster)
 
-		this.tiledMap = new TiledMap(mapMaster)
+		const map = new TiledMap(mapMaster)
+		this.tiledMap = map
+		this.npcs = this.createNPCs(mapMaster, map)
 		const player = new Player(
 			this,
+			map,
 			//todo this belongs in Player
 			() => {
 				this.scene.launch('FinishedScreen', {
@@ -252,7 +256,7 @@ export class Level extends Phaser.Scene {
 		return platforms
 	}
 
-	private createNPCs(mapMaster: MapMasterT): List<GameCharacter> {
+	private createNPCs(mapMaster: MapMasterT, map: TiledMap): List<GameCharacter> {
 		const npcLayers = mapMaster.globalLayers.filter((layer) =>
 			layer.name
 				.toLowerCase()
@@ -265,6 +269,7 @@ export class Level extends Phaser.Scene {
 					(obj) =>
 						new EdgeToEdgeNPC(
 							this,
+							map,
 							new PixelPoint(obj.x, obj.y),
 							// todo unclean ts-ignore
 							//@ts-ignore

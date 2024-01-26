@@ -27,7 +27,7 @@ export class PlayerController implements GameCharacterController {
 		const jumpSpeed = 700
 		const jumpPush = 7
 
-		const horizontalSpeed = 360
+		const horizontalSpeed = 300
 
 		const keyboard = scene.input.keyboard
 		if (keyboard === null) {

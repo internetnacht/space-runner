@@ -6,7 +6,7 @@
 	"scripts": {
 		"setup": "node setup.js",
 		"dev": "npm run setup && vite",
-		"build": "tsc && vite build",
+		"build": "tsc && typedoc && vite build",
 		"preview": "vite preview",
 		"prepare": "husky install"
 	},
@@ -20,6 +20,7 @@
 		"vite": "^4.4.5"
 	},
 	"dependencies": {
+		"firebase": "^10.7.2",
 		"fp-ts": "^2.16.1",
 		"immutable": "^5.0.0-beta.4",
 		"io-ts": "^2.2.20",

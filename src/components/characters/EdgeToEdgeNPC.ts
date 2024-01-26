@@ -1,11 +1,18 @@
 import { PixelPoint } from '../../utils/points/PixelPoint'
+import { TiledMap } from '../chunks/TiledMap'
 import { EdgeToEdgeController } from './EdgeToEdgeController'
 import { GameCharacter } from './GameCharacter'
 
 export class EdgeToEdgeNPC extends GameCharacter {
-	public constructor(scene: Phaser.Scene, spawnPosition: PixelPoint, lethal = false) {
+	public constructor(
+		scene: Phaser.Scene,
+		map: TiledMap,
+		spawnPosition: PixelPoint,
+		lethal = false
+	) {
 		super(
 			scene,
+			map,
 			spawnPosition,
 			'dude',
 			() => {

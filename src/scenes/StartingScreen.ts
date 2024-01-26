@@ -5,6 +5,7 @@ import { GameSettings } from '../components/GameSettings.ts'
 import { loadButtonAssets } from '../components/buttons/button-utils.ts'
 import { FancyClickButton } from '../components/buttons/FancyClickButton.ts'
 import { MovingPlatform } from '../components/map-components/MovingPlatform.ts'
+import { FirebaseTaskUnlocker } from '../auth/FirebaseTaskUnlocker.ts'
 
 export class StartingScreen extends Phaser.Scene {
 	private userSettings: GameSettings
@@ -61,6 +62,10 @@ export class StartingScreen extends Phaser.Scene {
 			},
 		})
 		fancy.center()
-		fancy.display()
+
+		FirebaseTaskUnlocker.setup().then(() => {
+			this.userSettings.taskUnlocker = FirebaseTaskUnlocker.instance
+			fancy.display()
+		})
 	}
 }

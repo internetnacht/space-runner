@@ -16,6 +16,7 @@ export class GameCharacter {
 	protected readonly deathCallback: (cause: CollisionCause) => void
 	protected readonly finishCallback: (target: CollisionCause) => void
 	protected activeCheckpoint: Checkpoint
+	protected map: TiledMap
 
 	public static loadAssets(scene: Phaser.Scene) {
 		scene.load.spritesheet('dude', filePaths.sprites.stacey, {
@@ -26,12 +27,14 @@ export class GameCharacter {
 
 	public constructor(
 		scene: Phaser.Scene,
+		map: TiledMap,
 		spawnPosition?: PixelPoint,
 		type: CharacterType = 'dude',
 		deathCallback: (cause: CollisionCause) => void = () => {},
 		finishCallback: (cause: CollisionCause) => void = () => {},
 		lethal = false
 	) {
+		this.map = map
 		this.type = type
 		this.deathCallback = deathCallback
 		this.finishCallback = finishCallback
@@ -70,6 +73,8 @@ export class GameCharacter {
 	}
 
 	public teleportTo(position: PixelPoint) {
+		// calculate first position that has enough space for character
+
 		this.sprite.setVelocity(0)
 		this.sprite.setPosition(position.x, position.y)
 	}
