@@ -13,9 +13,9 @@ export async function generateWorldIds() {
 	const currentEnvContent = await readFile('.env', { encoding: 'utf-8' })
 
 	const newEnvContent = (() => {
-		if (/^VITE_LEVELS/.test(currentEnvContent)) {
+		if (/^VITE_LEVELS/m.test(currentEnvContent)) {
 			return currentEnvContent.replace(
-				/^VITE_LEVELS=.*/,
+				/^VITE_LEVELS=.*/m,
 				`VITE_LEVELS=${JSON.stringify(levelList)}`
 			)
 		} else {
