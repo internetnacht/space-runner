@@ -7,8 +7,8 @@ export const DEBUG = false
 
 export const MEASURES = Object.freeze({
 	window: {
-		width: 800,
-		height: 600,
+		width: window.innerWidth,
+		height: window.innerHeight,
 	},
 	buttons: {
 		click: {
