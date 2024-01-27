@@ -1,5 +1,5 @@
 import { MusicPlayer } from '../components/MusicPlayer.js'
-import { DEBUG, GLOBAL_ASSET_KEYS, MEASURES, SCENE_ASSET_KEYS, filePaths } from '../constants.js'
+import { GLOBAL_ASSET_KEYS, MEASURES, SCENE_ASSET_KEYS, filePaths } from '../constants.js'
 import { InternalGameError } from '../errors/InternalGameError.js'
 
 export class LoadingScreen extends Phaser.Scene {

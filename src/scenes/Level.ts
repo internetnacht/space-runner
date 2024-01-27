@@ -5,7 +5,6 @@ import {
 	MEASURES,
 	SCENE_ASSET_KEYS,
 	TILED_CUSTOM_CONSTANTS,
-	filePaths,
 } from '../constants.ts'
 import { MusicPlayer } from '../components/MusicPlayer.ts'
 import { GameSettings } from '../components/GameSettings.ts'
