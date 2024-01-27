@@ -6,6 +6,7 @@ import { loadButtonAssets } from '../components/buttons/button-utils.ts'
 import { FancyClickButton } from '../components/buttons/FancyClickButton.ts'
 import { MovingPlatform } from '../components/map-components/MovingPlatform.ts'
 import { FirebaseTaskUnlocker } from '../auth/FirebaseTaskUnlocker.ts'
+import { LoadingScreen } from './LoadingScreen.ts'
 
 export class StartingScreen extends Phaser.Scene {
 	private userSettings: GameSettings
@@ -27,6 +28,7 @@ export class StartingScreen extends Phaser.Scene {
 		MusicPlayer.loadAssets(this)
 		MovingPlatform.loadAssets(this.load)
 		loadButtonAssets(this.load)
+		LoadingScreen.loadAssets(this)
 	}
 
 	create() {
@@ -47,6 +49,23 @@ export class StartingScreen extends Phaser.Scene {
 		const musicPlayer = new MusicPlayer(this, this.userSettings)
 		//musicPlayer.loop('audio-starting-screen')
 
+		const credits = new FancyClickButton(this, {
+			x: 20,
+			y: MEASURES.window.height - 80,
+			label: 'Eigenlob',
+			fixed: true,
+			hoverFillColor: 0x00ff00,
+			idleFillColor: 0x0000ff,
+			clickCallback: () => {
+				this.scene.launch('CreditsScene', {
+					callingScene: 'StartingScreen',
+				})
+
+				this.scene.pause()
+			},
+		})
+		credits.display()
+
 		const fancy = new FancyClickButton(this, {
 			x: MEASURES.window.width / 2,
 			y: MEASURES.window.height * (2 / 3),
@@ -64,8 +83,12 @@ export class StartingScreen extends Phaser.Scene {
 		})
 		fancy.center()
 
-		FirebaseTaskUnlocker.setup().then(() => {
+		if (FirebaseTaskUnlocker.isSetup()) {
 			fancy.display()
-		})
+		} else {
+			FirebaseTaskUnlocker.setup().then(() => {
+				fancy.display()
+			})
+		}
 	}
 }

@@ -1,4 +1,4 @@
-import { filePaths } from '../constants'
+import { MEASURES, filePaths } from '../constants'
 import { AssetSpecifier } from '../assets/Asset'
 import { GameSettings } from './GameSettings'
 import { AudioAsset } from '../assets/AudioAsset'
@@ -22,6 +22,8 @@ export class MusicPlayer {
 			this.updateToSettings(userSettings)
 			userSettings.listen(this.updateToSettings.bind(this))
 		}
+
+		this.scene.sound.setVolume(MEASURES.audio.volume.relative)
 	}
 
 	private updateToSettings(settings: Readonly<GameSettings>): void {

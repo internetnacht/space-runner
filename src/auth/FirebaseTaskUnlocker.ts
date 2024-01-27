@@ -53,6 +53,10 @@ export class FirebaseTaskUnlocker implements TaskUnlocker {
 		this._instance = unlocker
 	}
 
+	public static isSetup(): boolean {
+		return this._instance !== null
+	}
+
 	private static async getAllTasks() {
 		// fetch alle aufgaben
 		const db = getFirestore()

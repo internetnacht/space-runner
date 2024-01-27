@@ -48,7 +48,8 @@ export class WorldSelectionMenu extends Phaser.Scene {
 					return {
 						label: level,
 						cb: () => {
-							this.scene.start(level, {
+							this.scene.start('LoadingScreen', {
+								targetScene: level,
 								userSettings: this.userSettings?.clone(),
 								taskUnlocker: this.taskUnlocker,
 							})

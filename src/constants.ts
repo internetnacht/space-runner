@@ -54,6 +54,11 @@ export const MEASURES = Object.freeze({
 			},
 		},
 	},
+	audio: {
+		volume: {
+			relative: 0.3,
+		},
+	},
 })
 
 export const filePaths = Object.freeze({
@@ -74,6 +79,7 @@ export const filePaths = Object.freeze({
 		startingScreen: {
 			background: 'images/starting-screen.jpg',
 		},
+		loadingscreen: 'images/loadingscreen.jpeg',
 	},
 	maps: {
 		master: (worldSceneKey: string) => `maps/${worldSceneKey}/master.json`,
@@ -81,7 +87,7 @@ export const filePaths = Object.freeze({
 			`maps/${worldSceneKey}/chunk${chunk}.json`,
 	},
 	audio: {
-		'audio-background': 'audio/at+the+wheel.mp3',
+		'audio-background': 'audio/road.mp3',
 		'audio-starting-screen': 'audio/Unlimited+power.mp3',
 		'audio-died': 'audio/Black+&+White.mp3',
 		'audio-finished': 'audio/Morning.mp3',
