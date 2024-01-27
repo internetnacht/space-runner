@@ -35,15 +35,16 @@ export class ChunkLayer {
 
 		if (DEBUG) {
 			layer.forEachTile((tile) => {
+				const x = tile.layer.tilemapLayer.x + tile.pixelX
+				const y = tile.layer.tilemapLayer.y + tile.pixelY
+				context.scene.add.rectangle(x, y, 4, 4, 0x0).setDepth(1000)
+
+				const tilePosition = new PixelPoint(x, y).toTilePoint()
 				context.scene.add
-					.rectangle(
-						tile.layer.tilemapLayer.x + tile.pixelX,
-						tile.layer.tilemapLayer.y + tile.pixelY,
-						4,
-						4,
-						0x0
-					)
-					.setDepth(1000)
+					.text(x, y, tilePosition.x + ',' + tilePosition.y, {
+						fontSize: 8,
+					})
+					.setDepth(1001)
 			})
 		}
 
@@ -91,6 +92,21 @@ export class ChunkLayer {
 					this.reactToKillCollision(a, b)
 				}
 				if (finish) {
+					const unlocker = taskUnlockers.find(
+						(unlocker) =>
+							unlocker[0] === this.context.worldSceneKey &&
+							unlocker[1] === 'DONT_USE_THIS_AS_A_LAYER_NAME'
+					)
+
+					if (unlocker === undefined) {
+						throw new InternalGameError(
+							`couldnt find unlocker of layer ${this.layer.layer.name} in level ${this.context.worldSceneKey}`
+						)
+					}
+
+					const taskId = String(unlocker[2])
+
+					this.context.taskUnlocker.unlock(taskId)
 					this.reactToFinishCollision(a, b)
 				}
 				if (teleportToPlace !== null) {
