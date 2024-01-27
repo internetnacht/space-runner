@@ -13,6 +13,7 @@ interface Task {
 
 export class FirebaseTaskUnlocker implements TaskUnlocker {
 	private static _instance: FirebaseTaskUnlocker | null = null
+	private readonly alreadyUnlocked: string[] = []
 
 	private readonly tasks: Task[]
 
@@ -41,7 +42,8 @@ export class FirebaseTaskUnlocker implements TaskUnlocker {
 			appId: import.meta.env.VITE_FIREBASE_APP_ID,
 			measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 		}
-		const token = import.meta.env.VITE_SPIELFELD_TOKEN
+
+		const token = await this.getToken()
 		initializeApp(config)
 		const auth = getAuth()
 		await signInWithCustomToken(auth, token)
@@ -51,6 +53,35 @@ export class FirebaseTaskUnlocker implements TaskUnlocker {
 		const unlocker = new FirebaseTaskUnlocker(tasks)
 
 		this._instance = unlocker
+	}
+
+	public static async getToken(): Promise<string> {
+		return new Promise((resolve) => {
+			if (window.addEventListener) {
+				window.addEventListener(
+					'message',
+					(event) => {
+						console.log('game got token message')
+						//if (event.origin !== "https://internetnacht.net/spielfeld") return
+						const tokenMessage = JSON.parse(event.data)
+						resolve(String(tokenMessage.data))
+					},
+					false
+				)
+			} else {
+				console.log('window.attachEvent')
+				//@ts-ignore
+				window.attachEvent('onmessage', (event) => {
+					console.log('game got token message')
+					//if (event.origin !== "https://internetnacht.net/spielfeld") return
+					const tokenMessage = JSON.parse(event.data)
+					resolve(String(tokenMessage.data))
+				})
+			}
+
+			parent.postMessage('ready!', '*')
+			console.log('game sent ready message')
+		})
 	}
 
 	public static isSetup(): boolean {
@@ -115,6 +146,16 @@ export class FirebaseTaskUnlocker implements TaskUnlocker {
 	}
 
 	private async onUnlock(aufgabeID: string) {
+		const t = this.tasks.find((aufgabe) => aufgabe.id === aufgabeID)
+		if (t === undefined) {
+			console.error(`couldn't find task ${aufgabeID} that's supposed to be unlocked`)
+			return
+		}
+
+		if (this.alreadyUnlocked.includes(t.id)) {
+			return
+		}
+
 		// adding a document with the corresponding aufgabeID to the user document
 		const db = getFirestore()
 		const unlockedAufgabenRef = doc(
@@ -126,19 +167,15 @@ export class FirebaseTaskUnlocker implements TaskUnlocker {
 		)
 		await setDoc(
 			unlockedAufgabenRef,
-			{ createdTimestamp: Date.now(), createdUserID: FirebaseTaskUnlocker.getUid() },
+			{ createdTimestamp: new Date(), createdUserID: FirebaseTaskUnlocker.getUid() },
 			{ merge: true }
 		).catch((error) => {
 			console.error('Error adding document: ', error)
 		})
 		// update local unlocked status
-		const t = this.tasks.find((aufgabe) => aufgabe.id === aufgabeID)
-		if (t === undefined) {
-			console.error(`couldn't find task ${aufgabeID} that just got unlocked in task list`)
-			return
-		}
+
 		t.unlocked = true
-		console.log('unlocked task ' + aufgabeID)
+		this.alreadyUnlocked.push(t.id)
 	}
 
 	// private async onLock (aufgabeID: string) {
