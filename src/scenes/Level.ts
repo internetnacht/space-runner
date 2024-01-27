@@ -58,12 +58,6 @@ export class Level extends Phaser.Scene {
 		}
 	}
 
-	public preload() {
-		this.load.image(SCENE_ASSET_KEYS.maps.tileset(this._id), filePaths.sprites.sheet)
-		this.load.image(GLOBAL_ASSET_KEYS.images.background, filePaths.images.background)
-		this.load.json(SCENE_ASSET_KEYS.maps.master(this._id), filePaths.maps.master(this._id))
-	}
-
 	public create() {
 		if (DEBUG) {
 			this.fpsDisplay = this.add.text(64, 0, '0 FPS').setScrollFactor(0).setOrigin(0, 0)

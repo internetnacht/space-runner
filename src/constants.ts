@@ -91,6 +91,7 @@ export const filePaths = Object.freeze({
 		'audio-starting-screen': 'audio/Unlimited+power.mp3',
 		'audio-died': 'audio/Black+&+White.mp3',
 		'audio-finished': 'audio/Morning.mp3',
+		'audio-loading-screen': 'audio/second.mp3',
 	},
 })
 
