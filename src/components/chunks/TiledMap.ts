@@ -2,7 +2,7 @@ import { List } from 'immutable'
 import { DEBUG, SCENE_ASSET_KEYS, filePaths } from '../../constants'
 import { ChunkId } from './Chunk'
 import { ChunkContext } from './ChunkContext'
-import { typecheck } from '../../utils/utils'
+import { getLayerBoolProperty, typecheck } from '../../utils/utils'
 import { MapChunk, MapChunkT, MapMasterT } from '../../tiled-types'
 import { Chunk } from './Chunk'
 import { PixelPoint } from '../../utils/points/PixelPoint'
@@ -191,5 +191,19 @@ export class TiledMap {
 			position.toPixelPoint()
 		)
 		return chunk.getTilesAt(chunkRelativeCoordinates.toTilePoint())
+	}
+
+	public isSolidAt(position: TilePoint): boolean {
+		const destinationTiles = this.getTilesAt(position)
+
+		return (
+			destinationTiles
+				.map((tile) => tile.layer)
+				.find((layer) => !getLayerBoolProperty(layer, 'background')) !== undefined
+		)
+	}
+
+	public positionIsLoaded(position: PixelPoint): boolean {
+		return this.getLoadedChunkAt(position) !== null
 	}
 }

@@ -119,7 +119,6 @@ export class Level extends Phaser.Scene {
 
 		this.tiledMap.update(this.player.getPosition(), this.chunkContext).then(() => {
 			this.player?.unfreeze()
-			this.npcs?.forEach((npc) => npc.unfreeze())
 		})
 
 		this.movingPlatforms = this.addMovingPlatforms(
@@ -178,13 +177,13 @@ export class Level extends Phaser.Scene {
 		// freeze npcs that slipped out of loaded area
 		this.npcs
 			?.filter((npc) => !npc.isFrozen())
-			.filter((npc) => this.tiledMap?.getLoadedChunkAt(npc.getPosition()) === null)
+			.filter((npc) => !this.tiledMap?.positionIsLoaded(npc.getPosition()))
 			.forEach((npc) => npc.freeze())
 
 		// unfreeze npcs that entered loaded area
 		this.npcs
 			?.filter((npc) => npc.isFrozen())
-			.filter((npc) => this.tiledMap?.getLoadedChunkAt(npc.getPosition()) !== null)
+			.filter((npc) => this.tiledMap?.positionIsLoaded(npc.getPosition()))
 			.forEach((npc) => npc.unfreeze())
 
 		this.tiledMap.update(this.player.getPosition(), this.chunkContext).then(() => {
@@ -211,12 +210,12 @@ export class Level extends Phaser.Scene {
 			.setDepth(-1)
 
 		backgroundImage.setDisplaySize(
-			Math.max(backgroundImage.width, MEASURES.window.width),
-			Math.max(backgroundImage.height, MEASURES.window.height)
+			Math.max(backgroundImage.width, MEASURES.window.width * 1.2),
+			Math.max(backgroundImage.height, MEASURES.window.height * 1.2)
 		)
 		backgroundImage.setSize(
-			Math.max(backgroundImage.width, MEASURES.window.width),
-			Math.max(backgroundImage.height, MEASURES.window.height)
+			Math.max(backgroundImage.width, MEASURES.window.width * 1.2),
+			Math.max(backgroundImage.height, MEASURES.window.height * 1.2)
 		)
 
 		const mainCamera = this.cameras.main
@@ -312,6 +311,8 @@ export class Level extends Phaser.Scene {
 				)
 			)
 			.flat()
+
+		npcs.forEach((npc) => npc.freeze())
 		return List(npcs)
 	}
 }

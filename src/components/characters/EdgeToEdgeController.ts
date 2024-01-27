@@ -24,6 +24,9 @@ export class EdgeToEdgeController implements GameCharacterController {
 		if (map === undefined) {
 			return
 		}
+		if (this.character.isFrozen()) {
+			return
+		}
 
 		if (this.hasSpace(map)) {
 			console.log('has space')
@@ -39,29 +42,21 @@ export class EdgeToEdgeController implements GameCharacterController {
 		const bodyPosition = new PixelPoint(this.body.x, this.body.y)
 		const bodyTilesPosition = bodyPosition.toTilePoint()
 
+		//todo this is highly dependant on the character size
 		const destinationHeadLevel = (() => {
 			if (this.direction) {
 				return bodyTilesPosition.toLeft()
 			} else {
-				return bodyTilesPosition.toRight()
+				return bodyTilesPosition.toRight().toRight()
 			}
 		})()
 
-		const a = !this.tilePositionIsSolid(map, destinationHeadLevel)
-		const b = !this.tilePositionIsSolid(map, destinationHeadLevel.toBottom())
-		const c = this.tilePositionIsSolid(map, destinationHeadLevel.toBottom().toBottom())
+		const a = !map.isSolidAt(destinationHeadLevel)
+		const b = !map.isSolidAt(destinationHeadLevel.toBottom())
+		const c = !map.isSolidAt(destinationHeadLevel.toBottom().toBottom())
+		const d = map.isSolidAt(destinationHeadLevel.toBottom().toBottom().toBottom())
 
-		return a && b && c
-	}
-
-	private tilePositionIsSolid(map: TiledMap, position: TilePoint): boolean {
-		const destinationTiles = map.getTilesAt(position)
-
-		return (
-			destinationTiles
-				.map((tile) => tile.layer)
-				.find((layer) => !getLayerBoolProperty(layer, 'background')) !== undefined
-		)
+		return a && b && c && d
 	}
 
 	private move() {

@@ -1,4 +1,4 @@
-import { SCENE_ASSET_KEYS, filePaths } from '../../constants'
+import { MEASURES, SCENE_ASSET_KEYS, filePaths } from '../../constants'
 import { CollisionCause } from '../../global-types'
 import { Checkpoint } from '../../utils/checkpoints/Checkpoint'
 import { TileCheckpoint } from '../../utils/checkpoints/TileCheckpoint'
@@ -6,6 +6,7 @@ import { PixelPoint } from '../../utils/points/PixelPoint'
 import { Controls } from '../controls/Controls'
 import { TiledMap } from '../chunks/TiledMap'
 import { GameCharacterController } from './GameCharacterController'
+import { TilePoint } from '../../utils/points/TilePoint'
 
 type CharacterType = 'dude'
 
@@ -44,14 +45,15 @@ export class GameCharacter {
 		this.finishCallback = finishCallback
 		this.lethal = lethal
 
-		if (spawnPosition === undefined) {
-			this.sprite = scene.physics.add.sprite(0, 0, this.type)
-			this.activeCheckpoint = new TileCheckpoint(0, 0)
-		} else {
-			this.sprite = scene.physics.add.sprite(spawnPosition.x, spawnPosition.y, this.type)
+		this.sprite = scene.physics.add.sprite(0, 0, this.type)
+		if (spawnPosition !== undefined) {
+			this.teleportTo(spawnPosition)
 			const tileSpawn = spawnPosition.toTilePoint()
 			this.activeCheckpoint = new TileCheckpoint(tileSpawn.x, tileSpawn.y)
+		} else {
+			this.activeCheckpoint = new TileCheckpoint(0, 0)
 		}
+
 		this.sprite.setOrigin(0)
 		this.sprite.setMaxVelocity(800)
 		this.sprite.setBounce(0.1)
@@ -77,10 +79,31 @@ export class GameCharacter {
 	}
 
 	public teleportTo(position: PixelPoint) {
-		// calculate first position that has enough space for character
+		let t = position.toTilePoint()
+		while (!this.positionHasEnoughSpace(t)) {
+			t = new TilePoint(t.x, t.y - 1)
+		}
 
 		this.sprite.setVelocity(0)
-		this.sprite.setPosition(position.x, position.y)
+
+		const newPixelPosition = t.toPixelPoint()
+		this.sprite.setPosition(newPixelPosition.x, newPixelPosition.y)
+	}
+
+	private positionHasEnoughSpace(position: TilePoint) {
+		const characterWidth = this.sprite.width / MEASURES.tiles.width
+		const characterHeight = this.sprite.height / MEASURES.tiles.height
+
+		for (let i = 0; i < characterHeight; i++) {
+			for (let j = 0; j < characterWidth; j++) {
+				const lookedAtPosition = new TilePoint(position.x + j, position.y + i)
+				if (this.map.isSolidAt(lookedAtPosition)) {
+					return false
+				}
+			}
+		}
+
+		return true
 	}
 
 	private addMovementAnimations(scene: Phaser.Scene) {
@@ -153,6 +176,7 @@ export class GameCharacter {
 	}
 
 	public unfreeze() {
+		this.teleportTo(new PixelPoint(this.getX(), this.getY()))
 		this.sprite.body.setImmovable(false)
 		this.sprite.body.setAllowGravity()
 	}
