@@ -41,7 +41,7 @@ export class LoadingScreen extends Phaser.Scene {
 		const loadingBarHeight = 64
 		const padding = 10
 
-		this.add.rectangle(
+		const loadingBox = this.add.rectangle(
 			MEASURES.window.width / 2,
 			MEASURES.window.height / 2,
 			loadingBarWidth + 2 * padding,
@@ -69,9 +69,11 @@ export class LoadingScreen extends Phaser.Scene {
 			filePaths.maps.master(this.targetScene)
 		)
 
+		const duration = DEBUG ? 0 : 5000
+
 		this.tweens.add({
 			targets: loadingBar,
-			duration: 5000,
+			duration,
 			width: loadingBarWidth,
 			onComplete: () => {
 				this.load.on('complete', () => {
@@ -87,5 +89,23 @@ export class LoadingScreen extends Phaser.Scene {
 		})
 
 		this.load.start()
+
+		const texts = [
+			'Dieser Ladebildschirm hat btw. fast keinen praktischen Nutzen. Allerdings fanden wir, dass Ladebildschirme einfach unerlässlich sind, um in die richtige Stimmung zu kommen :)',
+			'Über jedes Level verteilt gibt es Checkpoints. Solltest du von der Map fallen oder von etwas gefährlichem berührt werden, kommst du zurück zum Checkpoint und musst nicht von vorne anfangen.',
+		]
+		const text = this.add
+			.text(
+				MEASURES.window.width,
+				loadingBox.y + loadingBox.height + 10,
+				texts[Math.round(Math.random() * (texts.length - 1))],
+				{
+					wordWrap: {
+						width: MEASURES.window.width * 0.6,
+					},
+				}
+			)
+			.setOrigin(0)
+		text.x = MEASURES.window.width / 2 - text.width / 2
 	}
 }
