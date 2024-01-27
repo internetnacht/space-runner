@@ -4,6 +4,7 @@ import { MEASURES, levels } from '../constants.ts'
 import { FancyClickButton } from '../components/buttons/FancyClickButton.ts'
 import { ToggleButton } from '../components/buttons/ToggleButton.ts'
 import { TaskUnlocker } from '../auth/TaskUnlocker.ts'
+import { InternalGameError } from '../errors/InternalGameError.ts'
 
 export class WorldSelectionMenu extends Phaser.Scene {
 	private userSettings?: GameSettings
@@ -30,7 +31,11 @@ export class WorldSelectionMenu extends Phaser.Scene {
 			this.musicPlayer.loop('audio-starting-screen')
 		}
 
-		this.taskUnlocker = data.taskUnlocker as TaskUnlocker | undefined
+		if (data.taskUnlocker !== undefined) {
+			this.taskUnlocker = data.taskUnlocker as TaskUnlocker
+		} else {
+			throw new InternalGameError('world selection requires task unlocker')
+		}
 	}
 
 	public create() {

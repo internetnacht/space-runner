@@ -3,10 +3,13 @@ import { GameSettings } from '../components/GameSettings.js'
 import { MEASURES } from '../constants.js'
 import { ToggleButton } from '../components/buttons/ToggleButton.js'
 import { FancyClickButton } from '../components/buttons/FancyClickButton.js'
+import { TaskUnlocker } from '../auth/TaskUnlocker.js'
+import { InternalGameError } from '../errors/InternalGameError.js'
 
 export class PauseMenu extends Phaser.Scene {
 	private callingScene?: string
 	private userSettings?: GameSettings
+	private taskUnlocker?: TaskUnlocker
 
 	public constructor() {
 		super({
@@ -24,6 +27,12 @@ export class PauseMenu extends Phaser.Scene {
 			this.userSettings = data.userSettings
 		} else {
 			throw 'expected userSettings but got undefined'
+		}
+
+		if (data.taskUnlocker !== undefined) {
+			this.taskUnlocker = data.taskUnlocker as TaskUnlocker
+		} else {
+			throw new InternalGameError('pause menu requires task unlocker')
 		}
 	}
 
@@ -98,9 +107,7 @@ export class PauseMenu extends Phaser.Scene {
 			throw 'pause menu has no calling scene set'
 		}
 
-		this.scene.resume(this.callingScene, {
-			userSettings: this.userSettings,
-		})
+		this.scene.resume(this.callingScene)
 		this.scene.stop()
 	}
 
@@ -110,12 +117,14 @@ export class PauseMenu extends Phaser.Scene {
 		}
 		this.scene.start(this.callingScene, {
 			userSettings: this.userSettings?.clone(),
+			taskUnlocker: this.taskUnlocker,
 		})
 	}
 
 	private backToScene(sceneKey: string) {
 		this.scene.start(sceneKey, {
 			userSettings: this.userSettings?.clone(),
+			taskUnlocker: this.taskUnlocker,
 		})
 		if (this.callingScene === undefined) {
 			throw 'calling scene key is undefined'

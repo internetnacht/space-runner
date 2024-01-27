@@ -51,10 +51,14 @@ export class Level extends Phaser.Scene {
 	public init(data: Record<string, unknown>) {
 		if (data.userSettings instanceof GameSettings) {
 			this.userSettings = data.userSettings
+		} else {
+			throw new InternalGameError('level requires game settings')
 		}
 
 		if (data.taskUnlocker !== undefined) {
 			this.taskUnlocker = data.taskUnlocker as TaskUnlocker
+		} else {
+			throw new InternalGameError('level requires task unlocker')
 		}
 	}
 
@@ -241,6 +245,7 @@ export class Level extends Phaser.Scene {
 			this.scene.launch('PauseMenu', {
 				callingScene: this._id,
 				userSettings: this.userSettings,
+				taskUnlocker: this.taskUnlocker,
 			})
 			this.scene.pause()
 		})
