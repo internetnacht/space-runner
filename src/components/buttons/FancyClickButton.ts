@@ -48,6 +48,7 @@ export class FancyClickButton extends Button {
 			.on('pointerdown', config.clickCallback)
 			.on('pointerover', () => background.setFillStyle(config.hoverFillColor))
 			.on('pointerout', () => background.setFillStyle(config.idleFillColor))
+			.setScrollFactor(scrollFactor, scrollFactor)
 			.setOrigin(0)
 			.setDepth(0)
 
