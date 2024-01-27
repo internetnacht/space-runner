@@ -1,5 +1,6 @@
 import { Player } from '../components/characters/Player.ts'
 import {
+	DEBUG,
 	GLOBAL_ASSET_KEYS,
 	MEASURES,
 	SCENE_ASSET_KEYS,
@@ -33,6 +34,7 @@ export class Level extends Phaser.Scene {
 	private tiledMap?: TiledMap
 	private chunkContext?: ChunkContext
 	private taskUnlocker?: TaskUnlocker
+	private fpsDisplay?: Phaser.GameObjects.Text
 
 	public get id(): string {
 		return this._id
@@ -63,6 +65,9 @@ export class Level extends Phaser.Scene {
 	}
 
 	public create() {
+		if (DEBUG) {
+			this.fpsDisplay = this.add.text(64, 0, '0 FPS').setScrollFactor(0).setOrigin(0, 0)
+		}
 		if (this.taskUnlocker === undefined) {
 			throw new InternalGameError('task unlocker undefined')
 		}
@@ -157,7 +162,10 @@ export class Level extends Phaser.Scene {
 	}
 
 	public update() {
-		//console.log(this.game.loop.actualFps)
+		if (this.fpsDisplay !== undefined) {
+			this.fpsDisplay.setText(Math.round(this.game.loop.actualFps) + ' FPS')
+		}
+
 		if (this.player === undefined) {
 			throw 'player is unexpectedly undefined'
 		}
@@ -203,6 +211,15 @@ export class Level extends Phaser.Scene {
 			.image(0, 0, GLOBAL_ASSET_KEYS.images.background)
 			.setOrigin(0)
 			.setDepth(-1)
+
+		backgroundImage.setDisplaySize(
+			Math.max(backgroundImage.width, MEASURES.window.width),
+			Math.max(backgroundImage.height, MEASURES.window.height)
+		)
+		backgroundImage.setSize(
+			Math.max(backgroundImage.width, MEASURES.window.width),
+			Math.max(backgroundImage.height, MEASURES.window.height)
+		)
 
 		const mainCamera = this.cameras.main
 		if (mainCamera === undefined) {

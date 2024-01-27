@@ -44,7 +44,7 @@ export class StartingScreen extends Phaser.Scene {
 			)
 			.setOrigin()
 			.setDepth(-1)
-			.setScale(0.7)
+			.setDisplaySize(MEASURES.window.width, MEASURES.window.height)
 
 		const musicPlayer = new MusicPlayer(this, this.userSettings)
 		//musicPlayer.loop('audio-starting-screen')

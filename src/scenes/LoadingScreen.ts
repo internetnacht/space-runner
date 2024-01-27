@@ -1,4 +1,4 @@
-import { filePaths } from '../constants.js'
+import { DEBUG, MEASURES, filePaths } from '../constants.js'
 import { InternalGameError } from '../errors/InternalGameError.js'
 
 export class LoadingScreen extends Phaser.Scene {
@@ -26,9 +26,17 @@ export class LoadingScreen extends Phaser.Scene {
 	}
 
 	public create() {
-		this.add.image(0, 0, 'loadingscreen').setOrigin(0)
-		this.time.delayedCall(2000, () => {
+		this.add
+			.image(0, 0, 'loadingscreen')
+			.setOrigin(0)
+			.setDisplaySize(MEASURES.window.width, MEASURES.window.height)
+
+		if (DEBUG) {
 			this.scene.start(this.targetScene, this.initData)
-		})
+		} else {
+			this.time.delayedCall(2000, () => {
+				this.scene.start(this.targetScene, this.initData)
+			})
+		}
 	}
 }
