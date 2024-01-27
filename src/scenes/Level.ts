@@ -5,7 +5,6 @@ import {
 	MEASURES,
 	SCENE_ASSET_KEYS,
 	TILED_CUSTOM_CONSTANTS,
-	filePaths,
 } from '../constants.ts'
 import { MusicPlayer } from '../components/MusicPlayer.ts'
 import { GameSettings } from '../components/GameSettings.ts'
@@ -24,6 +23,7 @@ import { TaskUnlocker } from '../auth/TaskUnlocker.ts'
 import { InternalGameError } from '../errors/InternalGameError.ts'
 import { StdControls } from '../components/controls/StdControls.ts'
 import { IdleControls } from '../components/controls/IdleControls.ts'
+import { FancyClickButton } from '../components/buttons/FancyClickButton.ts'
 
 export class Level extends Phaser.Scene {
 	private player?: Player
@@ -236,18 +236,33 @@ export class Level extends Phaser.Scene {
 	}
 
 	private addPauseMenuCallbacks() {
-		const keyboard = this.input.keyboard
-		if (keyboard === null) {
-			throw 'keyboard input plugin is null'
-		}
-		keyboard.on('keydown-ESC', () => {
+		const startPauseMenu = () => {
 			this.scene.launch('PauseMenu', {
 				callingScene: this._id,
 				userSettings: this.userSettings,
 				taskUnlocker: this.taskUnlocker,
 			})
 			this.scene.pause()
+		}
+
+		const pauseButton = new FancyClickButton(this, {
+			x: MEASURES.window.width - 10,
+			y: MEASURES.window.height - 10,
+			fixed: true,
+			label: 'Pause',
+			clickCallback: startPauseMenu,
+			idleFillColor: 0x00ff00,
+			hoverFillColor: 0xff0000,
 		})
+		pauseButton.x -= pauseButton.width
+		pauseButton.y -= pauseButton.height
+		pauseButton.display()
+
+		const keyboard = this.input.keyboard
+		if (keyboard === null) {
+			throw 'keyboard input plugin is null'
+		}
+		keyboard.on('keydown-ESC', startPauseMenu)
 	}
 
 	private addMovingPlatforms(
