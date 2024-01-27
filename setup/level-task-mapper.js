@@ -57,7 +57,7 @@ async function updateTaskMap(taskMap, changedTmjFilePaths) {
 
 async function addUnlockers(taskMap, path) {
 	const level = getBaseFilename(path)
-	taskMap.push([level, 'end', nextTaskId(taskMap)])
+	taskMap.push([level, 'DONT_USE_THIS_AS_A_LAYER_NAME', nextTaskId(taskMap)])
 
 	const rawFileContent = await readFile(path)
 	const fileContent = JSON.parse(rawFileContent)
