@@ -32,7 +32,7 @@ export class FancyClickButton extends Button {
 		)
 			.setOrigin(0)
 			.setScrollFactor(scrollFactor, scrollFactor)
-			.setDepth(1)
+			.setDepth(1001)
 
 		const background = new Phaser.GameObjects.Rectangle(
 			scene,
@@ -50,7 +50,7 @@ export class FancyClickButton extends Button {
 			.on('pointerout', () => background.setFillStyle(config.idleFillColor))
 			.setScrollFactor(scrollFactor, scrollFactor)
 			.setOrigin(0)
-			.setDepth(0)
+			.setDepth(1000)
 
 		this.text = text
 		this.background = background
