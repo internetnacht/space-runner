@@ -5,6 +5,7 @@ import { ToggleButton } from '../components/buttons/ToggleButton.js'
 import { FancyClickButton } from '../components/buttons/FancyClickButton.js'
 import { TaskUnlocker } from '../auth/TaskUnlocker.js'
 import { InternalGameError } from '../errors/InternalGameError.js'
+import { ButtonList } from '../components/buttons/ButtonList.js'
 
 export class PauseMenu extends Phaser.Scene {
 	private callingScene?: string
@@ -54,12 +55,6 @@ export class PauseMenu extends Phaser.Scene {
 					this.backToScene('WorldSelectionMenu')
 				}).bind(this),
 			},
-			{
-				label: 'Zurück zum Startbildschirm',
-				cb: (() => {
-					this.backToScene('StartingScreen')
-				}).bind(this),
-			},
 		])
 
 		const buttons = FancyClickButton.createVerticalButtonList({
@@ -73,10 +68,10 @@ export class PauseMenu extends Phaser.Scene {
 			buttons: buttonsConfig,
 		})
 
-		buttons.forEach((button) => {
-			button.center()
-			button.display()
-		})
+		buttons.forEach((button) => button.center())
+
+		const buttonList = new ButtonList(this, buttons)
+		buttonList.display()
 
 		const toggleButton = new ToggleButton(this, {
 			x: this.cameras.main.width / 2,

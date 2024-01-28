@@ -5,6 +5,7 @@ import { FancyClickButton } from '../components/buttons/FancyClickButton.ts'
 import { ToggleButton } from '../components/buttons/ToggleButton.ts'
 import { TaskUnlocker } from '../auth/TaskUnlocker.ts'
 import { InternalGameError } from '../errors/InternalGameError.ts'
+import { ButtonList } from '../components/buttons/ButtonList.ts'
 
 export class WorldSelectionMenu extends Phaser.Scene {
 	private userSettings?: GameSettings
@@ -63,7 +64,8 @@ export class WorldSelectionMenu extends Phaser.Scene {
 				}),
 		})
 
-		buttons.forEach((button) => button.display())
+		const buttonList = new ButtonList(this, buttons)
+		buttonList.display()
 
 		const musicButton = new ToggleButton(this, {
 			initialState: this.userSettings?.musicIsOn ?? false,

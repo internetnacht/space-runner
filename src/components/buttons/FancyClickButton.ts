@@ -123,4 +123,9 @@ export class FancyClickButton extends Button {
 			return buttons.push(nextButton)
 		}, List<FancyClickButton>())
 	}
+
+	set depth(n: number) {
+		this.background.setDepth(n)
+		this.text.setDepth(n + 1)
+	}
 }
