@@ -93,6 +93,7 @@ export class Level extends Phaser.Scene {
 					userSettings: this.userSettings,
 					callingScene: this._id,
 					musicplayer: musicplayer,
+					taskUnlocker: this.taskUnlocker,
 				})
 				this.scene.pause()
 			},
