@@ -33,8 +33,14 @@ export class TiledMap {
 		if (
 			this.currentChunkCoordinates !== null &&
 			this.currentChunkCoordinates.equals(chunkCoordinates)
-		)
+		) {
 			return
+		}
+
+		if (this.getLoadedChunkArea(chunkCoordinates).size === 0) {
+			context.player.kill(context.player.getCollider())
+			return
+		}
 
 		this.currentChunkCoordinates = chunkCoordinates
 		await this.updateVisibleChunks(chunkCoordinates, context)
