@@ -4,16 +4,13 @@
 
 ## roadmap
  * see: https://github.com/orgs/internetnacht/projects/2
- * dying mechanic
-  * checkpoints
-  * lifes per map
- * loading/waiting screen on level start to get into the mood
- * make music not annoying
-   * music fading in/out
+
+ * (solve screen height problems on mobile)
+ * optimize touch controls
+ * reduce file loads (Level file loads that are independent of Level move to start screen)
 
 ### nice to have
  * set lights in Tiled
- * reduce file loads (Level file loads that are independent of Level move to start screen)
  * remove need to manually destruct objects
 
 ### code todo
@@ -25,7 +22,7 @@
 You'll need [Node.js](https://nodejs.org/en/) and [npm](https://www.npmjs.com/) installed.
 
 It is highly recommended to use [Node Version Manager](https://github.com/nvm-sh/nvm) (nvm) to install Node.js and npm.
-The game was developed with Node v16.16.0 and npm v9.3.0.
+The game was developed with Node v20.9.0 and npm v10.3.0.
 (For Windows users there is [Node Version Manager for Windows](https://github.com/coreybutler/nvm-windows).)
 
 Install Node.js and `npm` with `nvm`:
