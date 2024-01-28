@@ -24,7 +24,7 @@ export class CreditsScene extends Phaser.Scene {
 			.text(
 				MEASURES.window.width / 2,
 				MEASURES.window.height / 2,
-				'Programmierung: dexter\nZeichnen: Hannah\nLeveldesign: dexter, Hannah',
+				'Programmierung: dexter\nDesign: Hannah\nLeveldesign: dexter, Hannah\nMusik: legismusic.com',
 				{ backgroundColor: '#000', padding: { x: 10, y: 10 } }
 			)
 			.setOrigin(0.5)
