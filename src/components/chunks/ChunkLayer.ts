@@ -148,6 +148,19 @@ export class ChunkLayer {
 					const taskId = String(unlocker[2])
 
 					this.context.taskUnlocker.unlock(taskId)
+
+					if (!(b instanceof Phaser.Tilemaps.Tile)) {
+						throw new InternalGameError('collision party has unexpected type: ' + b)
+					}
+					const tile = b
+					const marker = this.context.scene.add
+						.text(
+							tile.layer.tilemapLayer.x + tile.pixelX + tile.width / 2,
+							tile.layer.tilemapLayer.y + tile.pixelY + tile.height / 2,
+							'Aufgabe freigeschaltet!'
+						)
+						.setDepth(100)
+					this.context.scene.time.delayedCall(2048, () => marker.destroy())
 				}
 			},
 			(_, tile) => this.characterHitsTile(tile as Phaser.Tilemaps.Tile, this.context.player)
@@ -223,6 +236,7 @@ export class ChunkLayer {
 	}
 
 	public reactToTeleportToPlaceCollision(target: PixelPoint) {
+		console.log('teleport!')
 		this.context.player.teleportTo(target)
 	}
 
