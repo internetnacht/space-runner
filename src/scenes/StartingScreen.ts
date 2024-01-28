@@ -46,9 +46,8 @@ export class StartingScreen extends Phaser.Scene {
 			.setDepth(-1)
 			.setDisplaySize(MEASURES.window.width, MEASURES.window.height)
 
-		const musicPlayer = new MusicPlayer(this, this.userSettings)
+		const musicplayer = new MusicPlayer(this, this.userSettings)
 		//musicPlayer.loop('audio-starting-screen')
-
 		const credits = new FancyClickButton(this, {
 			x: 20,
 			y: MEASURES.window.height - 80,
@@ -77,7 +76,6 @@ export class StartingScreen extends Phaser.Scene {
 				this.scene.start('WorldSelectionMenu', {
 					userSettings: this.userSettings,
 					taskUnlocker: FirebaseTaskUnlocker.instance,
-					musicPlayer,
 				})
 			},
 		})
@@ -90,5 +88,10 @@ export class StartingScreen extends Phaser.Scene {
 				fancy.display()
 			})
 		}
+		//fancy.display()
+
+		this.events.on('shutdown', () => {
+			musicplayer.shutdown()
+		})
 	}
 }
