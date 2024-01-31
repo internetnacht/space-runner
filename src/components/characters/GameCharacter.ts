@@ -109,7 +109,7 @@ export class GameCharacter {
 	private addMovementAnimations(scene: Phaser.Scene) {
 		scene.anims.create({
 			key: SCENE_ASSET_KEYS.animations.character.moving.left(this.type),
-			frames: scene.anims.generateFrameNumbers(this.type, { start: 6, end: 8 }),
+			frames: scene.anims.generateFrameNumbers(this.type, { start: 5, end: 8 }),
 			frameRate: 10,
 			repeat: -1,
 		})
@@ -134,7 +134,7 @@ export class GameCharacter {
 
 		scene.anims.create({
 			key: SCENE_ASSET_KEYS.animations.character.moving.right(this.type),
-			frames: scene.anims.generateFrameNumbers(this.type, { start: 0, end: 2 }),
+			frames: scene.anims.generateFrameNumbers(this.type, { start: 0, end: 3 }),
 			frameRate: 10,
 			repeat: -1,
 		})
