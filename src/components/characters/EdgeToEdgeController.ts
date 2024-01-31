@@ -29,10 +29,8 @@ export class EdgeToEdgeController implements GameCharacterController {
 		}
 
 		if (this.hasSpace(map)) {
-			console.log('has space')
 			this.move()
 		} else {
-			console.log('has no space')
 			this.direction = this.changeDirection(this.direction)
 			this.move()
 		}
