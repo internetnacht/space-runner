@@ -25,7 +25,7 @@ export class PlayerController implements GameCharacterController {
 	}
 
 	private move(_: Phaser.Scene, controls: Controls) {
-		const jumpSpeed = 700
+		const jumpSpeed = 900
 		const jumpPush = 7
 
 		const horizontalSpeed = 300

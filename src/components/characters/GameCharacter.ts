@@ -56,7 +56,7 @@ export class GameCharacter {
 		}
 
 		this.sprite.setOrigin(0)
-		this.sprite.setMaxVelocity(800)
+		this.sprite.setMaxVelocity(1000)
 		this.sprite.setBounce(0.1)
 
 		this.addMovementAnimations(scene)
