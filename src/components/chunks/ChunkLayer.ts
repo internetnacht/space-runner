@@ -7,6 +7,7 @@ import { PixelPoint } from '../../utils/points/PixelPoint'
 import { TilePoint } from '../../utils/points/TilePoint'
 import { TileCheckpoint } from '../../utils/checkpoints/TileCheckpoint'
 import { InternalGameError } from '../../errors/InternalGameError'
+import { TaskId } from '../../auth/TaskUnlocker'
 
 export class ChunkLayer {
 	private readonly context: ChunkContext
@@ -87,6 +88,9 @@ export class ChunkLayer {
 			this.context.player.getCollider(),
 			this.layer,
 			(a, b) => {
+				if (!(b instanceof Phaser.Tilemaps.Tile)) {
+					throw new InternalGameError('collision party has unexpected type: ' + b)
+				}
 				// physics.add.collider doesn't add colliders but instead sets them, meaning you can't have multiple colliders on the same pair
 				if (kill) {
 					this.reactToKillCollision(a, b)
@@ -105,9 +109,7 @@ export class ChunkLayer {
 					}
 
 					const taskId = String(unlocker[2])
-
-					this.context.taskUnlocker.unlock(taskId)
-					this.reactToFinishCollision(a, b)
+					this.reactToFinishCollision(a, b, taskId)
 				}
 				if (teleportToPlace !== null) {
 					this.reactToTeleportToPlaceCollision(teleportToPlace)
@@ -123,14 +125,14 @@ export class ChunkLayer {
 						tileOrigin.y + tile.y
 					)
 
-					const marker = this.context.scene.add.circle(
-						tile.layer.tilemapLayer.x + tile.pixelX + tile.width / 2,
-						tile.layer.tilemapLayer.y + tile.pixelY + tile.height / 2,
-						64,
-						0xe42c82,
-						0.5
-					)
-					this.context.scene.time.delayedCall(256, () => marker.destroy())
+					const marker = this.context.scene.add
+						.text(
+							tile.layer.tilemapLayer.x + tile.pixelX + tile.width / 2,
+							tile.layer.tilemapLayer.y + tile.pixelY + tile.height / 2,
+							'Checkpoint aktiviert!'
+						)
+						.setDepth(100)
+					this.context.scene.time.delayedCall(2048, () => marker.destroy())
 				}
 				if (taskUnlocker) {
 					const unlocker = taskUnlockers.find(
@@ -147,20 +149,20 @@ export class ChunkLayer {
 
 					const taskId = String(unlocker[2])
 
-					this.context.taskUnlocker.unlock(taskId)
-
-					if (!(b instanceof Phaser.Tilemaps.Tile)) {
-						throw new InternalGameError('collision party has unexpected type: ' + b)
-					}
-					const tile = b
-					const marker = this.context.scene.add
-						.text(
-							tile.layer.tilemapLayer.x + tile.pixelX + tile.width / 2,
-							tile.layer.tilemapLayer.y + tile.pixelY + tile.height / 2,
-							'Aufgabe freigeschaltet!'
-						)
-						.setDepth(100)
-					this.context.scene.time.delayedCall(2048, () => marker.destroy())
+					this.context.taskUnlocker.unlock(taskId).then((taskUnlocked) => {
+						const text = taskUnlocked
+							? `Aufgabe ${taskId} freigeschaltet!`
+							: `Aufgabe war bereits freigeschaltet.`
+						const tile = b
+						const marker = this.context.scene.add
+							.text(
+								tile.layer.tilemapLayer.x + tile.pixelX + tile.width / 2,
+								tile.layer.tilemapLayer.y + tile.pixelY + tile.height / 2,
+								text
+							)
+							.setDepth(100)
+						this.context.scene.time.delayedCall(2048, () => marker.destroy())
+					})
 				}
 			},
 			(_, tile) => this.characterHitsTile(tile as Phaser.Tilemaps.Tile, this.context.player)
@@ -219,9 +221,10 @@ export class ChunkLayer {
 
 	public reactToFinishCollision(
 		target: Phaser.Tilemaps.Tile | Phaser.Types.Physics.Arcade.GameObjectWithBody,
-		_: any
+		_: any,
+		taskId: TaskId
 	) {
-		this.context.player.reachFinishLine(target)
+		this.context.player.reachFinishLine(target, taskId)
 	}
 
 	public setDepth(depth: number) {
@@ -236,7 +239,6 @@ export class ChunkLayer {
 	}
 
 	public reactToTeleportToPlaceCollision(target: PixelPoint) {
-		console.log('teleport!')
 		this.context.player.teleportTo(target)
 	}
 

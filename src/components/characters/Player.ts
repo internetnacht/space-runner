@@ -4,6 +4,7 @@ import { Controls } from '../controls/Controls'
 import { TiledMap } from '../chunks/TiledMap'
 import { GameCharacter } from './GameCharacter'
 import { PlayerController } from './PlayerController'
+import { TaskId } from '../../auth/TaskUnlocker'
 
 export class Player extends GameCharacter {
 	private deathCount: number
@@ -12,7 +13,7 @@ export class Player extends GameCharacter {
 		scene: Phaser.Scene,
 		map: TiledMap,
 		controls: Controls,
-		finishCallback: (cause: CollisionCause) => void,
+		finishCallback: (cause: CollisionCause, taskId: TaskId) => void,
 		spawnPosition?: PixelPoint
 	) {
 		super(

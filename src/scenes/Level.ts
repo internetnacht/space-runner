@@ -19,11 +19,12 @@ import { Platform } from '../components/map-components/Platform.ts'
 import { ChunkContext } from '../components/chunks/ChunkContext.ts'
 import { EdgeToEdgeNPC } from '../components/characters/EdgeToEdgeNPC.ts'
 import { PixelPoint } from '../utils/points/PixelPoint.ts'
-import { TaskUnlocker } from '../auth/TaskUnlocker.ts'
+import { TaskId, TaskUnlocker } from '../auth/TaskUnlocker.ts'
 import { InternalGameError } from '../errors/InternalGameError.ts'
 import { StdControls } from '../components/controls/StdControls.ts'
 import { IdleControls } from '../components/controls/IdleControls.ts'
 import { FancyClickButton } from '../components/buttons/FancyClickButton.ts'
+import { CollisionCause } from '../global-types.ts'
 
 export class Level extends Phaser.Scene {
 	private player?: Player
@@ -88,12 +89,13 @@ export class Level extends Phaser.Scene {
 			map,
 			new StdControls(this),
 			//todo this belongs in Player
-			() => {
+			(_: CollisionCause, taskId: TaskId) => {
 				this.scene.launch('FinishedScreen', {
 					userSettings: this.userSettings,
 					callingScene: this._id,
 					musicplayer: musicplayer,
 					taskUnlocker: this.taskUnlocker,
+					taskId,
 				})
 				this.scene.pause()
 			},

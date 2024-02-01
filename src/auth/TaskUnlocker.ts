@@ -6,11 +6,11 @@ export interface TaskUnlocker {
 	 *
 	 * @param id - id of the task that will be unlocked
 	 *
-	 * @returns void promise
+	 * @returns true if the task got unlocked or false if it already is
 	 *
 	 * @throws various errors
 	 */
-	unlock(id: TaskId): Promise<void>
+	unlock(id: TaskId): Promise<boolean>
 
 	/**
 	 * Returns whether the task with the given id is already unlocked.

@@ -55,7 +55,7 @@ export class FirebaseTaskUnlocker implements TaskUnlocker {
 		this._instance = unlocker
 	}
 
-	public static async getToken(): Promise<string> {
+	private static async getToken(): Promise<string> {
 		return new Promise((resolve) => {
 			if (window.addEventListener) {
 				window.addEventListener(
@@ -131,18 +131,46 @@ export class FirebaseTaskUnlocker implements TaskUnlocker {
 		this.tasks = tasks
 	}
 
-	async unlock(id: TaskId): Promise<void> {
+	public async unlock(id: TaskId): Promise<boolean> {
+		if (await this.isUnlocked(id)) {
+			return false
+		}
 		const task = this.tasks.find((task) => String(task.number) === id)
 		if (task === undefined) {
 			console.warn(`couldn't find task with id ${id}`)
-			return
+			return false
 		}
 
 		this.onUnlock(task.id)
+
+		return true
 	}
 
-	async isUnlocked(id: TaskId): Promise<boolean> {
+	public async isUnlocked(id: TaskId): Promise<boolean> {
+		await this.updateTasks()
+
 		return this.tasks.find((task) => task.id === id)?.unlocked || false
+	}
+
+	private async updateTasks() {
+		const db = getFirestore()
+
+		// fetch unlocked aufgaben (stored at the user document)
+		const unlockedAufgabenRef = collection(
+			db,
+			'users',
+			FirebaseTaskUnlocker.getUid(),
+			'freigeschalteteAufgaben'
+		)
+		const unlockedAufgabenSnapshot = await getDocs(unlockedAufgabenRef)
+		unlockedAufgabenSnapshot.forEach((doc) => {
+			const t = this.tasks.find((aufgabe) => aufgabe.id === doc.id)
+			if (t === undefined) {
+				console.error(`unlocked task ${doc.id} not found in task list`)
+				return
+			}
+			t.unlocked = true
+		})
 	}
 
 	private async onUnlock(aufgabeID: string) {

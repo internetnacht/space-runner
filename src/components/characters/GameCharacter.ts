@@ -7,6 +7,7 @@ import { Controls } from '../controls/Controls'
 import { TiledMap } from '../chunks/TiledMap'
 import { GameCharacterController } from './GameCharacterController'
 import { TilePoint } from '../../utils/points/TilePoint'
+import { TaskId } from '../../auth/TaskUnlocker'
 
 type CharacterType = 'dude'
 
@@ -16,7 +17,7 @@ export class GameCharacter {
 	public readonly lethal: boolean
 	protected controller?: GameCharacterController
 	protected readonly deathCallback: (cause: CollisionCause) => void
-	protected readonly finishCallback: (target: CollisionCause) => void
+	protected readonly finishCallback: (target: CollisionCause, taskId: TaskId) => void
 	protected activeCheckpoint: Checkpoint
 	protected map: TiledMap
 	protected readonly controls
@@ -35,7 +36,7 @@ export class GameCharacter {
 		spawnPosition?: PixelPoint,
 		type: CharacterType = 'dude',
 		deathCallback: (cause: CollisionCause) => void = () => {},
-		finishCallback: (cause: CollisionCause) => void = () => {},
+		finishCallback: (cause: CollisionCause, taskId: TaskId) => void = () => {},
 		lethal = false
 	) {
 		this.map = map
@@ -70,8 +71,8 @@ export class GameCharacter {
 		this.deathCallback(cause)
 	}
 
-	public reachFinishLine(target: CollisionCause) {
-		this.finishCallback(target)
+	public reachFinishLine(target: CollisionCause, taskId: TaskId) {
+		this.finishCallback(target, taskId)
 	}
 
 	protected setController(controller: GameCharacterController) {
