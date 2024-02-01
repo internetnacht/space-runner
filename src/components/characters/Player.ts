@@ -6,6 +6,8 @@ import { GameCharacter } from './GameCharacter'
 import { PlayerController } from './PlayerController'
 
 export class Player extends GameCharacter {
+	private deathCount: number
+
 	public constructor(
 		scene: Phaser.Scene,
 		map: TiledMap,
@@ -21,10 +23,19 @@ export class Player extends GameCharacter {
 			'dude',
 			(_: any) => {
 				this.teleportTo(this.activeCheckpoint.toPixelPoint())
+				this.deathCount++
+				if (this.deathCount % 10 === 0) {
+					const marker = scene.add
+						.text(this.sprite.x, this.sprite.y, 'Du schaffst das!')
+						.setDepth(100)
+					scene.time.delayedCall(2048, () => marker.destroy())
+				}
 			},
 			finishCallback
 		)
 
 		this.setController(new PlayerController(this.sprite, this))
+
+		this.deathCount = 0
 	}
 }
