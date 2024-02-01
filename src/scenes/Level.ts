@@ -246,9 +246,10 @@ export class Level extends Phaser.Scene {
 			this.scene.pause()
 		}
 
+		const margin = 10
 		const pauseButton = new FancyClickButton(this, {
-			x: MEASURES.window.width - 10,
-			y: MEASURES.window.height - 10,
+			x: MEASURES.window.width - margin,
+			y: margin,
 			fixed: true,
 			label: 'Pause',
 			clickCallback: startPauseMenu,
@@ -256,7 +257,6 @@ export class Level extends Phaser.Scene {
 			hoverFillColor: 0xff0000,
 		})
 		pauseButton.x -= pauseButton.width
-		pauseButton.y -= pauseButton.height
 		pauseButton.display()
 
 		const keyboard = this.input.keyboard
