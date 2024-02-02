@@ -166,7 +166,7 @@ export const TILED_CUSTOM_CONSTANTS = Object.freeze({
 			},
 		},
 		platforms: {
-			tileIds: [331, 332, 333],
+			tileIds: [] as number[],
 		},
 	},
 })
