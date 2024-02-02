@@ -2,7 +2,6 @@ import { List } from 'immutable'
 import { Button } from './Button'
 import { MEASURES } from '../../constants'
 import { FancyClickButton } from './FancyClickButton'
-import { InternalGameError } from '../../errors/InternalGameError'
 
 export class ButtonList<T extends Button> {
 	private readonly buttons: List<T>

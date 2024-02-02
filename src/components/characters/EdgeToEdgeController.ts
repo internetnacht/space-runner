@@ -1,10 +1,8 @@
 import { SCENE_ASSET_KEYS } from '../../constants'
-import { getLayerBoolProperty } from '../../utils/utils'
 import { PixelPoint } from '../../utils/points/PixelPoint'
 import { TiledMap } from '../chunks/TiledMap'
 import { GameCharacter } from './GameCharacter'
 import { GameCharacterController } from './GameCharacterController'
-import { TilePoint } from '../../utils/points/TilePoint'
 import { Controls } from '../controls/Controls'
 
 export class EdgeToEdgeController implements GameCharacterController {

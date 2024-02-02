@@ -1,4 +1,3 @@
-import { InternalGameError } from '../../errors/InternalGameError'
 import { Controls } from './Controls'
 import { KeyControls } from './KeyControls'
 import { TouchControls } from './TouchControls'
