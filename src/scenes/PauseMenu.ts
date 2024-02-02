@@ -6,11 +6,13 @@ import { FancyClickButton } from '../components/buttons/FancyClickButton.js'
 import { TaskUnlocker } from '../auth/TaskUnlocker.js'
 import { InternalGameError } from '../errors/InternalGameError.js'
 import { ButtonList } from '../components/buttons/ButtonList.js'
+import { Player } from '../components/characters/Player.js'
 
 export class PauseMenu extends Phaser.Scene {
 	private callingScene?: string
 	private userSettings?: GameSettings
 	private taskUnlocker?: TaskUnlocker
+	private player?: Player
 
 	public constructor() {
 		super({
@@ -35,6 +37,12 @@ export class PauseMenu extends Phaser.Scene {
 		} else {
 			throw new InternalGameError('pause menu requires task unlocker')
 		}
+
+		if (data.player instanceof Player) {
+			this.player = data.player
+		} else {
+			throw new InternalGameError('pause menu requires player')
+		}
 	}
 
 	public create() {
@@ -48,6 +56,13 @@ export class PauseMenu extends Phaser.Scene {
 			{
 				label: 'Welt neustarten',
 				cb: this.restartCallingScene.bind(this),
+			},
+			{
+				label: 'Zurück zum Checkpoint',
+				cb: (() => {
+					this.player?.kill(null)
+					this.resumeCallingScene()
+				}).bind(this),
 			},
 			{
 				label: 'Zurück zur Levelauswahl',

@@ -213,12 +213,12 @@ export class Level extends Phaser.Scene {
 			.setDepth(-1)
 
 		backgroundImage.setDisplaySize(
-			Math.max(backgroundImage.width, MEASURES.window.width * 1.2),
-			Math.max(backgroundImage.height, MEASURES.window.height * 1.2)
+			Math.max(backgroundImage.width, MEASURES.window.width * 1.4),
+			Math.max(backgroundImage.height, MEASURES.window.height * 1.4)
 		)
 		backgroundImage.setSize(
-			Math.max(backgroundImage.width, MEASURES.window.width * 1.2),
-			Math.max(backgroundImage.height, MEASURES.window.height * 1.2)
+			Math.max(backgroundImage.width, MEASURES.window.width * 1.4),
+			Math.max(backgroundImage.height, MEASURES.window.height * 1.4)
 		)
 
 		const mainCamera = this.cameras.main
@@ -244,6 +244,7 @@ export class Level extends Phaser.Scene {
 				callingScene: this._id,
 				userSettings: this.userSettings,
 				taskUnlocker: this.taskUnlocker,
+				player: this.player,
 			})
 			this.scene.pause()
 		}
