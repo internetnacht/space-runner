@@ -54,9 +54,10 @@ export class FinishedScreen extends Phaser.Scene {
 		}
 		this.taskUnlocker?.unlock(this.taskId).then((taskUnlocked) => {
 			const text =
-				'Level geschafft! :)' + taskUnlocked
+				'Level geschafft! :) ' +
+				(taskUnlocked
 					? `Aufgabe ${this.taskId} freigeschaltet.`
-					: 'Aufgabe war bereits freigeschaltet.'
+					: 'Aufgabe war bereits freigeschaltet.')
 
 			const button = new FancyClickButton(this, {
 				clickCallback: (() => {
