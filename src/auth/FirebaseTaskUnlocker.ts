@@ -56,11 +56,20 @@ export class FirebaseTaskUnlocker implements TaskUnlocker {
 	}
 
 	private static async getToken(): Promise<string> {
+		let sendPing = false
+		const pingLoop = window.setInterval(() => {
+			if (sendPing) {
+				parent.postMessage('ready!', '*')
+				console.log('game sent ready message')
+			}
+		}, 500)
+
 		return new Promise((resolve) => {
 			if (window.addEventListener) {
 				window.addEventListener(
 					'message',
 					(event) => {
+						window.clearInterval(pingLoop)
 						console.log('game got token message')
 						//if (event.origin !== "https://internetnacht.net/spielfeld") return
 						const tokenMessage = JSON.parse(event.data)
@@ -72,15 +81,14 @@ export class FirebaseTaskUnlocker implements TaskUnlocker {
 				console.log('window.attachEvent')
 				//@ts-ignore
 				window.attachEvent('onmessage', (event) => {
+					window.clearInterval(pingLoop)
 					console.log('game got token message')
 					//if (event.origin !== "https://internetnacht.net/spielfeld") return
 					const tokenMessage = JSON.parse(event.data)
 					resolve(String(tokenMessage.data))
 				})
 			}
-
-			parent.postMessage('ready!', '*')
-			console.log('game sent ready message')
+			sendPing = true
 		})
 	}
 
