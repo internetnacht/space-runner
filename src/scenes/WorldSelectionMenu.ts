@@ -45,8 +45,8 @@ export class WorldSelectionMenu extends Phaser.Scene {
 			x: MEASURES.buttons.click.margin.normal,
 			initialY: 0,
 			margin: MEASURES.buttons.fancy.click.margin,
-			idleFillColor: 0x00ff00,
-			hoverFillColor: 0x0000ff,
+			idleFillColor: 0x242b27,
+			hoverFillColor: 0xc79600,
 			buttonWidth: MEASURES.window.width - 2 * MEASURES.buttons.fancy.click.margin,
 			buttons: levels
 				.map((level) => level.id)

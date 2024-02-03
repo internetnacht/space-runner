@@ -77,8 +77,8 @@ export class PauseMenu extends Phaser.Scene {
 			x: this.cameras.main.width / 2,
 			initialY: this.cameras.main.height / 4,
 			margin: MEASURES.buttons.click.margin.normal,
-			idleFillColor: 0x00ff00,
-			hoverFillColor: 0x0000ff,
+			idleFillColor: 0x242b27,
+			hoverFillColor: 0xc79600,
 			buttonWidth: this.cameras.main.width / 2,
 			buttons: buttonsConfig,
 		})

@@ -256,8 +256,8 @@ export class Level extends Phaser.Scene {
 			fixed: true,
 			label: 'Pause',
 			clickCallback: startPauseMenu,
-			idleFillColor: 0x00ff00,
-			hoverFillColor: 0xff0000,
+			idleFillColor: 0x242b27,
+			hoverFillColor: 0xc79600,
 		})
 		pauseButton.x -= pauseButton.width
 		pauseButton.display()

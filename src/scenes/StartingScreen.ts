@@ -71,8 +71,8 @@ export class StartingScreen extends Phaser.Scene {
 			y: MEASURES.window.height - 80,
 			label: 'Eigenlob',
 			fixed: true,
-			hoverFillColor: 0x00ff00,
-			idleFillColor: 0x0000ff,
+			hoverFillColor: 0xc79600,
+			idleFillColor: 0x242b27,
 			clickCallback: () => {
 				this.scene.launch('CreditsScene', {
 					callingScene: 'StartingScreen',
@@ -88,8 +88,8 @@ export class StartingScreen extends Phaser.Scene {
 			y: MEASURES.window.height * (2 / 3),
 			label: 'Start',
 			fixed: true,
-			hoverFillColor: 0x00ff00,
-			idleFillColor: 0x0000ff,
+			hoverFillColor: 0xc79600,
+			idleFillColor: 0x242b27,
 			clickCallback: () => {
 				this.scene.start('WorldSelectionMenu', {
 					userSettings: this.userSettings,
@@ -113,6 +113,8 @@ export class StartingScreen extends Phaser.Scene {
 				fancy.display()
 			})
 		}
+		// removeLoading()
+		// fancy.display()
 
 		this.events.on('shutdown', () => {
 			musicplayer.shutdown()

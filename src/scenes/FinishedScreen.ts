@@ -74,8 +74,8 @@ export class FinishedScreen extends Phaser.Scene {
 						this.scene.stop(this.callingScene)
 					}).bind(this),
 					fixed: true,
-					hoverFillColor: 0x0000ff,
-					idleFillColor: 0x00ff00,
+					hoverFillColor: 0xc79600,
+					idleFillColor: 0x242b27,
 					label: text,
 					x: this.cameras.main.width / 2,
 					y: this.cameras.main.height / 2,
@@ -96,8 +96,8 @@ export class FinishedScreen extends Phaser.Scene {
 						this.scene.stop(this.callingScene)
 					}).bind(this),
 					fixed: true,
-					hoverFillColor: 0x0000ff,
-					idleFillColor: 0x00ff00,
+					hoverFillColor: 0xc79600,
+					idleFillColor: 0x242b27,
 					label: `Level geschafft! Aber leider ist beim Freischalten von Aufgabe ${this.taskId} ein Fehler aufgetreten :( sory`,
 					x: this.cameras.main.width / 2,
 					y: this.cameras.main.height / 2,

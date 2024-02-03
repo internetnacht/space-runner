@@ -34,8 +34,8 @@ export class CreditsScene extends Phaser.Scene {
 			y: text.y + text.height,
 			label: 'Fortfahren',
 			fixed: true,
-			hoverFillColor: 0x00ff00,
-			idleFillColor: 0x0000ff,
+			hoverFillColor: 0xc79600,
+			idleFillColor: 0x242b27,
 			clickCallback: this.resumeCallingScene.bind(this),
 		})
 
