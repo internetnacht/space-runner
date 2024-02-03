@@ -8,7 +8,7 @@ export interface TaskUnlocker {
 	 *
 	 * @returns true if the task got unlocked or false if it already is
 	 *
-	 * @throws various errors
+	 * @throws TaskNotFoundError, various errors
 	 */
 	unlock(id: TaskId): Promise<boolean>
 
@@ -19,7 +19,7 @@ export interface TaskUnlocker {
 	 *
 	 * @returns boolean promise
 	 *
-	 * @throws various errors
+	 * @throws TaskNotFoundError, various errors
 	 */
 	isUnlocked(id: TaskId): Promise<boolean>
 }

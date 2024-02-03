@@ -149,20 +149,33 @@ export class ChunkLayer {
 
 					const taskId = String(unlocker[2])
 
-					this.context.taskUnlocker.unlock(taskId).then((taskUnlocked) => {
-						const text = taskUnlocked
-							? `Aufgabe ${taskId} freigeschaltet!`
-							: `Aufgabe war bereits freigeschaltet.`
-						const tile = b
-						const marker = this.context.scene.add
-							.text(
-								tile.layer.tilemapLayer.x + tile.pixelX + tile.width / 2,
-								tile.layer.tilemapLayer.y + tile.pixelY + tile.height / 2,
-								text
-							)
-							.setDepth(100)
-						this.context.scene.time.delayedCall(2048, () => marker.destroy())
-					})
+					this.context.taskUnlocker
+						.unlock(taskId)
+						.then((taskUnlocked) => {
+							const text = taskUnlocked
+								? `Aufgabe ${taskId} freigeschaltet!`
+								: `Aufgabe ${taskId} war bereits freigeschaltet.`
+							const tile = b
+							const marker = this.context.scene.add
+								.text(
+									tile.layer.tilemapLayer.x + tile.pixelX + tile.width / 2,
+									tile.layer.tilemapLayer.y + tile.pixelY + tile.height / 2,
+									text
+								)
+								.setDepth(100)
+							this.context.scene.time.delayedCall(2048, () => marker.destroy())
+						})
+						.catch(() => {
+							const tile = b
+							const marker = this.context.scene.add
+								.text(
+									tile.layer.tilemapLayer.x + tile.pixelX + tile.width / 2,
+									tile.layer.tilemapLayer.y + tile.pixelY + tile.height / 2,
+									`Oh nein, beim Freischalten von Aufgabe ${taskId}\nist ein Fehler aufgetreten :(`
+								)
+								.setDepth(100)
+							this.context.scene.time.delayedCall(2048, () => marker.destroy())
+						})
 				}
 			},
 			(_, tile) => this.characterHitsTile(tile as Phaser.Tilemaps.Tile, this.context.player)

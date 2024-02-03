@@ -87,4 +87,8 @@ export class ButtonList<T extends Button> {
 		this.down?.display()
 		this.buttons.forEach((b) => b.display())
 	}
+
+	public forEach(cb: (button: T) => void): void {
+		this.buttons.forEach(cb)
+	}
 }

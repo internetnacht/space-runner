@@ -4,6 +4,7 @@ import { getFirestore, doc, collection, getDocs, setDoc } from 'firebase/firesto
 
 import { TaskId, TaskUnlocker } from './TaskUnlocker'
 import { InternalGameError } from '../errors/InternalGameError'
+import { TaskNotFoundError } from '../errors/TaskNotFoundError'
 
 interface Task {
 	id: string
@@ -146,7 +147,7 @@ export class FirebaseTaskUnlocker implements TaskUnlocker {
 		const task = this.tasks.find((task) => String(task.number) === id)
 		if (task === undefined) {
 			console.warn(`couldn't find task with id ${id}`)
-			return false
+			throw new TaskNotFoundError(`couldn't find task with id ${id}`)
 		}
 
 		this.onUnlock(task.id)
@@ -156,8 +157,9 @@ export class FirebaseTaskUnlocker implements TaskUnlocker {
 
 	public async isUnlocked(id: TaskId): Promise<boolean> {
 		await this.updateTasks()
+		console.log(this.tasks)
 
-		return this.tasks.find((task) => task.id === id)?.unlocked || false
+		return this.tasks.find((task) => String(task.number) === id)?.unlocked || false
 	}
 
 	private async updateTasks() {
@@ -174,8 +176,7 @@ export class FirebaseTaskUnlocker implements TaskUnlocker {
 		unlockedAufgabenSnapshot.forEach((doc) => {
 			const t = this.tasks.find((aufgabe) => aufgabe.id === doc.id)
 			if (t === undefined) {
-				console.error(`unlocked task ${doc.id} not found in task list`)
-				return
+				throw new TaskNotFoundError(`unlocked task ${doc.id} not found in task list`)
 			}
 			t.unlocked = true
 		})
@@ -184,8 +185,9 @@ export class FirebaseTaskUnlocker implements TaskUnlocker {
 	private async onUnlock(aufgabeID: string) {
 		const t = this.tasks.find((aufgabe) => aufgabe.id === aufgabeID)
 		if (t === undefined) {
-			console.error(`couldn't find task ${aufgabeID} that's supposed to be unlocked`)
-			return
+			throw new TaskNotFoundError(
+				`couldn't find task ${aufgabeID} that's supposed to be unlocked`
+			)
 		}
 
 		if (this.alreadyUnlocked.includes(t.id)) {

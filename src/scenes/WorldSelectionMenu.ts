@@ -1,6 +1,6 @@
 import { MusicPlayer } from '../components/MusicPlayer.ts'
 import { GameSettings } from '../components/GameSettings.ts'
-import { MEASURES, levels } from '../constants.ts'
+import { MEASURES, levels, taskUnlockers } from '../constants.ts'
 import { FancyClickButton } from '../components/buttons/FancyClickButton.ts'
 import { ToggleButton } from '../components/buttons/ToggleButton.ts'
 import { TaskUnlocker } from '../auth/TaskUnlocker.ts'
@@ -39,7 +39,7 @@ export class WorldSelectionMenu extends Phaser.Scene {
 		}
 	}
 
-	public create() {
+	public async create() {
 		const buttons = FancyClickButton.createVerticalButtonList({
 			scene: this,
 			x: MEASURES.buttons.click.margin.normal,
@@ -52,6 +52,7 @@ export class WorldSelectionMenu extends Phaser.Scene {
 				.map((level) => level.id)
 				.map((level) => {
 					return {
+						//todo code below requires that this remains the level id
 						label: level,
 						cb: () => {
 							this.scene.start('LoadingScreen', {
@@ -66,6 +67,13 @@ export class WorldSelectionMenu extends Phaser.Scene {
 
 		const buttonList = new ButtonList(this, buttons)
 		buttonList.display()
+
+		buttonList.forEach((button) => {
+			const levelId = button.label
+			this.buildLevelLabel(levelId).then((newLabel) => {
+				button.label = newLabel
+			})
+		})
 
 		const musicButton = new ToggleButton(this, {
 			initialState: this.userSettings?.musicIsOn ?? false,
@@ -86,5 +94,25 @@ export class WorldSelectionMenu extends Phaser.Scene {
 		this.events.on('shutdown', () => {
 			this.musicPlayer?.shutdown()
 		})
+	}
+
+	private async buildLevelLabel(levelKey: string): Promise<string> {
+		if (this.taskUnlocker === undefined) {
+			throw new InternalGameError('WorldSelectionMenu needs a task unlocker')
+		}
+
+		const tasks = taskUnlockers.filter((t) => t[0] === levelKey).map((t) => t[2])
+
+		const unlockedTasks: number[] = []
+		for (const t of tasks) {
+			if (await this.taskUnlocker.isUnlocked(String(t))) {
+				unlockedTasks.push(t)
+			}
+		}
+
+		const totalTaskAmount = tasks.length
+		const unlockedTaskAmount = unlockedTasks.length
+
+		return `${levelKey} - ${unlockedTaskAmount}/${totalTaskAmount}`
 	}
 }

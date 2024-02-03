@@ -128,4 +128,12 @@ export class FancyClickButton extends Button {
 		this.background.setDepth(n)
 		this.text.setDepth(n + 1)
 	}
+
+	get label(): string {
+		return this.text.text
+	}
+
+	set label(l: string) {
+		this.text.text = l
+	}
 }
