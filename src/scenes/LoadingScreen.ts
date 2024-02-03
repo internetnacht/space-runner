@@ -7,7 +7,9 @@ export class LoadingScreen extends Phaser.Scene {
 	private initData?: object
 
 	public static loadAssets(scene: Phaser.Scene) {
-		scene.load.image('loadingscreen', filePaths.images.loadingscreen)
+		filePaths.images.loadingscreens.forEach((screen) => {
+			scene.load.image(`loadingscreen-${screen}`, screen)
+		})
 		scene.load.audio('loadingmusic', filePaths.audio['audio-loading-screen'])
 	}
 
@@ -33,7 +35,15 @@ export class LoadingScreen extends Phaser.Scene {
 		music.loop('audio-loading-screen')
 
 		this.add
-			.image(0, 0, 'loadingscreen')
+			.image(
+				0,
+				0,
+				`loadingscreen-${
+					filePaths.images.loadingscreens[
+						Math.round(Math.random() * filePaths.images.loadingscreens.length)
+					]
+				}`
+			)
 			.setOrigin(0)
 			.setDisplaySize(MEASURES.window.width, MEASURES.window.height)
 
@@ -63,6 +73,7 @@ export class LoadingScreen extends Phaser.Scene {
 		}
 
 		this.load.image(SCENE_ASSET_KEYS.maps.tileset(this.targetScene), filePaths.sprites.sheet)
+
 		this.load.image(GLOBAL_ASSET_KEYS.images.background, filePaths.images.background)
 		this.load.json(
 			SCENE_ASSET_KEYS.maps.master(this.targetScene),

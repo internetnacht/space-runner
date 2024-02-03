@@ -79,7 +79,12 @@ export const filePaths = Object.freeze({
 		startingScreen: {
 			background: 'images/starting-screen.jpg',
 		},
-		loadingscreen: 'images/loadingscreen.jpeg',
+		loadingscreens: [
+			'images/Unbenanntes_Projekt 1.jpg',
+			'images/Unbenanntes_Projekt 2.jpg',
+			'images/Unbenanntes_Projekt 3.jpg',
+			'images/Unbenanntes_Projekt.jpg',
+		],
 	},
 	maps: {
 		master: (worldSceneKey: string) => `maps/${worldSceneKey}/master.json`,
