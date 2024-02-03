@@ -157,7 +157,6 @@ export class FirebaseTaskUnlocker implements TaskUnlocker {
 
 	public async isUnlocked(id: TaskId): Promise<boolean> {
 		await this.updateTasks()
-		console.log(this.tasks)
 
 		return this.tasks.find((task) => String(task.number) === id)?.unlocked || false
 	}
