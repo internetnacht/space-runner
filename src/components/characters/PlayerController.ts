@@ -1,4 +1,6 @@
 import { DEBUG, SCENE_ASSET_KEYS } from '../../constants'
+import { PixelPoint } from '../../utils/points/PixelPoint'
+import { TiledMap } from '../chunks/TiledMap'
 import { Controls } from '../controls/Controls'
 import { GameCharacter } from './GameCharacter'
 import { GameCharacterController } from './GameCharacterController'
@@ -16,7 +18,18 @@ export class PlayerController implements GameCharacterController {
 		this.character = character
 	}
 
-	public act(scene: Phaser.Scene, controls: Controls) {
+	public act(scene: Phaser.Scene, controls: Controls, map?: TiledMap) {
+		if (map !== undefined) {
+			const position = new PixelPoint(this.character.getX(), this.character.getY())
+
+			//todo assumes player is 2 tiles wide
+			if (
+				map.isSolidAt(position.toTilePoint()) ||
+				map.isSolidAt(position.toTilePoint().toRight())
+			) {
+				this.character.kill(null)
+			}
+		}
 		this.move(scene, controls)
 	}
 
