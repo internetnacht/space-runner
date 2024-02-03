@@ -111,6 +111,8 @@ export class LoadingScreen extends Phaser.Scene {
 				loadingBox.y + loadingBox.height + 10,
 				texts[Math.round(Math.random() * (texts.length - 1))],
 				{
+					backgroundColor: '#000000',
+
 					wordWrap: {
 						width: MEASURES.window.width * 0.6,
 					},
