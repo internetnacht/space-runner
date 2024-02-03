@@ -52,33 +52,58 @@ export class FinishedScreen extends Phaser.Scene {
 		if (this.taskId === undefined) {
 			throw new InternalGameError('FinishedScreen has no task id')
 		}
-		this.taskUnlocker?.unlock(this.taskId).then((taskUnlocked) => {
-			const text =
-				'Level geschafft! :) ' +
-				(taskUnlocked
-					? `Aufgabe ${this.taskId} freigeschaltet.`
-					: 'Aufgabe war bereits freigeschaltet.')
+		//todo remove this code redundancy
+		this.taskUnlocker
+			?.unlock(this.taskId)
+			.then((taskUnlocked) => {
+				const text =
+					'Level geschafft! :) ' +
+					(taskUnlocked
+						? `Aufgabe ${this.taskId} freigeschaltet.`
+						: 'Aufgabe war bereits freigeschaltet.')
 
-			const button = new FancyClickButton(this, {
-				clickCallback: (() => {
-					this.scene.start('WorldSelectionMenu', {
-						userSettings: this.userSettings,
-						taskUnlocker: this.taskUnlocker,
-					})
-					if (this.callingScene === undefined) {
-						throw 'callingScene undefined in FinishedScreen'
-					}
-					this.scene.stop(this.callingScene)
-				}).bind(this),
-				fixed: true,
-				hoverFillColor: 0x0000ff,
-				idleFillColor: 0x00ff00,
-				label: text,
-				x: this.cameras.main.width / 2,
-				y: this.cameras.main.height / 2,
+				const button = new FancyClickButton(this, {
+					clickCallback: (() => {
+						this.scene.start('WorldSelectionMenu', {
+							userSettings: this.userSettings,
+							taskUnlocker: this.taskUnlocker,
+						})
+						if (this.callingScene === undefined) {
+							throw 'callingScene undefined in FinishedScreen'
+						}
+						this.scene.stop(this.callingScene)
+					}).bind(this),
+					fixed: true,
+					hoverFillColor: 0x0000ff,
+					idleFillColor: 0x00ff00,
+					label: text,
+					x: this.cameras.main.width / 2,
+					y: this.cameras.main.height / 2,
+				})
+				button.center()
+				button.display()
 			})
-			button.center()
-			button.display()
-		})
+			.catch(() => {
+				const button = new FancyClickButton(this, {
+					clickCallback: (() => {
+						this.scene.start('WorldSelectionMenu', {
+							userSettings: this.userSettings,
+							taskUnlocker: this.taskUnlocker,
+						})
+						if (this.callingScene === undefined) {
+							throw 'callingScene undefined in FinishedScreen'
+						}
+						this.scene.stop(this.callingScene)
+					}).bind(this),
+					fixed: true,
+					hoverFillColor: 0x0000ff,
+					idleFillColor: 0x00ff00,
+					label: `Level geschafft! Aber leider ist beim Freischalten von Aufgabe ${this.taskId} ein Fehler aufgetreten :( sory`,
+					x: this.cameras.main.width / 2,
+					y: this.cameras.main.height / 2,
+				})
+				button.center()
+				button.display()
+			})
 	}
 }
